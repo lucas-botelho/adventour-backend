@@ -41,6 +41,7 @@ BEGIN
     );
 END;
 
+
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Attraction')
 BEGIN
     CREATE TABLE Attraction (
@@ -54,15 +55,26 @@ BEGIN
     );
 END;
 
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Attraction_Info_Type')
+BEGIN
+    CREATE TABLE Attraction_Info (
+        id_attraction_info_type INT PRIMARY KEY,
+        value VARCHAR(255)
+    );
+END;
+
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Attraction_Info')
 BEGIN
     CREATE TABLE Attraction_Info (
         id_attraction_info INT PRIMARY KEY,
         id_attraction INT NOT NULL,
+        id_attraction_info_type INT NOT NULL,
         title VARCHAR(255),
         description VARCHAR(MAX),
         duration_seconds INT NULL,
-        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction)
+        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction),
+        FOREIGN KEY (id_attraction_info_type) REFERENCES Attraction_Info(id_attraction_info_type)
     );
 END;
 
