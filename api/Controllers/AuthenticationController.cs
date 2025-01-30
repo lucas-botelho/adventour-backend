@@ -1,5 +1,6 @@
 using api.Infrastructure.Authentication;
 using api.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
@@ -32,6 +33,19 @@ namespace api.Controllers
                 Data = token,
                 Success = true,
                 Message = "Token created successfully",
+            });
+        }
+
+        [HttpGet]
+        [Authorize]
+        //hello world
+        public IActionResult HelloWorld()
+        {
+            return Ok(new ApiResponse<string>()
+            {
+                Data = "Hello World",
+                Success = true,
+                Message = "Hello World",
             });
         }
     }
