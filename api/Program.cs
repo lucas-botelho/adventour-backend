@@ -1,5 +1,8 @@
 using api.Infrastructure.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,19 @@ builder.Services.AddSwaggerGen();
 //AddSingleton<IInterface, ConcreteX>() – Creates a single instance for the lifetime of the application.
 builder.Services.AddSingleton<ITokenProvider, JwtTokenProvider>();
 
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(o =>
+{
+    o.RequireHttpsMetadata = false;
+    o.TokenValidationParameters = new TokenValidationParameters
+    {
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET")!)),
+        ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+        ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+    };
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,5 +45,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();
