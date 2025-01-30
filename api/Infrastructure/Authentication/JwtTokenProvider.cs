@@ -7,9 +7,16 @@ namespace api.Infrastructure.Authentication
 {
     public sealed class JwtTokenProvider : ITokenProvider
     {
-        public string Create(string username)
+
+        public JwtTokenProvider()
         {
-            var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET") ?? string.Empty;
+            
+        }
+        public string Create(string email)
+        {
+
+
+            var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET")!;
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
             var credential = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -18,7 +25,7 @@ namespace api.Infrastructure.Authentication
             {
                 Subject = new ClaimsIdentity(
                 [
-                   new Claim(JwtRegisteredClaimNames.Sub, username)
+                   new Claim(JwtRegisteredClaimNames.Email, email)
                 ]),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = credential,
