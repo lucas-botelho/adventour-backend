@@ -14,7 +14,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 BEGIN
     CREATE TABLE Country (
         id_country INT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL
+        name VARCHAR(50) NOT NULL
     );
 END;
 
@@ -32,12 +32,11 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 BEGIN
     CREATE TABLE Person (
         id_user INT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        phone_number VARCHAR(20),
+        name VARCHAR(25) NOT NULL,
+		username VARCHAR(15) NOT NULL,
+        email VARCHAR(100),
         verified BIT NOT NULL,
-        profile_picture BIT NULL,
-        username VARCHAR(255) NOT NULL,
-        email VARCHAR(255) NOT NULL
+        profile_picture VARCHAR(255) NULL,
     );
 END;
 
@@ -50,7 +49,8 @@ BEGIN
         name VARCHAR(255) NOT NULL,
         average_rating INT NULL,
         description VARCHAR(MAX),
-        address VARCHAR(255) NULL,
+        address_one VARCHAR(150) NULL,
+		address_two VARCHAR(150) NULL,
         FOREIGN KEY (id_city) REFERENCES City(id_city)
     );
 END;
@@ -58,9 +58,9 @@ END;
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Attraction_Info_Type')
 BEGIN
-    CREATE TABLE Attraction_Info (
+    CREATE TABLE Attraction_Info_Type (
         id_attraction_info_type INT PRIMARY KEY,
-        value VARCHAR(255)
+        type_title int
     );
 END;
 
@@ -74,7 +74,7 @@ BEGIN
         description VARCHAR(MAX),
         duration_seconds INT NULL,
         FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction),
-        FOREIGN KEY (id_attraction_info_type) REFERENCES Attraction_Info(id_attraction_info_type)
+        FOREIGN KEY (id_attraction_info_type) REFERENCES Attraction_Info_Type(id_attraction_info_type)
     );
 END;
 
@@ -82,7 +82,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 BEGIN
     CREATE TABLE Rating (
         id_rating INT PRIMARY KEY,
-        value INT NOT NULL
+        rating INT NOT NULL
     );
 END;
 
@@ -93,7 +93,7 @@ BEGIN
         id_rating INT NOT NULL,
         id_attraction INT NOT NULL,
         id_user INT NOT NULL,
-        comment VARCHAR(MAX) NULL,
+        comment VARCHAR(255) NULL,
         FOREIGN KEY (id_rating) REFERENCES Rating(id_rating),
         FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction),
         FOREIGN KEY (id_user) REFERENCES Person(id_user)
