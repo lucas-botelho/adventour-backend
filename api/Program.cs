@@ -1,12 +1,27 @@
+using Adventour.Api.Builders;
+using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Infrastructure.Authentication;
+using Adventour.Api.Repositories;
+using Adventour.Api.Repositories.Interfaces;
+using Adventour.Api.Services;
+using Adventour.Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<ITokenProvider, JwtTokenProvider>();
+//Transient objects are always different; a new instance is provided to every controller and every service.
+//builder.Services.AddTransient
 
+//Scoped objects are the same within a request, but different across different requests.
+//builder.Services.AddScoped
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
+builder.Services.AddScoped<IDatabaseConnectionService, DbConnectionService>();
+
+//Singleton objects are the same for every object and every request.
+builder.Services.AddSingleton<ITokenProvider, JwtTokenProvider>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
