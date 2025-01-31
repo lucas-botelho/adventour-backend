@@ -1,4 +1,4 @@
-using api.Infrastructure.Authentication;
+using Adventour.Api.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;

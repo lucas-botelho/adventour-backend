@@ -144,3 +144,9 @@ BEGIN
         FOREIGN KEY (id_day) REFERENCES Day(id_day)
     );
 END;
+
+
+IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Person')
+BEGIN
+   ALTER TABLE Person ADD password varchar(50)
+END;

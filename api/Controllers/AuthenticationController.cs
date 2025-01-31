@@ -1,11 +1,12 @@
-using api.Infrastructure.Authentication;
-using api.Responses;
+using Adventour.Api.Infrastructure.Authentication;
+using Adventour.Api.Models;
+using Adventour.Api.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace api.Controllers
+namespace Adventour.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/[action]")]
@@ -20,15 +21,13 @@ namespace api.Controllers
             this.tokenProvider = tokenProvider;
         }
 
-        [HttpPost(Name = "Token")]
-        public IActionResult Token(string username, string password)
+        [HttpPost(Name = "Login")]
+        public IActionResult Login(User user)
         {
             //missing user validation
-
-
-            var token = this.tokenProvider.Create(username);
+            var token = this.tokenProvider.Create("");
             
-            return Ok(new ApiResponse<string>()
+            return Ok(new BaseApiResponse<string>()
             {
                 Data = token,
                 Success = true,
@@ -41,7 +40,7 @@ namespace api.Controllers
         //hello world
         public IActionResult HelloWorld()
         {
-            return Ok(new ApiResponse<string>()
+            return Ok(new BaseApiResponse<string>()
             {
                 Data = "Hello World",
                 Success = true,

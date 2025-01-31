@@ -3,7 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 
-namespace api.Infrastructure.Authentication
+namespace Adventour.Api.Infrastructure.Authentication
 {
     public sealed class JwtTokenProvider : ITokenProvider
     {

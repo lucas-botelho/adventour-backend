@@ -1,4 +1,4 @@
-﻿namespace api.Infrastructure.Authentication
+﻿namespace Adventour.Api.Infrastructure.Authentication
 {
     public interface ITokenProvider
     {
