@@ -9,16 +9,16 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Debug
 WORKDIR /src/api
-COPY ["./api/api.csproj", "."]
-RUN dotnet restore "./api.csproj"
+COPY ["./api/Adventour.Api.csproj", "."]
+RUN dotnet restore "./Adventour.Api.csproj"
 COPY ./api .
-RUN dotnet build "./api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./Adventour.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Debug
-RUN dotnet publish "./api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Adventour.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "api.dll"]
+ENTRYPOINT ["dotnet", "Adventour.Api.dll"]
