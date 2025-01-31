@@ -1,10 +1,12 @@
+using Adventour.Api.Builders;
+using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Infrastructure.Authentication;
-using Adventour.Api.Models;
+using Adventour.Api.Models.Authentication;
+using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Data.SqlClient;
+
 
 namespace Adventour.Api.Controllers
 {
@@ -13,12 +15,44 @@ namespace Adventour.Api.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly ITokenProvider tokenProvider;
+        private readonly IUserRepository userRepository;
 
-       
-
-        public AuthenticationController(ITokenProvider tokenProvider)
+        public AuthenticationController(ITokenProvider tokenProvider, IUserRepository userRepository)
         {
             this.tokenProvider = tokenProvider;
+            this.userRepository = userRepository;
+        }
+
+        [HttpPost(Name = "Register")]
+        public IActionResult Register(UserRegistration user)
+        {
+
+            if (userRepository.UserExists(user.Username, user.Email))
+            {
+                //return error message
+            }
+
+            
+
+            //if (user.Password != user.ConfirmPassword)
+            //{
+            //    return BadRequest(new BaseApiResponse<string>()
+            //    {
+            //        Data = null,
+            //        Success = false,
+            //        Message = "Passwords do not match",
+            //    });
+            //}
+
+            //missing user validation
+            var token = this.tokenProvider.Create("");
+
+            return Ok(new BaseApiResponse<string>()
+            {
+                Data = token,
+                Success = true,
+                Message = "Token created successfully",
+            });
         }
 
         [HttpPost(Name = "Login")]

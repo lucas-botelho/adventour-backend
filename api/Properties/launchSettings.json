@@ -15,7 +15,13 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SQL_USER": "sa",
+        "SQL_PASSWORD": "YourStrongPassword!",
+        "CONNECTION_STRING": "Server=127.0.0.1,1433;Database=Adventour;User Id=sa;Password=YourStrongPassword!Encrypt=False;TrustServerCertificate=True;",
+        "JWT_SECRET": "de2b413f35c9723c22bde0fa128441e99c72ce2a5f74b6822e4374a70192b520",
+        "JWT_ISSUER": "Adventour-Api",
+        "JWT_AUDIENCE": "Adventour-Mobile"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7272;http://localhost:5043"
