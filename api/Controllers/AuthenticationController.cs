@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Adventour.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly ITokenProvider tokenProvider;
@@ -23,7 +23,31 @@ namespace Adventour.Api.Controllers
             this.userRepository = userRepository;
         }
 
-        [HttpPost(Name = "Register")]
+        [HttpGet(Name = "anonymous-token")]
+        public IActionResult AnonymousToken()
+        {
+            var token = this.tokenProvider.Create(string.Empty);
+
+            if (string.IsNullOrEmpty(token))
+            {
+                StatusCode(500, new BaseApiResponse<object>()
+                {
+                    Data = null,
+                    Success = false,
+                    Message = "Token creation failed",
+                });
+            }
+
+            return Ok(new BaseApiResponse<string>()
+            {
+                Data = token,
+                Success = true,
+                Message = "Token created successfully",
+            });
+        }
+
+        [HttpPost(Name = "register")]
+        [Authorize]
         public IActionResult Register(UserRegistration user)
         {
 
@@ -32,7 +56,7 @@ namespace Adventour.Api.Controllers
                 //return error message
             }
 
-            
+
 
             //if (user.Password != user.ConfirmPassword)
             //{
@@ -45,7 +69,7 @@ namespace Adventour.Api.Controllers
             //}
 
             //missing user validation
-            var token = this.tokenProvider.Create("");
+            var token = this.tokenProvider.Create("uidaskdj");
 
             return Ok(new BaseApiResponse<string>()
             {
@@ -55,12 +79,12 @@ namespace Adventour.Api.Controllers
             });
         }
 
-        [HttpPost(Name = "Login")]
+        [HttpPost(Name = "login")]
         public IActionResult Login(User user)
         {
             //missing user validation
             var token = this.tokenProvider.Create("");
-            
+
             return Ok(new BaseApiResponse<string>()
             {
                 Data = token,
