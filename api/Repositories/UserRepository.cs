@@ -1,8 +1,6 @@
 ﻿using Adventour.Api.Builders.Interfaces;
-using Adventour.Api.Models.Authentication;
+using Adventour.Api.Constants.Database;
 using Adventour.Api.Repositories.Interfaces;
-using Microsoft.Data.SqlClient;
-using System.Data;
 
 namespace Adventour.Api.Repositories
 {
@@ -19,13 +17,10 @@ namespace Adventour.Api.Repositories
         {
             try
             {
-
-                var userExists = queryServiceBuilder.WithStoredProcedure("CheckUserExistsByEmailAndUsername")
+                var userExists = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CheckUserExistsByEmailAndUsername)
                 .WithParameter("@Username", username)
                 .WithParameter("@Email", email)
                 .Execute<int>();
-
-                var x = 2;
 
                 return userExists > 0;
             }
