@@ -2,6 +2,7 @@
 {
     public static class StoredProcedures
     {
-        public const string CheckUserExistsByEmailAndUsername = "CheckUserExistsByEmailAndUsername";
+        public const string CheckUserExistsByEmail = "CheckUserExistsByEmail";
+        public const string CreateUser = "CreateUser";
     }
 }

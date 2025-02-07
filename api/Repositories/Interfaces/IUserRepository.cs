@@ -1,7 +1,11 @@
-﻿namespace Adventour.Api.Repositories.Interfaces
+﻿using Adventour.Api.Models.Authentication;
+
+namespace Adventour.Api.Repositories.Interfaces
 {
     public interface IUserRepository
     {
-        bool UserExists(string username, string email);
+        bool UserExists(string email);
+
+        string CreateUser(UserRegistration registration);
     }
 }

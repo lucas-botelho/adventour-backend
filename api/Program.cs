@@ -1,3 +1,4 @@
+
 using Adventour.Api.Builders;
 using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Infrastructure.Authentication;
@@ -72,7 +73,11 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.EnableAnnotations();
+    //options.ExampleFilters();
+});
 
 var app = builder.Build();
 
