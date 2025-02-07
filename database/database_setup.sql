@@ -31,12 +31,13 @@ END;
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Person')
 BEGIN
     CREATE TABLE Person (
-        id_user INT PRIMARY KEY,
+        id_user varchar(40) PRIMARY KEY,
         name VARCHAR(25) NOT NULL,
-		username VARCHAR(15) NOT NULL,
-        email VARCHAR(100),
+		username VARCHAR(25) NOT NULL,
+        email VARCHAR(100) NOT NULL,
         verified BIT NOT NULL,
         profile_picture VARCHAR(255) NULL,
+		password varchar(255) NOT NULL,
     );
 END;
 
@@ -92,7 +93,7 @@ BEGIN
         id_review INT PRIMARY KEY,
         id_rating INT NOT NULL,
         id_attraction INT NOT NULL,
-        id_user INT NOT NULL,
+        id_user varchar(40) NOT NULL,
         comment VARCHAR(255) NULL,
         FOREIGN KEY (id_rating) REFERENCES Rating(id_rating),
         FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction),
@@ -105,7 +106,7 @@ BEGIN
     CREATE TABLE Favorites (
         id_favorite INT PRIMARY KEY,
         id_attraction INT NOT NULL,
-        id_user INT NOT NULL,
+        id_user varchar(40) NOT NULL,
         FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction),
         FOREIGN KEY (id_user) REFERENCES Person(id_user)
     );
@@ -115,7 +116,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 BEGIN
     CREATE TABLE Itinerary (
         id_itinerary INT PRIMARY KEY,
-        id_user INT NOT NULL,
+        id_user varchar(40) NOT NULL,
         title VARCHAR(255) NOT NULL,
         created_at DATETIME NOT NULL,
         FOREIGN KEY (id_user) REFERENCES Person(id_user)
@@ -145,8 +146,8 @@ BEGIN
     );
 END;
 
+GO
 
-IF EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Person')
-BEGIN
-   ALTER TABLE Person ADD password varchar(50)
+BEGIN 
+ALTER TABLE dbo.Person ALTER COLUMN username varchar(25) NULL
 END;

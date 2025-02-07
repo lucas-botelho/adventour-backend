@@ -12,10 +12,9 @@ namespace Adventour.Api.Infrastructure.Authentication
         {
             
         }
-        public string Create(string email)
+
+        public string Create(string userId)
         {
-
-
             var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET")!;
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
 
@@ -25,7 +24,10 @@ namespace Adventour.Api.Infrastructure.Authentication
             {
                 Subject = new ClaimsIdentity(
                 [
-                   new Claim(JwtRegisteredClaimNames.Email, email)
+                   new Claim(JwtRegisteredClaimNames.Sub, string.IsNullOrEmpty(userId) ? "anonymous" : "user"),
+                   new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                   new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
+                   new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.UtcNow.AddHours(1)).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
                 ]),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = credential,
