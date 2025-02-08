@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 
-namespace Adventour.Api.Services.Interfaces
+namespace Adventour.Api.Services.Database
 {
     public interface IDatabaseConnectionService
     {

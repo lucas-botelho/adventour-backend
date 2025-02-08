@@ -3,14 +3,14 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 
-namespace Adventour.Api.Infrastructure.Authentication
+namespace Adventour.Api.Services.Authentication
 {
-    public sealed class JwtTokenProvider : ITokenProvider
+    public sealed class JwtTokenProviderService : ITokenProviderService
     {
 
-        public JwtTokenProvider()
+        public JwtTokenProviderService()
         {
-            
+
         }
 
         public string Create(string userId)

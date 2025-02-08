@@ -1,9 +1,9 @@
 using Adventour.Api.Builders;
 using Adventour.Api.Builders.Interfaces;
-using Adventour.Api.Infrastructure.Authentication;
 using Adventour.Api.Models.Authentication;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses;
+using Adventour.Api.Services.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -15,10 +15,10 @@ namespace Adventour.Api.Controllers
     [Route("api/[controller]/[action]")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ITokenProvider tokenProvider;
+        private readonly ITokenProviderService tokenProvider;
         private readonly IUserRepository userRepository;
 
-        public AuthenticationController(ITokenProvider tokenProvider, IUserRepository userRepository)
+        public AuthenticationController(ITokenProviderService tokenProvider, IUserRepository userRepository)
         {
             this.tokenProvider = tokenProvider;
             this.userRepository = userRepository;

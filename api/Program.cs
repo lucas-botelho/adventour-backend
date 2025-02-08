@@ -1,11 +1,10 @@
 
 using Adventour.Api.Builders;
 using Adventour.Api.Builders.Interfaces;
-using Adventour.Api.Infrastructure.Authentication;
 using Adventour.Api.Repositories;
 using Adventour.Api.Repositories.Interfaces;
-using Adventour.Api.Services;
-using Adventour.Api.Services.Interfaces;
+using Adventour.Api.Services.Authentication;
+using Adventour.Api.Services.Database;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -22,7 +21,7 @@ builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
 builder.Services.AddScoped<IDatabaseConnectionService, DbConnectionService>();
 
 //Singleton objects are the same for every object and every request.
-builder.Services.AddSingleton<ITokenProvider, JwtTokenProvider>();
+builder.Services.AddSingleton<ITokenProviderService, JwtTokenProviderService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

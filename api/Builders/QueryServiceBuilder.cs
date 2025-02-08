@@ -1,5 +1,5 @@
 ﻿using Adventour.Api.Builders.Interfaces;
-using Adventour.Api.Services.Interfaces;
+using Adventour.Api.Services.Database;
 using Microsoft.Data.SqlClient;
 using System.Data;
 

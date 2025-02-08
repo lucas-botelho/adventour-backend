@@ -1,7 +1,6 @@
-﻿using Adventour.Api.Services.Interfaces;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
-namespace Adventour.Api.Services
+namespace Adventour.Api.Services.Database
 {
     public class DbConnectionService : IDatabaseConnectionService
     {
@@ -11,7 +10,7 @@ namespace Adventour.Api.Services
 
         public DbConnectionService()
         {
-            this.Connection = new SqlConnection(Environment.GetEnvironmentVariable("CONNECTION_STRING")!);
+            Connection = new SqlConnection(Environment.GetEnvironmentVariable("CONNECTION_STRING")!);
         }
 
         public T ExecuteScalar<T>()
