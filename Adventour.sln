@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Adventour.Api", "api\Adventour.Api.csproj", "{EF0418E1-4ABB-462C-9F68-78C20C2F2F8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adventour.Api.Tests", "Adventour.Api.Tests\Adventour.Api.Tests.csproj", "{6762379D-2553-43F3-8826-8C575E53175C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{EF0418E1-4ABB-462C-9F68-78C20C2F2F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF0418E1-4ABB-462C-9F68-78C20C2F2F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF0418E1-4ABB-462C-9F68-78C20C2F2F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6762379D-2553-43F3-8826-8C575E53175C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6762379D-2553-43F3-8826-8C575E53175C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6762379D-2553-43F3-8826-8C575E53175C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6762379D-2553-43F3-8826-8C575E53175C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
