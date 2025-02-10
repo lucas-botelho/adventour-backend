@@ -33,11 +33,11 @@ BEGIN
     CREATE TABLE Person (
         id_user varchar(40) PRIMARY KEY,
         name VARCHAR(25) NOT NULL,
-		username VARCHAR(25) NULL,
+	username VARCHAR(25) NULL,
         email VARCHAR(100) NOT NULL,
         verified BIT NOT NULL,
         profile_picture_ref VARCHAR(255) NULL,
-		password varchar(255) NULL,
+	password varchar(255) NULL,
     );
 END;
 
@@ -51,7 +51,9 @@ BEGIN
         average_rating INT NULL,
         description VARCHAR(MAX),
         address_one VARCHAR(150) NULL,
-		address_two VARCHAR(150) NULL,
+	address_two VARCHAR(150) NULL,
+	main_image_id INT NOT NULL,
+	FOREIGN KEY (main_image_id) REFERENCES Attraction_Images(id_attraction_image)
         FOREIGN KEY (id_city) REFERENCES City(id_city)
     );
 END;
@@ -151,6 +153,7 @@ BEGIN
     CREATE TABLE Attraction_Images (
         id_attraction_image INT PRIMARY KEY,
         id_attraction INT NOT NULL,
+	picture_ref VARCHAR(255) NOT NULL,
         FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction) ON DELETE CASCADE,
     );
 END;
@@ -160,6 +163,7 @@ BEGIN
     CREATE TABLE Review_Images (
         id_review_image INT PRIMARY KEY,
         id_review INT NOT NULL,
+	picture_ref VARCHAR(255) NOT NULL,
         FOREIGN KEY (id_review) REFERENCES Review(id_review) ON DELETE CASCADE,
     );
 END;
