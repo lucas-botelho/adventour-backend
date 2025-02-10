@@ -53,7 +53,7 @@ namespace Adventour.Api.Tests.Controllers
             //};
 
 
-            var result = controller.Register(validUser);
+            var result = controller.RegisterUser(validUser);
 
             result.Should().BeOfType<OkObjectResult>();
 

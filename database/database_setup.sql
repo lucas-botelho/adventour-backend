@@ -33,11 +33,11 @@ BEGIN
     CREATE TABLE Person (
         id_user varchar(40) PRIMARY KEY,
         name VARCHAR(25) NOT NULL,
-		username VARCHAR(25) NOT NULL,
+		username VARCHAR(25) NULL,
         email VARCHAR(100) NOT NULL,
         verified BIT NOT NULL,
-        profile_picture VARCHAR(255) NULL,
-		password varchar(255) NOT NULL,
+        profile_picture_ref VARCHAR(255) NULL,
+		password varchar(255) NULL,
     );
 END;
 
@@ -147,7 +147,3 @@ BEGIN
 END;
 
 GO
-
-BEGIN 
-ALTER TABLE dbo.Person ALTER COLUMN username varchar(25) NULL
-END;

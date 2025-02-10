@@ -5,6 +5,8 @@ using Adventour.Api.Repositories;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Services.Authentication;
 using Adventour.Api.Services.Database;
+using Adventour.Api.Services.FileUpload;
+using Adventour.Api.Services.FileUpload.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -19,6 +21,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
 builder.Services.AddScoped<IDatabaseConnectionService, DbConnectionService>();
+builder.Services.AddScoped<IFileUploadService, CloudinaryService>();
 
 //Singleton objects are the same for every object and every request.
 builder.Services.AddSingleton<ITokenProviderService, JwtTokenProviderService>();

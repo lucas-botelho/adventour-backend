@@ -3,6 +3,7 @@ using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Models.Authentication;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses;
+using Adventour.Api.Responses.Authentication;
 using Adventour.Api.Services.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Adventour.Api.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly ITokenProviderService tokenProvider;
@@ -24,14 +25,14 @@ namespace Adventour.Api.Controllers
             this.userRepository = userRepository;
         }
 
-        [HttpGet(Name = "anonymous-token")]
+        [HttpGet("anonymous-token")]
         public IActionResult AnonymousToken()
         {
             var token = this.tokenProvider.Create(string.Empty);
 
             if (string.IsNullOrEmpty(token))
             {
-               return StatusCode(500, new BaseApiResponse<object>()
+                return StatusCode(500, new BaseApiResponse<object>()
                 {
                     Data = null,
                     Success = false,
@@ -47,19 +48,19 @@ namespace Adventour.Api.Controllers
             });
         }
 
-        [HttpPost(Name = "register")]
+        [HttpPost("user")]
         //[Authorize]
-        public IActionResult Register(UserRegistration user)
+        public IActionResult RegisterUser(UserRegistration user)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(new BaseApiResponse<ModelStateDictionary>()
-                {
-                    Data = ModelState,
-                    Success = false,
-                    Message = "Form model is invalid.",
-                });
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(new BaseApiResponse<ModelStateDictionary>()
+            //    {
+            //        Data = ModelState,
+            //        Success = false,
+            //        Message = "Form model is invalid.",
+            //    });
+            //}
 
             if (userRepository.UserExists(user.Email))
             {
@@ -74,13 +75,12 @@ namespace Adventour.Api.Controllers
             try
             {
                 var userId = userRepository.CreateUser(user);
-                //var token = this.tokenProvider.Create(userId);
 
-                return Ok(new BaseApiResponse<string>()
+                return Ok(new BaseApiResponse<RegisterUserResponse>()
                 {
-                    Data = userId,
+                    Data = new RegisterUserResponse() { UserId = userId },
                     Success = true,
-                    Message = "Token created successfully",
+                    Message = "User created successfully",
                 });
             }
             catch (Exception ex)
@@ -92,10 +92,57 @@ namespace Adventour.Api.Controllers
                     Success = false,
                     Message = "User creation failed",
                 });
-            }           
+            }
         }
 
-        [HttpPost(Name = "login")]
+        [HttpPatch("user/{userId}")]
+        //[Authorize]
+        public IActionResult UpdateUser(string userId, [FromBody] UserUpdate data)
+        {
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(new BaseApiResponse<ModelStateDictionary>()
+            //    {
+            //        Data = ModelState,
+            //        Success = false,
+            //        Message = "Form model is invalid.",
+            //    });
+            //}
+
+            var userIdGuid = new Guid(userId);
+
+            if (userRepository.UserExists(userIdGuid))
+            {
+                try
+                {
+                    var isSuccess = userRepository.UpdatePublicData(data, userIdGuid);
+                    return Ok(new BaseApiResponse<string>()
+                    {
+                        Data = userId,
+                        Success = true,
+                        Message = "User updated successfully",
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new BaseApiResponse<string>()
+                    {
+                        Data = null,
+                        Success = false,
+                        Message = "User update failed",
+                    });
+                }
+            }
+
+            return StatusCode(404, new BaseApiResponse<string>()
+            {
+                Data = null,
+                Success = false,
+                Message = "User does not exist",
+            });
+        }
+
+        [HttpPost("login")]
         public IActionResult Login(UserRegistration user)
         {
             //missing user validation
@@ -108,18 +155,5 @@ namespace Adventour.Api.Controllers
                 Message = "Token created successfully",
             });
         }
-
-        //[HttpGet]
-        //[Authorize]
-        ////hello world
-        //public IActionResult HelloWorld()
-        //{
-        //    return Ok(new BaseApiResponse<string>()
-        //    {
-        //        Data = "Hello World",
-        //        Success = true,
-        //        Message = "Hello World",
-        //    });
-        //}
     }
 }
