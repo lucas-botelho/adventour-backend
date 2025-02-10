@@ -146,4 +146,23 @@ BEGIN
     );
 END;
 
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Attraction_Images')
+BEGIN
+    CREATE TABLE Attraction_Images (
+        id_attraction_image INT PRIMARY KEY,
+        id_attraction INT NOT NULL,
+        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction) ON DELETE CASCADE,
+    );
+END;
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Review_Images')
+BEGIN
+    CREATE TABLE Review_Images (
+        id_review_image INT PRIMARY KEY,
+        id_review INT NOT NULL,
+        FOREIGN KEY (id_review) REFERENCES Review(id_review) ON DELETE CASCADE,
+    );
+END;
+
+
 GO
