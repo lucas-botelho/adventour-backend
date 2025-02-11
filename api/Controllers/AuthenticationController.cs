@@ -155,5 +155,16 @@ namespace Adventour.Api.Controllers
                 Message = "Token created successfully",
             });
         }
+
+        [HttpGet("test")]
+        public IActionResult test()
+        {
+            return Ok(new BaseApiResponse<string>()
+            {
+                Data = "test",
+                Success = true,
+                Message = "Test",
+            });
+        }
     }
 }

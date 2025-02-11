@@ -14,7 +14,9 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 BEGIN
     CREATE TABLE Country (
         id_country INT PRIMARY KEY,
-        name VARCHAR(50) NOT NULL
+        name VARCHAR(50) NOT NULL,
+		code VARCHAR(2) NOT NULL,
+		continent_name VARCHAR(50) NOT NULL
     );
 END;
 
@@ -33,11 +35,11 @@ BEGIN
     CREATE TABLE Person (
         id_user varchar(40) PRIMARY KEY,
         name VARCHAR(25) NOT NULL,
-	username VARCHAR(25) NULL,
+		username VARCHAR(25) NULL,
         email VARCHAR(100) NOT NULL,
         verified BIT NOT NULL,
         profile_picture_ref VARCHAR(255) NULL,
-	password varchar(255) NULL,
+		password varchar(255) NULL,
     );
 END;
 
@@ -46,14 +48,14 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 BEGIN
     CREATE TABLE Attraction (
         id_attraction INT PRIMARY KEY,
-        id_city INT NOT NULL,
+        id_city INT NULL,
         name VARCHAR(255) NOT NULL,
         average_rating INT NULL,
         description VARCHAR(MAX),
         address_one VARCHAR(150) NULL,
-	address_two VARCHAR(150) NULL,
-	main_image_id INT NOT NULL,
-	FOREIGN KEY (main_image_id) REFERENCES Attraction_Images(id_attraction_image)
+		address_two VARCHAR(150) NULL,
+		main_image_id INT NULL,
+		FOREIGN KEY (main_image_id) REFERENCES Attraction_Images(id_attraction_image),
         FOREIGN KEY (id_city) REFERENCES City(id_city)
     );
 END;
@@ -76,7 +78,7 @@ BEGIN
         title VARCHAR(255),
         description VARCHAR(MAX),
         duration_seconds INT NULL,
-        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction),
+        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction) ON DELETE CASCADE,
         FOREIGN KEY (id_attraction_info_type) REFERENCES Attraction_Info_Type(id_attraction_info_type)
     );
 END;
@@ -98,8 +100,8 @@ BEGIN
         id_user varchar(40) NOT NULL,
         comment VARCHAR(255) NULL,
         FOREIGN KEY (id_rating) REFERENCES Rating(id_rating),
-        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction),
-        FOREIGN KEY (id_user) REFERENCES Person(id_user)
+        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction) ON DELETE CASCADE,
+        FOREIGN KEY (id_user) REFERENCES Person(id_user) ON DELETE CASCADE
     );
 END;
 
@@ -109,8 +111,8 @@ BEGIN
         id_favorite INT PRIMARY KEY,
         id_attraction INT NOT NULL,
         id_user varchar(40) NOT NULL,
-        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction),
-        FOREIGN KEY (id_user) REFERENCES Person(id_user)
+        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction) ON DELETE CASCADE,
+        FOREIGN KEY (id_user) REFERENCES Person(id_user) ON DELETE CASCADE
     );
 END;
 
@@ -121,7 +123,7 @@ BEGIN
         id_user varchar(40) NOT NULL,
         title VARCHAR(255) NOT NULL,
         created_at DATETIME NOT NULL,
-        FOREIGN KEY (id_user) REFERENCES Person(id_user)
+        FOREIGN KEY (id_user) REFERENCES Person(id_user) ON DELETE CASCADE
     );
 END;
 
@@ -131,7 +133,7 @@ BEGIN
         id_day INT PRIMARY KEY,
         id_itinerary INT NOT NULL,
         day_number INT NOT NULL,
-        FOREIGN KEY (id_itinerary) REFERENCES Itinerary(id_itinerary)
+        FOREIGN KEY (id_itinerary) REFERENCES Itinerary(id_itinerary) ON DELETE CASCADE
     );
 END;
 
@@ -143,8 +145,8 @@ BEGIN
         id_day INT NOT NULL,
         start_time DATETIME NOT NULL,
         end_time DATETIME NOT NULL,
-        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction),
-        FOREIGN KEY (id_day) REFERENCES Day(id_day)
+        FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction) ON DELETE CASCADE,
+        FOREIGN KEY (id_day) REFERENCES Day(id_day) ON DELETE CASCADE
     );
 END;
 
@@ -153,7 +155,7 @@ BEGIN
     CREATE TABLE Attraction_Images (
         id_attraction_image INT PRIMARY KEY,
         id_attraction INT NOT NULL,
-	picture_ref VARCHAR(255) NOT NULL,
+		picture_ref VARCHAR(255) NOT NULL,
         FOREIGN KEY (id_attraction) REFERENCES Attraction(id_attraction) ON DELETE CASCADE,
     );
 END;
@@ -163,7 +165,7 @@ BEGIN
     CREATE TABLE Review_Images (
         id_review_image INT PRIMARY KEY,
         id_review INT NOT NULL,
-	picture_ref VARCHAR(255) NOT NULL,
+		picture_ref VARCHAR(255) NOT NULL,
         FOREIGN KEY (id_review) REFERENCES Review(id_review) ON DELETE CASCADE,
     );
 END;
