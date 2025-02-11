@@ -6,16 +6,20 @@ using Adventour.Api.Services.FileUpload.Interfaces;
 using CloudinaryDotNet.Actions;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace Adventour.Api.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly IQueryServiceBuilder queryServiceBuilder;
+        private readonly ILogger<UserRepository> logger;
+        private const string logHeader = "## UserRepository ##: ";
 
-        public UserRepository(IQueryServiceBuilder dbConnectionServiceBuilder)
+        public UserRepository(IQueryServiceBuilder dbConnectionServiceBuilder, ILogger<UserRepository> logger)
         {
             this.queryServiceBuilder = dbConnectionServiceBuilder;
+            this.logger = logger;
         }
 
         public string AuthenticateUser(UserRegistration registration)
@@ -25,10 +29,7 @@ namespace Adventour.Api.Repositories
 
         public string CreateUser(UserRegistration registration)
         {
-
             //todo : unit test
-            //todo : log
-            //throw proper exception
             try
             {
                 var userId = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CreateUser)
@@ -43,6 +44,7 @@ namespace Adventour.Api.Repositories
             }
             catch (Exception ex)
             {
+                logger.LogError($"{logHeader} {ex.Message}");
                 throw;
             }
         }
@@ -61,7 +63,7 @@ namespace Adventour.Api.Repositories
             }
             catch (Exception ex)
             {
-                //todo : log
+                logger.LogError($"{logHeader} {ex.Message}");
                 return false;
             }
 
@@ -79,6 +81,7 @@ namespace Adventour.Api.Repositories
             }
             catch (Exception ex)
             {
+                logger.LogError($"{logHeader} {ex.Message}");
                 throw;
             }
         }
@@ -95,6 +98,7 @@ namespace Adventour.Api.Repositories
             }
             catch (Exception ex)
             {
+                logger.LogError($"{logHeader} {ex.Message}");
                 throw;
             }
         }

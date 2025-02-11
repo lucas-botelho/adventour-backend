@@ -14,9 +14,12 @@ namespace Adventour.Api.Controllers
     public class FilesController : Controller
     {
         private readonly IFileUploadService fileUploadService;
-        public FilesController(IFileUploadService fileUploadService)
+        private readonly ILogger<FilesController> logger;
+        private const string logHeader = "FilesController: ";
+        public FilesController(IFileUploadService fileUploadService, ILogger<FilesController> logger)
         {
             this.fileUploadService = fileUploadService;
+            this.logger = logger;
         }
 
         [HttpPost("upload")]
@@ -40,9 +43,9 @@ namespace Adventour.Api.Controllers
                         Message = "File uploaded successfully",
                     });
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //todo add logs
+                    logger.LogError($"{logHeader} {ex.Message}");
                     return StatusCode(500, new BaseApiResponse<string>()
                     {
                         Data = null,

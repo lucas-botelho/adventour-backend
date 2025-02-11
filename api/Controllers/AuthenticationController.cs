@@ -8,6 +8,7 @@ using Adventour.Api.Services.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Logging;
 
 
 namespace Adventour.Api.Controllers
@@ -18,11 +19,14 @@ namespace Adventour.Api.Controllers
     {
         private readonly ITokenProviderService tokenProvider;
         private readonly IUserRepository userRepository;
-
-        public AuthenticationController(ITokenProviderService tokenProvider, IUserRepository userRepository)
+        private readonly ILogger<AuthenticationController> logger;
+        private const string logHeader = "## AuthenticationController ##: ";
+        
+        public AuthenticationController(ITokenProviderService tokenProvider, IUserRepository userRepository, ILogger<AuthenticationController> logger)
         {
             this.tokenProvider = tokenProvider;
             this.userRepository = userRepository;
+            this.logger = logger;
         }
 
         [HttpGet("anonymous-token")]
@@ -85,7 +89,7 @@ namespace Adventour.Api.Controllers
             }
             catch (Exception ex)
             {
-
+                logger.LogError($"{logHeader} {ex.Message}");
                 return StatusCode(500, new BaseApiResponse<string>()
                 {
                     Data = null,
@@ -125,6 +129,7 @@ namespace Adventour.Api.Controllers
                 }
                 catch (Exception ex)
                 {
+                    logger.LogError($"{logHeader} {ex.Message}");
                     return StatusCode(500, new BaseApiResponse<string>()
                     {
                         Data = null,

@@ -6,6 +6,7 @@ using Adventour.Api.Models.Authentication;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Adventour.Api.Responses;
+using Microsoft.Extensions.Logging;
 
 namespace Adventour.Api.Tests.Controllers
 {
@@ -25,7 +26,9 @@ namespace Adventour.Api.Tests.Controllers
             userRepository.Setup(x => x.CreateUser(It.IsAny<UserRegistration>()))
                 .Returns("mocked-user-id");
 
-            var controller = new AuthenticationController(tokenProviderService.Object, userRepository.Object);
+            var logger = new Mock<ILogger<AuthenticationController>>();
+            logger.Setup(x => x.LogDebug(It.IsAny<string>()));
+            var controller = new AuthenticationController(tokenProviderService.Object, userRepository.Object, logger.Object);
 
             var validUser = new UserRegistration
             {
