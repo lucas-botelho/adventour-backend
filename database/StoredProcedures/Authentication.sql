@@ -18,7 +18,7 @@ BEGIN
 
     SELECT COUNT(*) AS UserCount
     FROM dbo.Person
-    WHERE id_user = @userId
+    WHERE id = @userId
 END;
 GO
 
@@ -31,8 +31,8 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.Person (id_user, name, email, verified, password)
-    OUTPUT INSERTED.id_user
+    INSERT INTO dbo.Person (id, name, email, verified, password)
+    OUTPUT INSERTED.id
     VALUES (@userId, @name, @email, 0, @password);
 END;
 GO
@@ -45,7 +45,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
 	UPDATE dbo.Person SET username = @username, profile_picture_ref = @profilePictureRef
-	WHERE id_user = @userId
+	WHERE id = @userId
 END;
 GO
 

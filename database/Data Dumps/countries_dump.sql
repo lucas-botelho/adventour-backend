@@ -1,4 +1,6 @@
-INSERT INTO Country (`id`, `code`, `name`, `continent_name`) VALUES
+BEGIN TRANSACTION
+
+INSERT INTO Country (id, code, name, continent_name) VALUES
 (1, 'AF', 'Afghanistan', 'Asia'),
 (2, 'AX', 'Åland Islands', 'Europe'),
 (3, 'AL', 'Albania', 'Europe'),
@@ -58,7 +60,7 @@ INSERT INTO Country (`id`, `code`, `name`, `continent_name`) VALUES
 (57, 'CW', 'Curaçao', 'North America'),
 (58, 'CY', 'Cyprus', 'Asia'),
 (59, 'CZ', 'Czech Republic', 'Europe'),
-(60, 'CI', 'Côte d\'Ivoire', 'Africa'),
+(60, 'CI', 'Côte d''Ivoire', 'Africa'),
 (61, 'DK', 'Denmark', 'Europe'),
 (62, 'DJ', 'Djibouti', 'Africa'),
 (63, 'DM', 'Dominica', 'North America'),
@@ -121,7 +123,7 @@ INSERT INTO Country (`id`, `code`, `name`, `continent_name`) VALUES
 (120, 'XK', 'Kosovo', 'Europe'),
 (121, 'KW', 'Kuwait', 'Asia'),
 (122, 'KG', 'Kyrgyzstan', 'Asia'),
-(123, 'LA', 'Lao People\'s Democratic Republic', 'Asia'),
+(123, 'LA', 'Lao People''s Democratic Republic', 'Asia'),
 (124, 'LV', 'Latvia', 'Europe'),
 (125, 'LB', 'Lebanon', 'Asia'),
 (126, 'LS', 'Lesotho', 'Africa'),
@@ -251,3 +253,5 @@ INSERT INTO Country (`id`, `code`, `name`, `continent_name`) VALUES
 (250, 'YE', 'Yemen', 'Asia'),
 (251, 'ZM', 'Zambia', 'Africa'),
 (252, 'ZW', 'Zimbabwe', 'Africa');
+
+COMMIT;
