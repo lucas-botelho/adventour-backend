@@ -23,6 +23,8 @@ builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
 builder.Services.AddScoped<IDatabaseConnectionService, DbConnectionService>();
 builder.Services.AddScoped<IFileUploadService, CloudinaryService>();
 builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 
 
 //Singleton objects are the same for every object and every request.

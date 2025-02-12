@@ -52,27 +52,35 @@ namespace Adventour.Api.Controllers
 				// Step 5: If sending the email succeeds, return a 200 OK response with a success message
 				return Ok("Email sent successfully.");
 			}
-			catch (Exception ex)
-			{
-				// Step 6: Handle any exceptions that occur during email sending
-				// For security reasons, we don't reveal detailed exception info
-				// Return a generic 500 Internal Server Error response with a message
-				return StatusCode(500, "An error occurred while sending the email.");
-			}
-		}
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Email sending failed: {ex.Message}");
+            }
 
-		// Helper method to validate if the email is in a valid format
-		// This method uses regular expression to ensure the email follows a basic format (e.g., example@example.com)
-		private bool IsValidEmail(string email)
-		{
-			// The regular expression checks that the email has text before and after the '@' and contains a valid domain
-			return Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
-		}
-	}
 
-	// Model to represent the request body for sending an email
-	// This class holds the data that the client sends when requesting to send an email
-	public class EmailRequest
+        }
+    }
+
+        // Helper method to validate if the email is in a valid format
+        // This method uses regular expression to ensure the email follows a basic format (e.g., example@example.com)
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+    }
+
+    // Model to represent the request body for sending an email
+    // This class holds the data that the client sends when requesting to send an email
+    public class EmailRequest
 	{
 		// The recipient's email address
 		public string ToEmail { get; set; }
