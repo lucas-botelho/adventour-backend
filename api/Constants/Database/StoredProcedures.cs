@@ -5,6 +5,7 @@
         public const string CheckUserExistsByEmail = "CheckUserExistsByEmail";
         public const string CreateUser = "CreateUser";
         public const string UpdateUserPublicData = "UpdateUserPublicData";
+        public const string GetCountryByCode = "GetCountryByCode";
 
         public static class Parameters
         {
@@ -14,6 +15,7 @@
             public const string Password = "@password";
             public const string Username = "@username";
             public const string ProfilePictureReference = "@profilePictureRef";
+            public const string Code = "@code";
         }
     }
 }

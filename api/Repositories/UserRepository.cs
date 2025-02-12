@@ -30,77 +30,45 @@ namespace Adventour.Api.Repositories
         public string CreateUser(UserRegistration registration)
         {
             //todo : unit test
-            try
-            {
-                var userId = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CreateUser)
-                    .WithParameter(StoredProcedures.Parameters.UserId, Guid.NewGuid())
-                    .WithParameter(StoredProcedures.Parameters.Name, registration.Name)
-                    .WithParameter(StoredProcedures.Parameters.Password, new PasswordHasher<string>().HashPassword(registration.Email, registration.Password))
-                    .WithParameter(StoredProcedures.Parameters.Email, registration.Email)
-                    .Execute<string>();
+
+            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CreateUser)
+                .WithParameter(StoredProcedures.Parameters.UserId, Guid.NewGuid())
+                .WithParameter(StoredProcedures.Parameters.Name, registration.Name)
+                .WithParameter(StoredProcedures.Parameters.Password, new PasswordHasher<string>().HashPassword(registration.Email, registration.Password))
+                .WithParameter(StoredProcedures.Parameters.Email, registration.Email)
+                .Build();
 
 
-                return userId;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"{logHeader} {ex.Message}");
-                throw;
-            }
+            return dbService.QuerySingle<string>();
         }
 
         public bool UpdatePublicData(UserUpdate data, Guid userId)
         {
-            try
-            {
-                var result = queryServiceBuilder.WithStoredProcedure(StoredProcedures.UpdateUserPublicData)
-                    .WithParameter(StoredProcedures.Parameters.UserId, userId.ToString())
-                    .WithParameter(StoredProcedures.Parameters.Username, data.UserName)
-                    .WithParameter(StoredProcedures.Parameters.ProfilePictureReference, data.ImagePublicId)
-                    .Execute<int>();
+            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.UpdateUserPublicData)
+                .WithParameter(StoredProcedures.Parameters.UserId, userId.ToString())
+                .WithParameter(StoredProcedures.Parameters.Username, data.UserName)
+                .WithParameter(StoredProcedures.Parameters.ProfilePictureReference, data.ImagePublicId)
+                .Build();
 
-                return result > 0;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"{logHeader} {ex.Message}");
-                return false;
-            }
-
+            return dbService.Update();
         }
 
         public bool UserExists(string email)
         {
-            try
-            {
-                var userExists = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CheckUserExistsByEmail)
-                .WithParameter(StoredProcedures.Parameters.Email, email)
-                .Execute<int>();
+            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CheckUserExistsByEmail)
+            .WithParameter(StoredProcedures.Parameters.Email, email)
+            .Build();
 
-                return userExists > 0;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"{logHeader} {ex.Message}");
-                throw;
-            }
+            return dbService.QuerySingle<int>() == 1;
         }
 
         public bool UserExists(Guid userId)
         {
-            try
-            {
-                var userExists = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CheckUserExistsByEmail)
-                .WithParameter(StoredProcedures.Parameters.UserId, userId.ToString())
-                .Execute<int>();
+            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CheckUserExistsByEmail)
+            .WithParameter(StoredProcedures.Parameters.UserId, userId.ToString())
+            .Build();
 
-                return userExists > 0;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"{logHeader} {ex.Message}");
-                throw;
-            }
+            return dbService.QuerySingle<int>() == 1;
         }
     }
 }

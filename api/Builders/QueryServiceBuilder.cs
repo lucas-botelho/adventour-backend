@@ -1,5 +1,6 @@
 ﻿using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Services.Database;
+using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -16,20 +17,19 @@ namespace Adventour.Api.Builders
 
         public QueryServiceBuilder WithStoredProcedure(string name)
         {
-            service.Command = new SqlCommand(name, service.Connection);
-            service.Command.CommandType = CommandType.StoredProcedure;
+            service.StoredProcedure = name; ;
             return this;
         }
 
         public QueryServiceBuilder WithParameter(string name, object value)
         {
-            service.Command.Parameters.AddWithValue(name, value);
+            service.Parameters.Add(name, value);
             return this;
         }
 
-        public T Execute <T>()
+        public IDatabaseConnectionService Build()
         {
-            return service.ExecuteScalar<T>();
+            return service;
         }
     }
 }

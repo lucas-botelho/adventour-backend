@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.27.3" />
+    <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="dotenv.net" Version="3.2.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />

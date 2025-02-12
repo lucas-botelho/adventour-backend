@@ -15,7 +15,7 @@ namespace Adventour.Api.Controllers
     {
         private readonly IFileUploadService fileUploadService;
         private readonly ILogger<FilesController> logger;
-        private const string logHeader = "FilesController: ";
+        private const string logHeader = "## FilesController ##: ";
         public FilesController(IFileUploadService fileUploadService, ILogger<FilesController> logger)
         {
             this.fileUploadService = fileUploadService;
@@ -29,23 +29,10 @@ namespace Adventour.Api.Controllers
             var isValidImage = file?.Length > 0;
             if (isValidImage)
             {
-                try
-                {
-                    var result = await fileUploadService.UploadFileAsync(file!);
+                var result = await fileUploadService.UploadFileAsync(file!);
 
-                    return Ok(new BaseApiResponse<FileUploadResponse>()
-                    {
-                        Data = new FileUploadResponse()
-                        {
-                            filePublicReference = result,
-                        },
-                        Success = true,
-                        Message = "File uploaded successfully",
-                    });
-                }
-                catch (Exception ex)
+                if (string.IsNullOrEmpty(result))
                 {
-                    logger.LogError($"{logHeader} {ex.Message}");
                     return StatusCode(500, new BaseApiResponse<string>()
                     {
                         Data = null,
@@ -53,6 +40,16 @@ namespace Adventour.Api.Controllers
                         Message = "File upload failed",
                     });
                 }
+
+                return Ok(new BaseApiResponse<FileUploadResponse>()
+                {
+                    Data = new FileUploadResponse()
+                    {
+                        filePublicReference = result,
+                    },
+                    Success = true,
+                    Message = "File uploaded successfully",
+                });
             }
 
             return BadRequest(new BaseApiResponse<string>()

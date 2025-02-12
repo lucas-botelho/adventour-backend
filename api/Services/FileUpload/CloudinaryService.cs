@@ -7,7 +7,12 @@ namespace Adventour.Api.Services.FileUpload
 {
     public class CloudinaryService : IFileUploadService
     {
-
+        private readonly ILogger<CloudinaryService> logger;
+        private const string logHeader = "## CloudinaryService ##: ";
+        public CloudinaryService(ILogger<CloudinaryService> logger)
+        {
+            this.logger = logger;
+        }
         private Cloudinary Cloudinary { get; set; }
         public CloudinaryService()
         {
@@ -27,14 +32,20 @@ namespace Adventour.Api.Services.FileUpload
                 UniqueFilename = false,
                 Overwrite = true
             };
-            var uploadResult = await Cloudinary.UploadAsync(uploadParams);
 
-            if (uploadResult.Error == null)
+            var result = await Cloudinary.UploadAsync(uploadParams);
+
+            var uploadFailed = result.Error != null;
+
+            if (uploadFailed)
             {
-                return uploadResult.SecureUrl.AbsoluteUri;
+                logger.LogError($"{logHeader} {result.Error.Message}");
+                return string.Empty;
             }
 
-            throw new Exception(uploadResult.Error.Message);
+            return result.SecureUrl.AbsoluteUri;
+
+          
         }
     }
 }
