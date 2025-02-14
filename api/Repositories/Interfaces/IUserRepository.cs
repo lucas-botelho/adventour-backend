@@ -6,9 +6,9 @@ namespace Adventour.Api.Repositories.Interfaces
     {
         bool UserExists(string email);
         bool UserExists(Guid userId);
-        string CreateUser(UserRegistration registration);
-        string AuthenticateUser(UserRegistration registration);
-        bool UpdatePublicData(UserUpdate data, Guid userId);
+        string CreateUser(UserRegistrationRequest registration);
+        string AuthenticateUser(UserRegistrationRequest registration);
+        bool UpdatePublicData(UserUpdateRequest data, Guid userId);
 
         //string PatchPublicData(UserPatch publicData);
     }

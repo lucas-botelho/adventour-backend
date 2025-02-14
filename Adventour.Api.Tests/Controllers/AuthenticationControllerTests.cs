@@ -22,12 +22,12 @@ namespace Adventour.Api.Tests.Controllers
                 .Returns("mocked-token");
 
             var userRepository = new Mock<IUserRepository>();
-            userRepository.Setup(x => x.CreateUser(It.IsAny<UserRegistration>()))
+            userRepository.Setup(x => x.CreateUser(It.IsAny<UserRegistrationRequest>()))
                 .Returns("mocked-user-id");
 
             var controller = new AuthenticationController(tokenProviderService.Object, userRepository.Object);
 
-            var validUser = new UserRegistration
+            var validUser = new UserRegistrationRequest
             {
                 Name = "John Doe",
                 Password = "StrongP@ss123",

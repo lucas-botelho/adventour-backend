@@ -18,12 +18,12 @@ namespace Adventour.Api.Repositories
             this.queryServiceBuilder = dbConnectionServiceBuilder;
         }
 
-        public string AuthenticateUser(UserRegistration registration)
+        public string AuthenticateUser(UserRegistrationRequest registration)
         {
             throw new NotImplementedException();
         }
 
-        public string CreateUser(UserRegistration registration)
+        public string CreateUser(UserRegistrationRequest registration)
         {
 
             //todo : unit test
@@ -47,7 +47,7 @@ namespace Adventour.Api.Repositories
             }
         }
 
-        public bool UpdatePublicData(UserUpdate data, Guid userId)
+        public bool UpdatePublicData(UserUpdateRequest data, Guid userId)
         {
             try
             {

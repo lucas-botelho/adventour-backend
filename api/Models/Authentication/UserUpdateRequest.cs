@@ -2,7 +2,7 @@
 
 namespace Adventour.Api.Models.Authentication
 {
-    public class UserUpdate
+    public class UserUpdateRequest
     {
         [Required(ErrorMessage = "Username is required.")]
         [MinLength(3, ErrorMessage = "Username must be at least 3 characters.")]

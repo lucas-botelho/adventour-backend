@@ -1,10 +1,12 @@
 
 using Adventour.Api.Builders;
 using Adventour.Api.Builders.Interfaces;
+using Adventour.Api.Configurations;
 using Adventour.Api.Repositories;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Services.Authentication;
 using Adventour.Api.Services.Database;
+using Adventour.Api.Services.Email.Interfaces;
 using Adventour.Api.Services.FileUpload;
 using Adventour.Api.Services.FileUpload.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

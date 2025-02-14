@@ -5,6 +5,7 @@ using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Authentication;
 using Adventour.Api.Services.Authentication;
+using Adventour.Api.Services.Email.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -18,11 +19,14 @@ namespace Adventour.Api.Controllers
     {
         private readonly ITokenProviderService tokenProvider;
         private readonly IUserRepository userRepository;
+        private readonly IEmailService emailService;
 
-        public AuthenticationController(ITokenProviderService tokenProvider, IUserRepository userRepository)
+
+        public AuthenticationController(ITokenProviderService tokenProvider, IUserRepository userRepository, IEmailService emailService)
         {
             this.tokenProvider = tokenProvider;
             this.userRepository = userRepository;
+            this.emailService = emailService;
         }
 
         [HttpGet("anonymous-token")]
@@ -50,18 +54,8 @@ namespace Adventour.Api.Controllers
 
         [HttpPost("user")]
         //[Authorize]
-        public IActionResult RegisterUser(UserRegistration user)
+        public async Task<IActionResult> RegisterUser(UserRegistrationRequest user)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(new BaseApiResponse<ModelStateDictionary>()
-            //    {
-            //        Data = ModelState,
-            //        Success = false,
-            //        Message = "Form model is invalid.",
-            //    });
-            //}
-
             if (userRepository.UserExists(user.Email))
             {
                 return StatusCode(409, new BaseApiResponse<string>()
@@ -71,44 +65,35 @@ namespace Adventour.Api.Controllers
                     Message = "User already exists",
                 });
             }
+            var userId = userRepository.CreateUser(user);
 
-            try
+            if (!string.IsNullOrEmpty(userId))
             {
-                var userId = userRepository.CreateUser(user);
+                var isEmailSent = await this.emailService.SendEmailAsync(user.Email, "Confirmation email", "body");
 
-                return Ok(new BaseApiResponse<RegisterUserResponse>()
+                if (isEmailSent)
                 {
-                    Data = new RegisterUserResponse() { UserId = userId },
-                    Success = true,
-                    Message = "User created successfully",
-                });
+                    return Ok(new BaseApiResponse<RegisterUserResponse>()
+                    {
+                        Data = new RegisterUserResponse() { UserId = userId },
+                        Success = true,
+                        Message = "User created successfully",
+                    });
+                }
             }
-            catch (Exception ex)
+
+            return StatusCode(500, new BaseApiResponse<string>()
             {
-
-                return StatusCode(500, new BaseApiResponse<string>()
-                {
-                    Data = null,
-                    Success = false,
-                    Message = "User creation failed",
-                });
-            }
+                Data = null,
+                Success = false,
+                Message = "User creation failed",
+            });
         }
 
         [HttpPatch("user/{userId}")]
         //[Authorize]
-        public IActionResult UpdateUser(string userId, [FromBody] UserUpdate data)
+        public IActionResult UpdateUser(string userId, [FromBody] UserUpdateRequest data)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return BadRequest(new BaseApiResponse<ModelStateDictionary>()
-            //    {
-            //        Data = ModelState,
-            //        Success = false,
-            //        Message = "Form model is invalid.",
-            //    });
-            //}
-
             var userIdGuid = new Guid(userId);
 
             if (userRepository.UserExists(userIdGuid))
@@ -143,7 +128,7 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(UserRegistration user)
+        public IActionResult Login(UserRegistrationRequest user)
         {
             //missing user validation
             var token = this.tokenProvider.Create("");

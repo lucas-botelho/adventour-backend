@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Adventour.Api.Models.Authentication
 {
-    public class UserRegistration
+    public class UserRegistrationRequest
     {
         [Required(ErrorMessage = "Name is required.")]
         [MinLength(3, ErrorMessage = "Name must be at least 3 characters.")]
