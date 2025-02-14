@@ -1,10 +1,12 @@
 
 using Adventour.Api.Builders;
 using Adventour.Api.Builders.Interfaces;
+using Adventour.Api.Configurations;
 using Adventour.Api.Repositories;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Services.Authentication;
 using Adventour.Api.Services.Database;
+using Adventour.Api.Services.Email.Interfaces;
 using Adventour.Api.Services.FileUpload;
 using Adventour.Api.Services.FileUpload.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,6 +25,10 @@ builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
 builder.Services.AddScoped<IDatabaseConnectionService, DbConnectionService>();
 builder.Services.AddScoped<IFileUploadService, CloudinaryService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IEmailService, SendGridService>();
+
+
+builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
 
 //Singleton objects are the same for every object and every request.
 builder.Services.AddSingleton<ITokenProviderService, JwtTokenProviderService>();
