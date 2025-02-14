@@ -22,12 +22,12 @@ namespace Adventour.Api.Repositories
             this.logger = logger;
         }
 
-        public string AuthenticateUser(UserRegistration registration)
+        public string AuthenticateUser(UserRegistrationRequest registration)
         {
             throw new NotImplementedException();
         }
 
-        public string CreateUser(UserRegistration registration)
+        public string CreateUser(UserRegistrationRequest registration)
         {
             //todo : unit test
 
@@ -42,7 +42,7 @@ namespace Adventour.Api.Repositories
             return dbService.QuerySingle<string>();
         }
 
-        public bool UpdatePublicData(UserUpdate data, Guid userId)
+        public bool UpdatePublicData(UserUpdateRequest data, Guid userId)
         {
             var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.UpdateUserPublicData)
                 .WithParameter(StoredProcedures.Parameters.UserId, userId.ToString())

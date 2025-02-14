@@ -24,25 +24,12 @@ namespace Adventour.Api.Controllers
         {
             if (string.IsNullOrWhiteSpace(code) || code.Length != 2)
             {
-                return BadRequest(new BaseApiResponse<string>()
-                {
-                    Data = null,
-                    Message = "Invalid country code",
-                    Success = false,
-                    Errors = new List<string>() { "Invalid country code" }
-                });
+                return BadRequest(new BaseApiResponse<string>("Invalid country code"));
             }
-
 
             var country = countryRepository.GetCountry(code);
 
-            return Ok(new BaseApiResponse<Country>()
-            {
-                Data = country,
-                Message = "Country found",
-                Success = true
-            });
-
+            return Ok(new BaseApiResponse<Country>(country, "Country found"));
         }
     }
 }

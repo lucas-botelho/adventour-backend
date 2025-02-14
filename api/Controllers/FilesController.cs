@@ -6,6 +6,7 @@ using Adventour.Api.Services.FileUpload.Interfaces;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Files;
 using Microsoft.AspNetCore.Authorization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Adventour.Api.Controllers
 {
@@ -33,31 +34,19 @@ namespace Adventour.Api.Controllers
 
                 if (string.IsNullOrEmpty(result))
                 {
-                    return StatusCode(500, new BaseApiResponse<string>()
-                    {
-                        Data = null,
-                        Success = false,
-                        Message = "File upload failed",
-                    });
+                    return StatusCode(500, new BaseApiResponse<string>("File upload failed"));
                 }
 
-                return Ok(new BaseApiResponse<FileUploadResponse>()
-                {
-                    Data = new FileUploadResponse()
+                return Ok(new BaseApiResponse<FileUploadResponse>(
+                    new FileUploadResponse()
                     {
                         filePublicReference = result,
                     },
-                    Success = true,
-                    Message = "File uploaded successfully",
-                });
+                    "File uploaded successfully")
+                );
             }
 
-            return BadRequest(new BaseApiResponse<string>()
-            {
-                Data = null,
-                Success = false,
-                Message = "Submitted image is not valid.",
-            });
+            return BadRequest(new BaseApiResponse<string>("Submitted image is not valid."));
         }
     }
 }

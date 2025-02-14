@@ -1,14 +1,10 @@
-using Adventour.Api.Builders;
-using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Models.Authentication;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Authentication;
 using Adventour.Api.Services.Authentication;
-using Microsoft.AspNetCore.Authorization;
+using Adventour.Api.Services.Email.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Logging;
 
 
 namespace Adventour.Api.Controllers
@@ -21,85 +17,67 @@ namespace Adventour.Api.Controllers
         private readonly IUserRepository userRepository;
         private readonly ILogger<AuthenticationController> logger;
         private const string logHeader = "## AuthenticationController ##: ";
+        private readonly IEmailService emailService;
 
-        public AuthenticationController(ITokenProviderService tokenProvider, IUserRepository userRepository, ILogger<AuthenticationController> logger)
+        public AuthenticationController(ITokenProviderService tokenProvider, IUserRepository userRepository, IEmailService emailService, ILogger<AuthenticationController> logger)
         {
             this.tokenProvider = tokenProvider;
             this.userRepository = userRepository;
             this.logger = logger;
-        }
-
-        [HttpGet("anonymous-token")]
-        public IActionResult AnonymousToken()
-        {
-            var token = this.tokenProvider.Create(string.Empty);
-
-            if (string.IsNullOrEmpty(token))
-            {
-                return StatusCode(500, new BaseApiResponse<object>()
-                {
-                    Data = null,
-                    Success = false,
-                    Message = "Token creation failed",
-                });
-            }
-
-            return Ok(new BaseApiResponse<string>()
-            {
-                Data = token,
-                Success = true,
-                Message = "Token created successfully",
-            });
+            this.emailService = emailService;
         }
 
         [HttpPost("user")]
         //[Authorize]
-        public IActionResult RegisterUser(UserRegistration user)
+        public async Task<IActionResult> RegisterUser(UserRegistrationRequest user)
         {
-            //if (!ModelState.IsValid)
+            //if(userRepository.UserExists(user.Email))
             //{
-            //    return BadRequest(new BaseApiResponse<ModelStateDictionary>()
-            //    {
-            //        Data = ModelState,
-            //        Success = false,
-            //        Message = "Form model is invalid.",
-            //    });
+            //    return StatusCode(409, new BaseApiResponse<string>("User already exists"));
             //}
-
-            if (userRepository.UserExists(user.Email))
-            {
-                return StatusCode(409, new BaseApiResponse<string>()
-                {
-                    Data = null,
-                    Success = false,
-                    Message = "User already exists",
-                });
-            }
 
             var userId = userRepository.CreateUser(user);
 
-            if (string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrEmpty(userId))
             {
-                logger.LogError($"{logHeader} retrieved invalid user id");
-                return StatusCode(500, new BaseApiResponse<string>()
-                {
-                    Data = null,
-                    Success = false,
-                    Message = "User creation failed",
-                });
+                string securityPin = new Random().Next(1000, 9999).ToString();
+                var isEmailSent = await this.emailService.SendEmailAsync(user.Email, "Confirmation email", securityPin);
+                var token = this.tokenProvider.GeneratePinToken(user.Email, securityPin);
+
+                return Ok(new BaseApiResponse<AuthenticationTokenResponse>(
+                    new AuthenticationTokenResponse() { Token = token },
+                    "User created successfully")
+                );
             }
 
-            return Ok(new BaseApiResponse<RegisterUserResponse>()
-            {
-                Data = new RegisterUserResponse() { UserId = userId },
-                Success = true,
-                Message = "User created successfully",
-            });
+            logger.LogError($"{logHeader} user id is IsNullOrEmpty");
+            return StatusCode(500, new BaseApiResponse<string>("User creation failed"));
         }
+
+        [HttpPost("email/validate")]
+        public async Task<IActionResult> ValidateEmail([FromBody] ValidateEmailRequest request)
+        {
+            string token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var isPinValid = await this.tokenProvider.ValidatePinToken(token, request.Pin, request.Email);
+
+            if (isPinValid)
+            {
+                return Ok(new BaseApiResponse<AuthenticationTokenResponse>(
+                    new AuthenticationTokenResponse() 
+                    { 
+                        Token = tokenProvider.Create(request.Email)
+                    },
+                    "Email validated successfully")
+                );
+            }
+
+            return StatusCode(500, new BaseApiResponse<string>("Email validation failed"));
+        }
+
 
         [HttpPatch("user/{userId}")]
         //[Authorize]
-        public IActionResult UpdateUser(string userId, [FromBody] UserUpdate data)
+        public IActionResult UpdateUser(string userId, [FromBody] UserUpdateRequest data)
         {
             var userIdGuid = new Guid(userId);
 
@@ -109,53 +87,13 @@ namespace Adventour.Api.Controllers
 
                 if (isUpdated)
                 {
-                    return Ok(new BaseApiResponse<string>()
-                    {
-                        Data = userId,
-                        Success = true,
-                        Message = "User updated successfully",
-                    });
+                    return Ok(new BaseApiResponse<string>(userId, "User updated successfully"));
                 }
 
-                return StatusCode(500, new BaseApiResponse<string>()
-                {
-                    Data = null,
-                    Success = false,
-                    Message = "User update failed",
-                });
+                return StatusCode(500, new BaseApiResponse<string>("User update failed"));
             }
 
-            return StatusCode(404, new BaseApiResponse<string>()
-            {
-                Data = null,
-                Success = false,
-                Message = "User does not exist",
-            });
-        }
-
-        [HttpPost("login")]
-        public IActionResult Login(UserRegistration user)
-        {
-            //missing user validation
-            var token = this.tokenProvider.Create("");
-
-            return Ok(new BaseApiResponse<string>()
-            {
-                Data = token,
-                Success = true,
-                Message = "Token created successfully",
-            });
-        }
-
-        [HttpGet("test")]
-        public IActionResult test()
-        {
-            return Ok(new BaseApiResponse<string>()
-            {
-                Data = "test",
-                Success = true,
-                Message = "Test",
-            });
+            return StatusCode(404, new BaseApiResponse<string>("User does not exist"));
         }
     }
 }
