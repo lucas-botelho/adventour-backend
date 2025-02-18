@@ -12,14 +12,11 @@ namespace Adventour.Api.Services.FileUpload
         public CloudinaryService(ILogger<CloudinaryService> logger)
         {
             this.logger = logger;
-        }
-        private Cloudinary Cloudinary { get; set; }
-        public CloudinaryService()
-        {
             DotEnv.Load(options: new DotEnvOptions(probeForEnv: true));
             this.Cloudinary = new Cloudinary(Environment.GetEnvironmentVariable("CLOUDINARY_URL"));
             this.Cloudinary.Api.Secure = true;
         }
+        private Cloudinary Cloudinary { get; set; }
 
         public async Task<string> UploadFileAsync(IFormFile file)
         {

@@ -1,8 +1,8 @@
 ﻿namespace Adventour.Api.Models.Authentication
 {
-    public class ValidateEmailRequest
+    public class ConfirmEmailRequest
     {
-        public string Email { get; set; }
+        public string UserId { get; set; }
         public string Pin { get; set; }
     }
 }

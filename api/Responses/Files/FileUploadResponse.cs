@@ -2,6 +2,6 @@
 {
     public class FileUploadResponse
     {
-        public string filePublicReference { get; set; }
+        public string PublicUrl { get; set; }
     }
 }

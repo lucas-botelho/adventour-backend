@@ -25,10 +25,10 @@ namespace Adventour.Api.Services.Database
         {
             try
             {
-                using (Connection)
-                {
-                    return Connection.Query<T>(this.StoredProcedure, this.Parameters, commandType: CommandType.StoredProcedure).ToList();
-                }
+                Connection.Open();
+                var result = Connection.Query<T>(this.StoredProcedure, this.Parameters, commandType: CommandType.StoredProcedure).ToList();
+                Connection.Close();
+                return result is not null ? result : default!;
             }
             catch (Exception ex)
             {
@@ -40,23 +40,7 @@ namespace Adventour.Api.Services.Database
 
         public T QuerySingle<T>()
         {
-            try
-            {
-                Connection.Open();
-                var result = Connection
-                    .Query<T>(this.StoredProcedure, this.Parameters, commandType: CommandType.StoredProcedure)
-                    .FirstOrDefault();
-
-                Connection.Close();
-
-                return result is not null ? result : default!;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"{logHeader} {ex.Message}");
-            }
-
-            return default;
+            return this.QueryMultiple<T>().FirstOrDefault()!;
         }
 
         public bool Update()
@@ -65,8 +49,7 @@ namespace Adventour.Api.Services.Database
             {
                 Connection.Open();
 
-                var result = Connection
-                        .ExecuteScalar<int>(this.StoredProcedure, this.Parameters, commandType: CommandType.StoredProcedure);
+                var result = Connection.Execute(this.StoredProcedure, this.Parameters, commandType: CommandType.StoredProcedure);
 
                 Connection.Close();
 

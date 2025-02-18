@@ -7,5 +7,6 @@
         public string Token { get; set; }
 
         public int ExpiresIn { get => expiresIn; set => expiresIn = value; }
+        public string UserId { get; set; }
     }
 }

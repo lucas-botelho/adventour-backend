@@ -40,13 +40,13 @@ namespace Adventour.Api.Services.Authentication
             return tokenHandler.CreateToken(tokenDescriptor);
         }
 
-        public string GeneratePinToken(string email, string confirmationPin)
+        public string GeneratePinToken(string userId, string confirmationPin)
         {
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(
                 [
-                   new Claim("email", email),
+                   new Claim("userId", userId),
                    new Claim("pin", confirmationPin),
                    new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),
                    new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.UtcNow.AddHours(1)).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64),

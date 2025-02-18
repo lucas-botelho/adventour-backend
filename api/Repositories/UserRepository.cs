@@ -27,27 +27,26 @@ namespace Adventour.Api.Repositories
             throw new NotImplementedException();
         }
 
-        public string CreateUser(UserRegistrationRequest registration)
+        public Guid CreateUser(UserRegistrationRequest registration)
         {
             //todo : unit test
 
             var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CreateUser)
-                .WithParameter(StoredProcedures.Parameters.UserId, Guid.NewGuid())
                 .WithParameter(StoredProcedures.Parameters.Name, registration.Name)
                 .WithParameter(StoredProcedures.Parameters.Password, new PasswordHasher<string>().HashPassword(registration.Email, registration.Password))
                 .WithParameter(StoredProcedures.Parameters.Email, registration.Email)
                 .Build();
 
 
-            return dbService.QuerySingle<string>();
+            return dbService.QuerySingle<Guid>();
         }
 
         public bool UpdatePublicData(UserUpdateRequest data, Guid userId)
         {
             var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.UpdateUserPublicData)
-                .WithParameter(StoredProcedures.Parameters.UserId, userId.ToString())
+                .WithParameter(StoredProcedures.Parameters.UserId, userId)
                 .WithParameter(StoredProcedures.Parameters.Username, data.UserName)
-                .WithParameter(StoredProcedures.Parameters.ProfilePictureReference, data.ImagePublicId)
+                .WithParameter(StoredProcedures.Parameters.ProfilePictureReference, data.PublicUrl)
                 .Build();
 
             return dbService.Update();
@@ -59,16 +58,25 @@ namespace Adventour.Api.Repositories
             .WithParameter(StoredProcedures.Parameters.Email, email)
             .Build();
 
-            return dbService.QuerySingle<int>() == 1;
+            return dbService.QuerySingle<int>() > 0;
         }
 
         public bool UserExists(Guid userId)
         {
-            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CheckUserExistsByEmail)
-            .WithParameter(StoredProcedures.Parameters.UserId, userId.ToString())
+            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CheckUserExistsById)
+            .WithParameter(StoredProcedures.Parameters.UserId, userId)
             .Build();
 
-            return dbService.QuerySingle<int>() == 1;
+            return dbService.QuerySingle<int>() > 0;
+        }
+
+        public void ConfirmEmail(string userId)
+        {
+            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.ConfirmEmail)
+                .WithParameter(StoredProcedures.Parameters.UserId, userId)
+                .Build();
+
+            dbService.QuerySingle<int>();
         }
     }
 }

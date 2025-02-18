@@ -7,6 +7,7 @@ using Adventour.Api.Responses;
 using Adventour.Api.Responses.Files;
 using Microsoft.AspNetCore.Authorization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Adventour.Api.Models.Files;
 
 namespace Adventour.Api.Controllers
 {
@@ -25,22 +26,24 @@ namespace Adventour.Api.Controllers
 
         [HttpPost("upload")]
         //[Authorize]
-        public async Task<IActionResult> Upload(IFormFile file)
+        public async Task<IActionResult> Upload([FromForm] FileUploadRequest request)
         {
-            var isValidImage = file?.Length > 0;
+            var isValidImage = request.File?.Length > 0;
             if (isValidImage)
             {
-                var result = await fileUploadService.UploadFileAsync(file!);
+                var result = await fileUploadService.UploadFileAsync(request.File!);
 
                 if (string.IsNullOrEmpty(result))
                 {
                     return StatusCode(500, new BaseApiResponse<string>("File upload failed"));
                 }
 
+                //todo: update da conta do user com o link da imagem
+
                 return Ok(new BaseApiResponse<FileUploadResponse>(
                     new FileUploadResponse()
                     {
-                        filePublicReference = result,
+                        PublicUrl = result,
                     },
                     "File uploaded successfully")
                 );
