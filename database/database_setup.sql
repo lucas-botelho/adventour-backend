@@ -33,7 +33,8 @@ END;
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Person')
 BEGIN
     CREATE TABLE Person (
-        id VARCHAR(40) PRIMARY KEY,
+        id uniqueidentifier PRIMARY KEY,
+		oauth_id VARCHAR(100) NULL,
         name VARCHAR(25) NOT NULL,
         username VARCHAR(25) NULL,
         email VARCHAR(100) NOT NULL,
@@ -93,7 +94,7 @@ BEGIN
         id INT PRIMARY KEY,
         id_rating INT NOT NULL,
         id_attraction INT NOT NULL,
-        id_user VARCHAR(40) NOT NULL,
+        id_user uniqueidentifier NOT NULL,
         comment VARCHAR(255) NULL,
         FOREIGN KEY (id_rating) REFERENCES Rating(id),
         FOREIGN KEY (id_attraction) REFERENCES Attraction(id) ON DELETE CASCADE,
@@ -106,7 +107,7 @@ BEGIN
     CREATE TABLE Favorites (
         id INT PRIMARY KEY,
         id_attraction INT NOT NULL,
-        id_user VARCHAR(40) NOT NULL,
+        id_user uniqueidentifier NOT NULL,
         FOREIGN KEY (id_attraction) REFERENCES Attraction(id) ON DELETE CASCADE,
         FOREIGN KEY (id_user) REFERENCES Person(id) ON DELETE CASCADE
     );
@@ -116,7 +117,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 BEGIN
     CREATE TABLE Itinerary (
         id INT PRIMARY KEY,
-        id_user VARCHAR(40) NOT NULL,
+        id_user uniqueidentifier NOT NULL,
         title VARCHAR(255) NOT NULL,
         created_at DATETIME NOT NULL,
         FOREIGN KEY (id_user) REFERENCES Person(id) ON DELETE CASCADE

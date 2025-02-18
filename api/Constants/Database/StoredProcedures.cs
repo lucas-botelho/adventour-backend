@@ -3,9 +3,11 @@
     public static class StoredProcedures
     {
         public const string CheckUserExistsByEmail = "CheckUserExistsByEmail";
+        public const string CheckUserExistsById = "CheckUserExistsById";
         public const string CreateUser = "CreateUser";
         public const string UpdateUserPublicData = "UpdateUserPublicData";
         public const string GetCountryByCode = "GetCountryByCode";
+        public const string ConfirmEmail = "ConfirmEmail";
 
         public static class Parameters
         {
