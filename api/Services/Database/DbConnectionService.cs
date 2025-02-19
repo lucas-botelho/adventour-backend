@@ -40,7 +40,15 @@ namespace Adventour.Api.Services.Database
 
         public T QuerySingle<T>()
         {
-            return this.QueryMultiple<T>().FirstOrDefault()!;
+            try
+            {
+                return this.QueryMultiple<T>().FirstOrDefault()!;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                throw;
+            }
         }
 
         public bool Update()

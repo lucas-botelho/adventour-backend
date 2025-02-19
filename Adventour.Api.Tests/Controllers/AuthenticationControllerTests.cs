@@ -2,7 +2,6 @@ using Adventour.Api.Controllers;
 using Moq;
 using Adventour.Api.Services.Authentication;
 using Adventour.Api.Repositories.Interfaces;
-using Adventour.Api.Models.Authentication;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Adventour.Api.Responses;
