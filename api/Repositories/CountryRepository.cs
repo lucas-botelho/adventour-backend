@@ -1,7 +1,7 @@
 ﻿using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Constants.Database;
-using Adventour.Api.Models.Country;
 using Adventour.Api.Repositories.Interfaces;
+using Adventour.Api.Responses.Country;
 
 namespace Adventour.Api.Repositories
 {
@@ -17,7 +17,7 @@ namespace Adventour.Api.Repositories
             this.logger = logger;
 
         }
-        public Country GetCountry(string countryCode)
+        public CountryResponse GetCountry(string countryCode)
 		{
 			try
 			{
@@ -25,9 +25,9 @@ namespace Adventour.Api.Repositories
                     .WithParameter(StoredProcedures.Parameters.Code, countryCode)
                     .Build();
 
-				var country = dbService.QuerySingle<Country>();
+				var country = dbService.QuerySingle<CountryResponse>();
 
-				return country is not null ? country : new Country();
+				return country is not null ? country : new CountryResponse();
             }
 			catch (Exception ex)
 			{

@@ -1,4 +1,4 @@
-﻿namespace Adventour.Api.Models.Authentication
+﻿namespace Adventour.Api.Requests.Authentication
 {
     public class ConfirmEmailRequest
     {

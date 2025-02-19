@@ -1,12 +1,8 @@
 ﻿using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Constants.Database;
-using Adventour.Api.Models.Authentication;
+using Adventour.Api.Requests.Authentication;
 using Adventour.Api.Repositories.Interfaces;
-using Adventour.Api.Services.FileUpload.Interfaces;
-using CloudinaryDotNet.Actions;
-using CloudinaryDotNet;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 namespace Adventour.Api.Repositories
 {

@@ -1,9 +1,9 @@
-﻿using Adventour.Api.Models.Country;
+﻿using Adventour.Api.Responses.Country;
 
 namespace Adventour.Api.Repositories.Interfaces
 {
     public interface ICountryRepository
     {
-        Country GetCountry(string countryCode);
+        CountryResponse GetCountry(string countryCode);
     }
 }

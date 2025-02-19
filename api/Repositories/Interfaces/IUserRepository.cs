@@ -1,4 +1,4 @@
-﻿using Adventour.Api.Models.Authentication;
+﻿using Adventour.Api.Requests.Authentication;
 
 namespace Adventour.Api.Repositories.Interfaces
 {

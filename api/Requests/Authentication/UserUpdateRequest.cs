@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Adventour.Api.Models.Authentication
+namespace Adventour.Api.Requests.Authentication
 {
     public class UserUpdateRequest
     {

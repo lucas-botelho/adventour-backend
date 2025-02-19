@@ -1,4 +1,4 @@
-﻿namespace Adventour.Api.Models.Files
+﻿namespace Adventour.Api.Requests.Files
 {
     public class FileUploadRequest
     {

@@ -1,8 +1,8 @@
 ﻿using Dapper;
 
-namespace Adventour.Api.Models.Country
+namespace Adventour.Api.Responses.Country
 {
-    public class Country
+    public class CountryResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }

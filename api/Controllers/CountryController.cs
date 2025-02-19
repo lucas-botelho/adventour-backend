@@ -1,6 +1,6 @@
-﻿using Adventour.Api.Models.Country;
-using Adventour.Api.Repositories.Interfaces;
+﻿using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses;
+using Adventour.Api.Responses.Country;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,7 +29,7 @@ namespace Adventour.Api.Controllers
 
             var country = countryRepository.GetCountry(code);
 
-            return Ok(new BaseApiResponse<Country>(country, "Country found"));
+            return Ok(new BaseApiResponse<CountryResponse>(country, "Country found"));
         }
     }
 }

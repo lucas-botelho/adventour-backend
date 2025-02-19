@@ -61,7 +61,7 @@ namespace Adventour.Api.Services.Authentication
             return tokenHandler.CreateToken(tokenDescriptor);
         }
 
-        public async Task<bool >ValidatePinToken(string token, string enteredPin, string email)
+        public async Task<bool>ValidatePinToken(string token, string enteredPin, string userId)
         {
             var tokenHandler = new JsonWebTokenHandler();
 
@@ -78,10 +78,10 @@ namespace Adventour.Api.Services.Authentication
 
                 var validationResult = await tokenHandler.ValidateTokenAsync(token, parameters);
                 
-                validationResult.Claims.TryGetValue("email", out var tokenEmail);
-                validationResult.Claims.TryGetValue("pin", out var pin);
+                validationResult.Claims.TryGetValue("userId", out var tokenUserId);
+                validationResult.Claims.TryGetValue("pin", out var tokenPin);
 
-                return pin?.ToString()?.Equals(enteredPin) ?? false; // PIN matches
+                return tokenPin?.ToString()?.Equals(enteredPin) ?? false; // PIN matches
             }
             catch
             {

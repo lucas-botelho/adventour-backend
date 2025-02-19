@@ -1,13 +1,8 @@
-﻿using CloudinaryDotNet.Actions;
-using CloudinaryDotNet;
-using Microsoft.AspNetCore.Mvc;
-using System.IO;
+﻿using Microsoft.AspNetCore.Mvc;
 using Adventour.Api.Services.FileUpload.Interfaces;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Files;
-using Microsoft.AspNetCore.Authorization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Adventour.Api.Models.Files;
+using Adventour.Api.Requests.Files;
 
 namespace Adventour.Api.Controllers
 {

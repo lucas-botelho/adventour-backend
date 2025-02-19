@@ -1,4 +1,4 @@
-using Adventour.Api.Models.Authentication;
+using Adventour.Api.Requests.Authentication;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Authentication;
@@ -33,7 +33,7 @@ namespace Adventour.Api.Controllers
         {
             if (userRepository.UserExists(user.Email))
             {
-                return StatusCode(409, new BaseApiResponse<string>("User already exists"));
+                return StatusCode(409, new BaseApiResponse<string>("User with that email already exists"));
             }
 
             var userId = userRepository.CreateUser(user).ToString();
@@ -73,7 +73,7 @@ namespace Adventour.Api.Controllers
                 );
             }
 
-            return StatusCode(500, new BaseApiResponse<string>("Email validation failed"));
+            return StatusCode(500, new BaseApiResponse<string>("Verification failed. Please check your details and try again."));
         }
 
 
