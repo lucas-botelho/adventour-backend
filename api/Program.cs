@@ -9,6 +9,7 @@ using Adventour.Api.Services.Database;
 using Adventour.Api.Services.Email.Interfaces;
 using Adventour.Api.Services.FileUpload;
 using Adventour.Api.Services.FileUpload.Interfaces;
+using Adventour.Api.Services.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -16,7 +17,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 //Transient objects are always different; a new instance is provided to every controller and every service.
-//builder.Services.AddTransient
+//builder.Services.
+builder.Services.AddTransient(typeof(IHttpClientService<>), typeof(HttpClientService<>));
+builder.Services.AddTransient(typeof(IHttpServiceBuilder<>), typeof(HttpServiceBuilder<>));
 
 //Scoped objects are the same within a request, but different across different requests.
 //builder.Services.AddScoped
@@ -26,6 +29,7 @@ builder.Services.AddScoped<IDatabaseConnectionService, DbConnectionService>();
 builder.Services.AddScoped<IFileUploadService, CloudinaryService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IEmailService, SendGridService>();
+
 
 
 builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));

@@ -5,6 +5,7 @@ using Adventour.Api.Responses.Authentication;
 using Adventour.Api.Services.Authentication;
 using Adventour.Api.Services.Email.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Adventour.Api.Builders.Interfaces;
 
 
 namespace Adventour.Api.Controllers
@@ -18,13 +19,28 @@ namespace Adventour.Api.Controllers
         private readonly ILogger<AuthenticationController> logger;
         private const string logHeader = "## AuthenticationController ##: ";
         private readonly IEmailService emailService;
+        private readonly IHttpServiceBuilder<SupabaseAuthResponse> httpServiceBuilder;
 
-        public AuthenticationController(ITokenProviderService tokenProvider, IUserRepository userRepository, IEmailService emailService, ILogger<AuthenticationController> logger)
+        public AuthenticationController(ITokenProviderService tokenProvider, IUserRepository userRepository, IEmailService emailService, ILogger<AuthenticationController> logger, IHttpServiceBuilder<SupabaseAuthResponse> httpServiceBuilder)
         {
             this.tokenProvider = tokenProvider;
             this.userRepository = userRepository;
             this.logger = logger;
             this.emailService = emailService;
+            this.httpServiceBuilder = httpServiceBuilder;
+        }
+
+        [HttpGet("test")]
+        public async Task<IActionResult> ola ()
+        {
+            httpServiceBuilder.WithQueryParameters("email", "asdasd");
+            httpServiceBuilder.WithQueryParameters("password", "asdasd");
+            httpServiceBuilder.WithHeaders("Content-Type", "application/json");
+            httpServiceBuilder.WithEndpoint("https://adventour.supabase.co/auth/v1/token?grant_type=password");
+
+            httpServiceBuilder.Build().Get();
+
+            return Ok();
         }
 
         [HttpPost("user")]
