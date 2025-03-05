@@ -18,6 +18,9 @@
             public const string Username = "@username";
             public const string ProfilePictureReference = "@profilePictureRef";
             public const string Code = "@code";
+            public const string PhotoUrl = "@photoUrl";
+            public const string OAuthId = "@oAuthId";
+
         }
     }
 }

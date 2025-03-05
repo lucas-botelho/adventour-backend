@@ -5,6 +5,7 @@ using Adventour.Api.Responses.Authentication;
 using Adventour.Api.Services.Authentication;
 using Adventour.Api.Services.Email.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Adventour.Api.Controllers
@@ -27,8 +28,19 @@ namespace Adventour.Api.Controllers
             this.emailService = emailService;
         }
 
+        [HttpGet("exist/{email}")]
+        public IActionResult UserByEmail(string email) {
+
+            if (userRepository.UserExists(email))
+            {
+                return StatusCode(409,new BaseApiResponse<EmailRegistredResponse>(new EmailRegistredResponse(true), "User exists"));
+            }
+
+            return Ok(new BaseApiResponse<EmailRegistredResponse>(new EmailRegistredResponse(false), "User doesn't exist"));
+        }
+
         [HttpPost("user")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> RegisterUser(UserRegistrationRequest user)
         {
             if (userRepository.UserExists(user.Email))

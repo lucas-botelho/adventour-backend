@@ -29,8 +29,9 @@ namespace Adventour.Api.Repositories
 
             var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CreateUser)
                 .WithParameter(StoredProcedures.Parameters.Name, registration.Name)
-                .WithParameter(StoredProcedures.Parameters.Password, new PasswordHasher<string>().HashPassword(registration.Email, registration.Password))
+                .WithParameter(StoredProcedures.Parameters.OAuthId, registration.OAuthId)
                 .WithParameter(StoredProcedures.Parameters.Email, registration.Email)
+                .WithParameter(StoredProcedures.Parameters.PhotoUrl, registration.PhotoUrl)
                 .Build();
 
 

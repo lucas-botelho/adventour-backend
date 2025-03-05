@@ -1,7 +1,7 @@
 use adventour
 go
 CREATE PROCEDURE CheckUserExistsByEmail
-    @email VARCHAR(100)
+    @email NVARCHAR(100)
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -25,23 +25,25 @@ END;
 GO
 
 CREATE PROCEDURE CreateUser
-    @name varchar(25),
-    @email varchar(100),
-    @password varchar(255)
+    @name NVARCHAR(200),
+    @email NVARCHAR(200),
+	@oAuthId NVARCHAR(255),
+	@photoUrl NVARCHAR(255)
+
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.Person (id, name, email, verified, password)
+    INSERT INTO dbo.Person (id, oauth_id, name, email, verified, profile_picture_ref)
     OUTPUT INSERTED.id
-    VALUES (NEWID(), @name, @email, 0, @password);
+    VALUES (NEWID(), @oAuthId, @name, @email, 0, @photoUrl);
 END;
 GO
 
 
 CREATE PROCEDURE UpdateUserPublicData
-	@username varchar(25),
-    @profilePictureRef varchar(255),
+	@username NVARCHAR(25),
+    @profilePictureRef NVARCHAR(255),
     @userId uniqueidentifier
 AS
 BEGIN
