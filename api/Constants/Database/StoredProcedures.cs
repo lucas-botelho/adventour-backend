@@ -8,6 +8,7 @@
         public const string UpdateUserPublicData = "UpdateUserPublicData";
         public const string GetCountryByCode = "GetCountryByCode";
         public const string ConfirmEmail = "ConfirmEmail";
+        public const string GetItineraryById = "GetItineraryById";
 
         public static class Parameters
         {
@@ -20,6 +21,7 @@
             public const string Code = "@code";
             public const string PhotoUrl = "@photoUrl";
             public const string OAuthId = "@oAuthId";
+            public const string Id = "@Id";
 
         }
     }
