@@ -19,7 +19,7 @@ namespace Adventour.Api.Controllers
         }
         
         [HttpGet("{id}")]
-        public IActionResult getItineraryById(int id) {
+        public IActionResult GetItineraryById(int id) {
             if (id < 0)
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid itinerary id"));
@@ -35,12 +35,11 @@ namespace Adventour.Api.Controllers
 
                 return Ok(new BaseApiResponse<ItineraryResponse>(itinerary, "Itinerary found"));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 _logger.LogError($"Error fetching itinerary: {ex.Message}");
                 return StatusCode(500, new BaseApiResponse<string>("An unexpected error occurred"));
             }
-
         }
         
     }
