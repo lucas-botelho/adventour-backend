@@ -9,6 +9,8 @@ using Adventour.Api.Services.Database;
 using Adventour.Api.Services.Email.Interfaces;
 using Adventour.Api.Services.FileUpload;
 using Adventour.Api.Services.FileUpload.Interfaces;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -91,6 +93,23 @@ builder.Services.AddSwaggerGen(options =>
     //options.ExampleFilters();
 });
 
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromJson($@"
+    {{
+        ""type"": ""service_account"",
+        ""project_id"": ""{Environment.GetEnvironmentVariable("FIREBASE_PROJECT_ID")}"",
+        ""private_key_id"": ""{Environment.GetEnvironmentVariable("FIREBASE_PRIVATE_KEY_ID")}"",
+        ""private_key"": ""{Environment.GetEnvironmentVariable("FIREBASE_PRIVATE_KEY").Replace("\\n", "\n")}"",
+        ""client_email"": ""{Environment.GetEnvironmentVariable("FIREBASE_CLIENT_EMAIL")}"",
+        ""client_id"": ""{Environment.GetEnvironmentVariable("FIREBASE_CLIENT_ID")}"",
+        ""auth_uri"": ""{Environment.GetEnvironmentVariable("FIREBASE_AUTH_URI")}"",
+        ""token_uri"": ""{Environment.GetEnvironmentVariable("FIREBASE_TOKEN_URI")}"",
+        ""auth_provider_x509_cert_url"": ""{Environment.GetEnvironmentVariable("FIREBASE_AUTH_PROVIDER_CERT_URL")}"",
+        ""client_x509_cert_url"": ""{Environment.GetEnvironmentVariable("FIREBASE_CLIENT_CERT_URL")}"",
+        ""universe_domain"": ""{Environment.GetEnvironmentVariable("FIREBASE_UNIVERSE_DOMAIN")}""
+    }}")
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

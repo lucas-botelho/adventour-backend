@@ -3,6 +3,10 @@ using Adventour.Api.Constants.Database;
 using Adventour.Api.Requests.Authentication;
 using Adventour.Api.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Adventour.Api.Responses.Authentication;
+using FirebaseAdmin.Auth;
+using Newtonsoft.Json.Linq;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Adventour.Api.Repositories
 {
@@ -74,6 +78,23 @@ namespace Adventour.Api.Repositories
                 .Build();
 
             dbService.QuerySingle<int>();
+        }
+
+        public async Task<PersonDataResponse >GetUser(string token)
+        {
+            if (token.IsNullOrEmpty())
+                return null;
+
+            var decodedToken = await FirebaseAuth.DefaultInstance?.VerifyIdTokenAsync(token) ?? null;
+
+            if (decodedToken is null)
+                return null;
+
+            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.GetPersonByOAuthId)
+                .WithParameter(StoredProcedures.Parameters.OAuthId, decodedToken.Uid)
+                .Build();
+
+            return dbService.QuerySingle<PersonDataResponse>();
         }
     }
 }

@@ -19,6 +19,7 @@
     <PackageReference Include="CloudinaryDotNet" Version="1.27.3" />
     <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="dotenv.net" Version="3.2.1" />
+    <PackageReference Include="FirebaseAdmin" Version="3.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
@@ -30,6 +31,7 @@
 
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

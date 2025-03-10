@@ -6,6 +6,7 @@ using Adventour.Api.Services.Authentication;
 using Adventour.Api.Services.Email.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using FirebaseAdmin.Auth;
 
 
 namespace Adventour.Api.Controllers
@@ -56,8 +57,8 @@ namespace Adventour.Api.Controllers
                 var isEmailSent = await this.emailService.SendEmailAsync(user.Email, "Confirmation email", securityPin);
                 var token = this.tokenProvider.GeneratePinToken(userId, securityPin);
 
-                return Ok(new BaseApiResponse<AuthenticationTokenResponse>(
-                    new AuthenticationTokenResponse() { Token = token, UserId = userId },
+                return Ok(new BaseApiResponse<TokenResponse>(
+                    new TokenResponse() { Token = token, UserId = userId },
                     "User created successfully")
                 );
             }
@@ -76,8 +77,8 @@ namespace Adventour.Api.Controllers
             {
                 this.userRepository.ConfirmEmail(request.UserId);
 
-                return Ok(new BaseApiResponse<AuthenticationTokenResponse>(
-                    new AuthenticationTokenResponse() 
+                return Ok(new BaseApiResponse<TokenResponse>(
+                    new TokenResponse() 
                     { 
                         Token = tokenProvider.Create(request.UserId)
                     },
@@ -101,7 +102,7 @@ namespace Adventour.Api.Controllers
 
                 if (isUpdated)
                 {
-                    return Ok(new BaseApiResponse<UpdateUserPublicData>(new UpdateUserPublicData() { Updated = isUpdated }, "User updated successfully"));
+                    return Ok(new BaseApiResponse<UpdateUserPublicDataResponse>(new UpdateUserPublicDataResponse() { Updated = isUpdated }, "User updated successfully"));
                 }
 
                 return StatusCode(500, new BaseApiResponse<string>("User update failed"));
@@ -109,6 +110,35 @@ namespace Adventour.Api.Controllers
 
             return StatusCode(404, new BaseApiResponse<string>("User does not exist"));
         }
+
+        [HttpGet("user/me")]
+        [Authorize]
+        public async Task<IActionResult> GetUser()
+        {
+            var authHeader = Request.Headers["Authorization"].ToString();
+            if (string.IsNullOrEmpty(authHeader))
+            {
+                return Unauthorized();
+            }
+
+            try
+            {
+                
+                var user = await this.userRepository.GetUser(authHeader.Replace("Bearer ", ""));
+
+                if (user == null)
+                {
+                    return NotFound(new BaseApiResponse<string>("User not found."));
+                }
+
+                return Ok(new BaseApiResponse<PersonDataResponse>(user, ""));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Internal error."));
+            }
+        }
+
 
 
     }

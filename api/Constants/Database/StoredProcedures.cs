@@ -8,6 +8,7 @@
         public const string UpdateUserPublicData = "UpdateUserPublicData";
         public const string GetCountryByCode = "GetCountryByCode";
         public const string ConfirmEmail = "ConfirmEmail";
+        public const string GetPersonByOAuthId = "GetPersonByOAuthId";
 
         public static class Parameters
         {
