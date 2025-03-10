@@ -169,3 +169,6 @@ BEGIN
 END;
 
 GO
+
+
+CREATE UNIQUE INDEX idx_person_oauth_id ON Person(oauth_id);

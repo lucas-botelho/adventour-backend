@@ -62,5 +62,18 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE GetPersonByOAuthId
+    @oAuthId NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        name, 
+        email, 
+        profile_picture_ref 
+    FROM dbo.Person 
+    WHERE oauth_id = @OAuthId;
+END;
 
 
