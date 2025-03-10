@@ -17,7 +17,7 @@ namespace Adventour.Api.Builders
 
         public QueryServiceBuilder WithStoredProcedure(string name)
         {
-            service.StoredProcedure = name; ;
+            service.StoredProcedure = name;
             return this;
         }
 
