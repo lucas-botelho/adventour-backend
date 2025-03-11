@@ -17,9 +17,8 @@
             public const string Name = "@name";
             public const string Password = "@password";
             public const string Username = "@username";
-            public const string ProfilePictureReference = "@profilePictureRef";
-            public const string Code = "@code";
             public const string PhotoUrl = "@photoUrl";
+            public const string Code = "@code";
             public const string OAuthId = "@oAuthId";
 
         }

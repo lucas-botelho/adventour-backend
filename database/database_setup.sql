@@ -39,7 +39,7 @@ BEGIN
         username NVARCHAR(25) NULL,
         email NVARCHAR(200) NOT NULL,
 		verified BIT DEFAULT 0,
-		profile_picture_ref NVARCHAR(255) NULL 
+		photo_url NVARCHAR(MAX) NULL 
 	);
 END;
 
