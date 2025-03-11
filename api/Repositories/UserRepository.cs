@@ -47,7 +47,7 @@ namespace Adventour.Api.Repositories
             var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.UpdateUserPublicData)
                 .WithParameter(StoredProcedures.Parameters.UserId, userId)
                 .WithParameter(StoredProcedures.Parameters.Username, data.UserName)
-                .WithParameter(StoredProcedures.Parameters.ProfilePictureReference, data.PublicUrl)
+                .WithParameter(StoredProcedures.Parameters.PhotoUrl, data.PublicUrl)
                 .Build();
 
             return dbService.Update();
