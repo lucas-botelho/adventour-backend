@@ -10,6 +10,7 @@
         public const string ConfirmEmail = "ConfirmEmail";
         public const string GetPersonByOAuthId = "GetPersonByOAuthId";
         public const string GetDaysByItineraryId = "GetDaysByItineraryId";
+        public const string AddDay = "AddDay";
 
         public static class Parameters
         {
@@ -22,6 +23,7 @@
             public const string Code = "@code";
             public const string OAuthId = "@oAuthId";
             public const string ItineraryId = "@itineraryId";
+            public const string DayNumber = "@dayNumber";
 
         }
     }

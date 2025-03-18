@@ -37,7 +37,7 @@ namespace Adventour.Api.Repositories
             }
         }
 
-        /*public int AddDay(AddDayRequest request)
+        public int AddDay(AddDayRequest request)
         {
             try
             {
@@ -55,6 +55,6 @@ namespace Adventour.Api.Repositories
                 logger.LogError($"{logHeader} {ex.Message}");
                 throw;
             }
-        }*/
+        }
     }
 }

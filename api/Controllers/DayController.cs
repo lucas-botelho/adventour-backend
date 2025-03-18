@@ -45,8 +45,8 @@ namespace Adventour.Api.Controllers
             }
         }
 
-        //[HttpPost]
-        /*public IActionResult AddDay([FromBody] AddDayRequest request)
+        [HttpPost]
+        public IActionResult AddDay([FromBody] AddDayRequest request)
         {
             if (request.ItineraryId <= 0 || request.DayNumber <= 0)
             {
@@ -64,6 +64,6 @@ namespace Adventour.Api.Controllers
                 _logger.LogError($"Error adding day: {ex.Message}");
                 return StatusCode(500, new BaseApiResponse<string>("Failed to add day"));
             }
-        }*/
+        }
     }
 }
