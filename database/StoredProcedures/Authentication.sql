@@ -34,7 +34,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    INSERT INTO dbo.Person (id, oauth_id, name, email, verified, profile_picture_ref)
+    INSERT INTO dbo.Person (id, oauth_id, name, email, verified, photo_url)
     OUTPUT INSERTED.id
     VALUES (NEWID(), @oAuthId, @name, @email, 0, @photoUrl);
 END;
@@ -43,11 +43,11 @@ GO
 
 CREATE PROCEDURE UpdateUserPublicData
 	@username NVARCHAR(25),
-    @profilePictureRef NVARCHAR(255),
+    @photoUrl NVARCHAR(255),
     @userId uniqueidentifier
 AS
 BEGIN
-	UPDATE dbo.Person SET username = @username, profile_picture_ref = @profilePictureRef
+	UPDATE dbo.Person SET username = @username, photo_url = @photoUrl
 	WHERE id = @userId
 END;
 GO
@@ -62,5 +62,18 @@ BEGIN
 END;
 GO
 
+CREATE PROCEDURE GetPersonByOAuthId
+    @oAuthId NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        name, 
+        email, 
+        photo_url 
+    FROM dbo.Person 
+    WHERE oauth_id = @OAuthId;
+END;
 
 
