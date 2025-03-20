@@ -4,7 +4,7 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT id, name, continent_name
+    SELECT *
     FROM dbo.Country
     WHERE code = @code;
 END;
