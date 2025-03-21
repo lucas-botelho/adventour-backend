@@ -51,6 +51,26 @@ namespace Adventour.Api.Services.Database
             }
         }
 
+        public T GetOutputParameter<T>(string name)
+        {
+            return (T)Parameters.Get<T>(name);
+        }
+
+        public T InsertSingleWithOutput<T>(string outputParamName)
+        {
+            try
+            {
+                QuerySingle<int>();
+
+                return GetOutputParameter<T>(outputParamName);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                throw;
+            }
+        }
+
         public bool Update()
         {
             try

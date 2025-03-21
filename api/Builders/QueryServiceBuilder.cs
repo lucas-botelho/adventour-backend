@@ -27,6 +27,13 @@ namespace Adventour.Api.Builders
             return this;
         }
 
+        public QueryServiceBuilder WithOutputParameter(string name, DbType type)
+        {
+
+            service.Parameters.Add(name, dbType: type, direction: ParameterDirection.Output);
+            return this;
+        }
+
         public IDatabaseConnectionService Build()
         {
             return service;

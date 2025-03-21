@@ -24,7 +24,7 @@
             public const string OAuthId = "@oAuthId";
             public const string ItineraryId = "@itineraryId";
             public const string DayNumber = "@dayNumber";
-
+            public const string InsertedId = "@insertedId";
         }
     }
 }

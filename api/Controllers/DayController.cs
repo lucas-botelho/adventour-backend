@@ -55,7 +55,6 @@ namespace Adventour.Api.Controllers
 
             try
             {
-
                 int newDayId = dayRepository.AddDay(request);
                 return Ok(new BaseApiResponse<int>(newDayId, "Day added successfully"));
             }

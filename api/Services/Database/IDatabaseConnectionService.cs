@@ -10,7 +10,10 @@ namespace Adventour.Api.Services.Database
         SqlConnection Connection { get; set; }
         T QuerySingle<T>();
         IEnumerable<T> QueryMultiple<T>();
+        T GetOutputParameter<T>(string name);
+        T InsertSingleWithOutput<T>(String name);
         bool Update();
+
     }
 
 }

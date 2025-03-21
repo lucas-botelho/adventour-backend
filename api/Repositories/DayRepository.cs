@@ -3,6 +3,7 @@ using Adventour.Api.Constants.Database;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Day;
 using Adventour.Api.Responses.Day;
+using System.Data;
 
 namespace Adventour.Api.Repositories
 {
@@ -44,9 +45,10 @@ namespace Adventour.Api.Repositories
                 var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.AddDay)
                     .WithParameter(StoredProcedures.Parameters.ItineraryId, request.ItineraryId)
                     .WithParameter(StoredProcedures.Parameters.DayNumber, request.DayNumber)
+                    .WithOutputParameter(StoredProcedures.Parameters.InsertedId, DbType.Int32)
                     .Build();
 
-                var insertedId = dbService.QuerySingle<int>();
+                var insertedId = dbService.InsertSingleWithOutput<int>(StoredProcedures.Parameters.InsertedId);
 
                 return insertedId;
             }
