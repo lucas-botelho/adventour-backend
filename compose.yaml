@@ -27,6 +27,16 @@ services:
       ACCEPT_EULA: "Y"
     volumes:
       - mssql_data:/var/opt/mssql
+      
+  nginx:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: nginx_reverse_proxy
+    ports:
+      - "80:80"
+    depends_on:
+      - api
 
 volumes:
   mssql_data:
