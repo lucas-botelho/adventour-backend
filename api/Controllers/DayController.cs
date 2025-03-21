@@ -45,7 +45,7 @@ namespace Adventour.Api.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("day/")]
         public IActionResult AddDay([FromBody] AddDayRequest request)
         {
             if (request.ItineraryId <= 0 || request.DayNumber <= 0)
