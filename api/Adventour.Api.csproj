@@ -32,6 +32,8 @@
   <ItemGroup>
     <Folder Include="Extensions\" />
     <Folder Include="Models\" />
+    <Folder Include="Requests\Day\" />
+    <Folder Include="Responses\Days\" />
   </ItemGroup>
 
 </Project>

@@ -51,6 +51,26 @@ namespace Adventour.Api.Services.Database
             }
         }
 
+        public T GetOutputParameter<T>(string name)
+        {
+            return (T)Parameters.Get<T>(name);
+        }
+
+        public T InsertSingleWithOutput<T>(string outputParamName)
+        {
+            try
+            {
+                QuerySingle<int>();
+
+                return GetOutputParameter<T>(outputParamName);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                throw;
+            }
+        }
+
         public bool Update()
         {
             try
@@ -70,5 +90,25 @@ namespace Adventour.Api.Services.Database
 
             return false;
         }
+
+        public bool Delete()
+        {
+            try
+            {
+                Connection.Open();
+
+                var result = Connection.Execute(this.StoredProcedure, this.Parameters, commandType: CommandType.StoredProcedure);
+
+                Connection.Close();
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

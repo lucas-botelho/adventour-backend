@@ -10,6 +10,10 @@
         public const string ConfirmEmail = "ConfirmEmail";
         public const string GetItineraryById = "GetItineraryById";
         public const string GetPersonByOAuthId = "GetPersonByOAuthId";
+        public const string GetDaysByItineraryId = "GetDaysByItineraryId";
+        public const string AddDay = "AddDay";
+        public const string DeleteDayById = "DeleteDayById";
+        public const string ItineraryExists = "itineraryExists";
 
         public static class Parameters
         {
@@ -21,8 +25,10 @@
             public const string PhotoUrl = "@photoUrl";
             public const string Code = "@code";
             public const string OAuthId = "@oAuthId";
-            public const string Id = "@Id";
-
+            public const string ItineraryId = "@itineraryId";
+            public const string DayNumber = "@dayNumber";
+            public const string InsertedId = "@insertedId";
+            public const string DayId = "@dayId";
         }
     }
 }

@@ -29,6 +29,8 @@ builder.Services.AddScoped<IFileUploadService, CloudinaryService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IEmailService, SendGridService>();
 builder.Services.AddScoped<IItineraryRepository, ItineraryRepository>();
+builder.Services.AddScoped<IDayRepository, DayRepository>();
+
 
 
 builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
