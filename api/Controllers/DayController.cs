@@ -19,33 +19,7 @@ namespace Adventour.Api.Controllers
             this.dayRepository = dayRepository;
         }
 
-        [HttpGet("itinerary/{itineraryId}")]
-        public IActionResult GetDaysByItineraryId(int itineraryId)
-        {
-            if (itineraryId <= 0)
-            {
-                return BadRequest(new BaseApiResponse<string>("Invalid itinerary id"));
-            }
-
-            try
-            {
-                var days = dayRepository.GetDaysByItineraryId(itineraryId);
-
-                if (days == null || days.Count == 0)
-                {
-                    return NotFound(new BaseApiResponse<string>("No days found for this itinerary"));
-                }
-
-                return Ok(new BaseApiResponse<List<DayResponse>>(days, "Days retrieved successfully"));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error fetching days: {ex.Message}");
-                return StatusCode(500, new BaseApiResponse<string>("An unexpected error occurred"));
-            }
-        }
-
-        [HttpPost("day/")]
+        [HttpPost("AddDay/")]
         public IActionResult AddDay([FromBody] AddDayRequest request)
         {
             if (request.ItineraryId <= 0 || request.DayNumber <= 0)
@@ -65,21 +39,21 @@ namespace Adventour.Api.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeleteDay(int id)
+        [HttpDelete("DeleteDay/{dayId}")]
+        public IActionResult DeleteDay(int dayId)
         {
-            if (id <= 0)
+            if (dayId <= 0)
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid data"));
             }
 
             try
             {
-                var success = dayRepository.DeleteDay(id);
+                var success = dayRepository.DeleteDay(dayId);
 
                 if (success)
                 {
-                    return Ok(new BaseApiResponse<string>(id.ToString(), "Day deleted successfully"));
+                    return Ok(new BaseApiResponse<string>(dayId.ToString(), "Day deleted successfully"));
                 }
                 else
                 {

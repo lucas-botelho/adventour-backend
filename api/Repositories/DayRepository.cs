@@ -2,7 +2,9 @@ using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Constants.Database;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Day;
+using Adventour.Api.Responses;
 using Adventour.Api.Responses.Day;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System.Data;
 
 namespace Adventour.Api.Repositories
@@ -17,25 +19,6 @@ namespace Adventour.Api.Repositories
         {
             this.queryServiceBuilder = queryServiceBuilder;
             this.logger = logger;
-        }
-
-        public List<DayResponse> GetDaysByItineraryId(int itineraryId)
-        {
-            try
-            {
-                var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.GetDaysByItineraryId)
-                    .WithParameter(StoredProcedures.Parameters.ItineraryId, itineraryId)
-                    .Build();
-
-                var days = dbService.QueryMultiple<DayResponse>().ToList();
-
-                return days ?? null;
-            }
-            catch (Exception ex)
-            {
-                logger.LogError($"{logHeader} {ex.Message}");
-                throw;
-            }
         }
 
         public int AddDay(AddDayRequest request)

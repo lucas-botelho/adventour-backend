@@ -21,6 +21,7 @@ BEGIN
 
     DELETE FROM Day
     WHERE Id = @dayId;
-
-    RETURN @@ROWCOUNT;
 END;
+
+Go
+
