@@ -18,16 +18,16 @@ namespace Adventour.Api.Controllers
             this.itineraryRepository = itineraryRepository;
         }
         
-        [HttpGet("{id}")]
-        public IActionResult GetItineraryById(int id) {
-            if (id < 0)
+        [HttpGet("Itinerary/{itineraryId}")]
+        public IActionResult GetItineraryById(int itineraryId) {
+            if (itineraryId < 0)
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid itinerary id"));
             }
 
             try
             {
-                var itinerary = itineraryRepository.GetItineraryById(id);
+                var itinerary = itineraryRepository.GetItineraryById(itineraryId);
 
                 if (itinerary == null) {
                     return NotFound(new BaseApiResponse<string>("Itinerary not found"));

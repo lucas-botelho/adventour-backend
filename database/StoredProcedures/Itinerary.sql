@@ -1,12 +1,12 @@
 CREATE PROCEDURE GetItineraryById
-    @id INT
+    @itineraryId INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    SELECT id, id_user, title, createdAt
+    SELECT id, id_user, title, created_at
     FROM dbo.Itinerary
-    WHERE id = @id;
+    WHERE id = @itineraryId;
 END;
 GO
 
@@ -14,6 +14,10 @@ CREATE PROCEDURE AddDay
     @itineraryId INT,
     @dayNumber INT,
     @insertedId INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
     INSERT INTO Day (id_itinerary, day_number)
     VALUES (@itineraryId, @dayNumber);
 
@@ -32,4 +36,5 @@ BEGIN
 END;
 
 Go
+
 

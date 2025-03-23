@@ -4,6 +4,6 @@ namespace Adventour.Api.Repositories.Interfaces
 {
     public interface IItineraryRepository
     {
-        ItineraryResponse GetItineraryById(int id);
+        ItineraryResponse GetItineraryById(int itineraryId);
     }
 }

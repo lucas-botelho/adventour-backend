@@ -17,12 +17,12 @@ namespace Adventour.Api.Repositories
             this.logger = logger;
 
         }
-        public ItineraryResponse GetItineraryById(int id)
+        public ItineraryResponse GetItineraryById(int itineraryId)
         {
             try
             {
                 var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.GetItineraryById)
-                    .WithParameter(StoredProcedures.Parameters.Id, id)
+                    .WithParameter(StoredProcedures.Parameters.ItineraryId, itineraryId) 
                     .Build();
 
                 var itinerary = dbService.QuerySingle<ItineraryResponse>();
