@@ -90,5 +90,25 @@ namespace Adventour.Api.Services.Database
 
             return false;
         }
+
+        public bool Delete()
+        {
+            try
+            {
+                Connection.Open();
+
+                var result = Connection.Execute(this.StoredProcedure, this.Parameters, commandType: CommandType.StoredProcedure);
+
+                Connection.Close();
+
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

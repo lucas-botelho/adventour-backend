@@ -64,5 +64,32 @@ namespace Adventour.Api.Controllers
                 return StatusCode(500, new BaseApiResponse<string>("Failed to add day"));
             }
         }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteDay(int id)
+        {
+            if (id <= 0)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid data"));
+            }
+
+            try
+            {
+                var success = dayRepository.DeleteDay(id);
+
+                if (success)
+                {
+                    return Ok(new BaseApiResponse<string>(id.ToString(), "Day deleted successfully"));
+                }
+                else
+                {
+                    return NotFound(new BaseApiResponse<string>("Day not found or could not be deleted"));
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("An error occurred while deleting the day"));
+            }
+        }
     }
 }

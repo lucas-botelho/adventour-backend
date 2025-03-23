@@ -58,5 +58,24 @@ namespace Adventour.Api.Repositories
                 throw;
             }
         }
+
+        public bool DeleteDay(int dayId)
+        {
+            try
+            {
+                var dbService = queryServiceBuilder
+                    .WithStoredProcedure("DeleteDayById")
+                    .WithParameter("@DayId", dayId)
+                    .Build();
+
+                return dbService.Delete();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} Error deleting day {dayId}: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

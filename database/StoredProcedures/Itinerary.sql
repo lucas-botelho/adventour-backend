@@ -11,3 +11,16 @@ BEGIN
 
     SET @insertedId = SCOPE_IDENTITY();
 END;
+
+Go
+
+CREATE PROCEDURE DeleteDayById
+    @dayId INT
+AS
+BEGIN
+
+    DELETE FROM Day
+    WHERE Id = @dayId;
+
+    RETURN @@ROWCOUNT;
+END;

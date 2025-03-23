@@ -13,6 +13,7 @@ namespace Adventour.Api.Services.Database
         T GetOutputParameter<T>(String outputParamName);
         T InsertSingleWithOutput<T>(String name);
         bool Update();
+        bool Delete();
 
     }
 

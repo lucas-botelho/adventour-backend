@@ -11,6 +11,7 @@
         public const string GetPersonByOAuthId = "GetPersonByOAuthId";
         public const string GetDaysByItineraryId = "GetDaysByItineraryId";
         public const string AddDay = "AddDay";
+        public const string DeleteDayById = "DeleteDayById";
 
         public static class Parameters
         {
@@ -25,6 +26,7 @@
             public const string ItineraryId = "@itineraryId";
             public const string DayNumber = "@dayNumber";
             public const string InsertedId = "@insertedId";
+            public const string DayId = "@dayId";
         }
     }
 }

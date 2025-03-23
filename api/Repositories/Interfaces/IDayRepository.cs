@@ -7,5 +7,6 @@ namespace Adventour.Api.Repositories.Interfaces
     {
         List<DayResponse> GetDaysByItineraryId(int itineraryId);
         int AddDay(AddDayRequest request);
+        bool DeleteDay(int dayId);
     }
 }
