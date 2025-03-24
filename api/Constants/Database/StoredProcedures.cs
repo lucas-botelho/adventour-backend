@@ -14,6 +14,7 @@
         public const string AddDay = "AddDay";
         public const string DeleteDayById = "DeleteDayById";
         public const string ItineraryExists = "itineraryExists";
+        public const string GetDayById = "getDayById";
 
         public static class Parameters
         {

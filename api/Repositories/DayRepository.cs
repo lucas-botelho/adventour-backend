@@ -4,7 +4,9 @@ using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Day;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Day;
+using Adventour.Api.Responses.Itinerary;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.CodeDom;
 using System.Data;
 
 namespace Adventour.Api.Repositories
@@ -57,6 +59,24 @@ namespace Adventour.Api.Repositories
             {
                 logger.LogError($"{logHeader} Error deleting day {dayId}: {ex.Message}");
                 return false;
+            }
+        }
+
+        public DayResponse GetDayById(int dayId)
+        {
+            try
+            {
+                var dbService = queryServiceBuilder
+                    .WithStoredProcedure("GetDayById")
+                    .WithParameter("@DayId", dayId)
+                    .Build();
+
+                return dbService.QuerySingle<DayResponse>();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                throw;
             }
         }
 

@@ -37,4 +37,22 @@ END;
 
 Go
 
+CREATE PROCEDURE GetDayById
+    @dayId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    
+    SELECT 
+        Id,
+        id_itinerary,
+        day_number
+    FROM 
+        Day
+    WHERE 
+        Id = @dayId;
+END
+
+Go
+
 

@@ -6,6 +6,7 @@ using Adventour.Api.Repositories;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Services.Authentication;
 using Adventour.Api.Services.Database;
+using Adventour.Api.Services.Day;
 using Adventour.Api.Services.Email.Interfaces;
 using Adventour.Api.Services.FileUpload;
 using Adventour.Api.Services.FileUpload.Interfaces;
@@ -30,8 +31,7 @@ builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IEmailService, SendGridService>();
 builder.Services.AddScoped<IItineraryRepository, ItineraryRepository>();
 builder.Services.AddScoped<IDayRepository, DayRepository>();
-
-
+builder.Services.AddScoped<IDayService, DayService>();
 
 builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
 

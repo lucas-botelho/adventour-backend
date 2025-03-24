@@ -3,6 +3,9 @@ using Adventour.Api.Responses;
 using Adventour.Api.Responses.Day;
 using Microsoft.AspNetCore.Mvc;
 using Adventour.Api.Requests.Day;
+using Adventour.Api.Repositories;
+using Adventour.Api.Services.Day;
+using SendGrid.Helpers.Errors.Model;
 
 namespace Adventour.Api.Controllers
 {
@@ -11,12 +14,12 @@ namespace Adventour.Api.Controllers
     public class DayController : ControllerBase
     {
         private readonly ILogger<DayController> _logger;
-        private readonly IDayRepository dayRepository;
+        private readonly IDayService dayService;
 
-        public DayController(ILogger<DayController> logger, IDayRepository dayRepository)
+        public DayController(ILogger<DayController> logger, IDayService dayService)
         {
             _logger = logger;
-            this.dayRepository = dayRepository;
+            this.dayService = dayService;
         }
 
         [HttpPost("AddDay/")]
@@ -29,8 +32,12 @@ namespace Adventour.Api.Controllers
 
             try
             {
-                int newDayId = dayRepository.AddDay(request);
+                int newDayId = dayService.AddDay(request);
                 return Ok(new BaseApiResponse<int>(newDayId, "Day added successfully"));
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new BaseApiResponse<string>("Day doesn't exist!"));
             }
             catch (Exception ex)
             {
@@ -38,6 +45,7 @@ namespace Adventour.Api.Controllers
                 return StatusCode(500, new BaseApiResponse<string>("Failed to add day"));
             }
         }
+
 
         [HttpDelete("DeleteDay/{dayId}")]
         public IActionResult DeleteDay(int dayId)
@@ -49,19 +57,16 @@ namespace Adventour.Api.Controllers
 
             try
             {
-                var success = dayRepository.DeleteDay(dayId);
-
-                if (success)
-                {
-                    return Ok(new BaseApiResponse<string>(dayId.ToString(), "Day deleted successfully"));
-                }
-                else
-                {
-                    return NotFound(new BaseApiResponse<string>("Day not found or could not be deleted"));
-                }
+                dayService.DeleteDay(dayId);
+                return Ok(new BaseApiResponse<string>(dayId.ToString(), "Day deleted successfully"));
             }
-            catch (Exception)
+            catch (NotFoundException ex)
             {
+                return NotFound(new BaseApiResponse<string>("Day not found!"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error deleting day: {ex.Message}");
                 return StatusCode(500, new BaseApiResponse<string>("An error occurred while deleting the day"));
             }
         }
