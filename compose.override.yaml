@@ -1,0 +1,5 @@
+version: "3.8"
+services:
+  api:
+    volumes:
+      - ./api/bin/Debug/net8.0:/app:ro
