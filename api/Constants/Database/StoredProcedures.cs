@@ -9,6 +9,7 @@
         public const string GetCountryByCode = "GetCountryByCode";
         public const string ConfirmEmail = "ConfirmEmail";
         public const string GetPersonByOAuthId = "GetPersonByOAuthId";
+        public const string GetCountriesByContinent = "GetCountriesByContinent";
 
         public static class Parameters
         {
@@ -20,7 +21,9 @@
             public const string PhotoUrl = "@photoUrl";
             public const string Code = "@code";
             public const string OAuthId = "@oAuthId";
-
+            public const string ContinentName = "@continentName";
+            public const string PageNumber = "@pageNumber";
+            public const string FetchRows = "@fetchRows";
         }
     }
 }

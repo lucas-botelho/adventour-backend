@@ -38,5 +38,24 @@ namespace Adventour.Api.Controllers
             }
 
         }
+
+        [HttpGet("list/countries")]
+        public IActionResult GetCountries([FromQuery]int page, [FromQuery]int pageSize, [FromQuery] string continent)
+        {
+            if (page < 1 || pageSize < 1 || string.IsNullOrWhiteSpace(continent))
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid query string."));
+            }
+
+            try
+            {
+                var countries = countryRepository.GetCountries(page, pageSize, continent);
+                return Ok(new BaseApiResponse<CountriesListResponse>(new CountriesListResponse(countries), "Countries found"));
+            }
+            catch (Exception)
+            {
+                return NotFound(new BaseApiResponse<string>("Countries not found"));
+            }
+        }
     }
 }
