@@ -1,0 +1,6 @@
+Application identifier:deisi2056
+Number of public containers:            
+	Backend /deisi2056
+Name Webhook: https://projects.deisi.ulusofona.pt/jenkins/deisi2056
+Github url: https://github.com/lucas-botelho/adventour-backend.git
+Github branch: https://github.com/lucas-botelho/adventour-backend/tree/prod

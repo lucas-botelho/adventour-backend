@@ -112,6 +112,13 @@ FirebaseApp.Create(new AppOptions()
 });
 var app = builder.Build();
 
+// Set the base path
+var basePath = app.Configuration["BasePath"];
+if (!string.IsNullOrEmpty(basePath))
+{
+    app.UsePathBase(basePath);
+}
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
