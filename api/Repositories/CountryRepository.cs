@@ -2,6 +2,7 @@
 using Adventour.Api.Constants.Database;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses.Country;
+using System.Diagnostics.Metrics;
 
 namespace Adventour.Api.Repositories
 {
@@ -35,5 +36,27 @@ namespace Adventour.Api.Repositories
                 throw;
 			}
 		}
-	}
+
+        public IEnumerable<CountryResponse> GetCountries(int page, int pageSize, string continentName)
+        {
+			try
+			{
+                var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.GetCountriesByContinent)
+                    .WithParameter(StoredProcedures.Parameters.PageNumber, page)
+                    .WithParameter(StoredProcedures.Parameters.FetchRows, pageSize)
+                    .WithParameter(StoredProcedures.Parameters.ContinentName, continentName)
+                    .Build();
+
+                var countries = dbService.QueryMultiple<CountryResponse>();
+
+                return countries is not null ? countries : new List<CountryResponse>();
+
+            }
+            catch (Exception ex)
+			{
+                logger.LogError($"{logHeader} {ex.Message}");
+                throw;
+            }
+        }
+    }
 }
