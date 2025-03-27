@@ -1,14 +1,23 @@
-CREATE PROCEDURE GetItineraryById
+ALTER PROCEDURE [dbo].[GetItineraryById]
     @itineraryId INT
 AS
 BEGIN
     SET NOCOUNT ON;
+    
+    SELECT 
+    i.Id, 
+    i.title,
+    i.created_at,
+    d.Id, 
+    d.id_itinerary, 
+    d.day_number
+	FROM Itinerary i
+	LEFT JOIN Day d ON i.Id = d.id_itinerary
+	WHERE i.Id = @itineraryId;
 
-    SELECT id, id_user, title, created_at
-    FROM dbo.Itinerary
-    WHERE id = @itineraryId;
 END;
-GO
+
+Go
 
 CREATE PROCEDURE AddDay
     @itineraryId INT,
