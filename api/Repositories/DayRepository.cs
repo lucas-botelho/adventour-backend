@@ -27,9 +27,11 @@ namespace Adventour.Api.Repositories
         {
             try
             {
+                var dayNumber = GetNextDayNumber(request.ItineraryId);
+
                 var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.AddDay)
                     .WithParameter(StoredProcedures.Parameters.ItineraryId, request.ItineraryId)
-                    .WithParameter(StoredProcedures.Parameters.DayNumber, request.DayNumber)
+                    .WithParameter(StoredProcedures.Parameters.DayNumber, dayNumber)
                     .WithOutputParameter(StoredProcedures.Parameters.InsertedId, DbType.Int32)
                     .Build();
 
@@ -80,5 +82,22 @@ namespace Adventour.Api.Repositories
             }
         }
 
+        public int GetNextDayNumber(int itineraryId)
+        {
+            try
+            {
+                var dbService = queryServiceBuilder
+                    .WithStoredProcedure("GetNextDayNumber")
+                    .WithParameter("@ItineraryId", itineraryId)
+                    .Build();
+
+                return dbService.QuerySingle<int>();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                throw;
+            }
+        }
     }
 }

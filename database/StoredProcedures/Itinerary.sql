@@ -64,4 +64,17 @@ END
 
 Go
 
+Alter PROCEDURE [dbo].[GetNextDayNumber]
+    @itineraryId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        MAX(d.day_number) + 1 AS HighestDayNumber
+    FROM Day d
+    WHERE d.id_itinerary = @itineraryId;
+END;
+GO
+
 
