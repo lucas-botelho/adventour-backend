@@ -25,7 +25,12 @@ namespace Adventour.Api.Controllers
         [HttpPost("AddDay/")]
         public IActionResult AddDay([FromBody] AddDayRequest request)
         {
-            if (request.ItineraryId <= 0 || request.DayNumber <= 0)
+            if (request == null)
+            {
+                return BadRequest(new BaseApiResponse<string>("The request is empty"));
+            }
+
+            if (request.ItineraryId <= 0)
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid data"));
             }
