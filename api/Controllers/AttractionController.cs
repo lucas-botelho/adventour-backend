@@ -1,6 +1,7 @@
 ﻿using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Responses;
+using Adventour.Api.Responses.Attraction;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
@@ -21,19 +22,30 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetAttractionById(int id)
+        public IActionResult GetAttractionById(int attractionId)
         {
-            logger.LogInformation($"{logHeader} Fetching attraction with Id={id}");
 
-            var attraction = attractionRepository.GetAttractionById(id);
-
-            if (attraction == null)
+            if (attractionId < 0)
             {
-                logger.LogWarning($"{logHeader} Attraction with Id={id} not found.");
-                return NotFound(new { success = false, message = "Attraction not found" });
+                return BadRequest(new BaseApiResponse<string>("Invalid attraction id"));
             }
 
-            return Ok(new { success = true, data = attraction, message = "Attraction found" });
+            try
+            {
+                var attraction = attractionRepository.GetAttractionById(attractionId);
+
+                if (attraction == null)
+                {
+                    return NotFound(new BaseApiResponse<string>("Attraction not found"));
+                }
+
+                return Ok(new BaseApiResponse<Attraction>(attraction, "Attraction found"));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error fetching attraction: {ex.Message}");
+                return StatusCode(500, new BaseApiResponse<string>("An unexpected error occurred"));
+            }
         }
 
         [HttpPost("AddAttraction")]
@@ -52,6 +64,7 @@ namespace Adventour.Api.Controllers
             try
             {
                 var newAttractionId = attractionRepository.AddAttraction(request);
+
                 return Ok(new BaseApiResponse<int>(newAttractionId, "Attraction added successfully"));
             }
             catch (NotFoundException ex)

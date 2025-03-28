@@ -15,6 +15,7 @@
         public const string DeleteDayById = "DeleteDayById";
         public const string ItineraryExists = "ItineraryExists";
         public const string GetDayById = "GetDayById";
+        public const string GetAttractionById = "GetAttractionById";
         public const string GetNextDayNumber = "GetNextDayNumber";
         public const string AddAttraction = "AddAttraction";
         public const string GetCityById = "GetCityById";
@@ -33,10 +34,12 @@
             public const string DayNumber = "@dayNumber";
             public const string InsertedId = "@insertedId";
             public const string DayId = "@dayId";
+            public const string AttractionId = "@attractionId";
             public const string CityId = "@cityId";
             public const string Description = "@description";
             public const string AddressOne = "@addressOne";
             public const string AddressTwo = "@addressTwo";
+            
         }
     }
 }
