@@ -1,7 +1,9 @@
-﻿using Adventour.Api.Repositories.Interfaces;
+﻿using Adventour.Api.Repositories;
+using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Attraction;
+using Adventour.Api.Services.Day;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
 
@@ -48,6 +50,7 @@ namespace Adventour.Api.Controllers
             }
         }
 
+
         [HttpPost("AddAttraction")]
         public IActionResult AddAttraction([FromBody] AddAttractionRequest request)
         {
@@ -77,6 +80,41 @@ namespace Adventour.Api.Controllers
             }
 
             
+        }
+
+
+        [HttpDelete("DeleteAttraction")]
+        public IActionResult DeleteAttraction(int attractionId)
+        {
+            if (attractionId <= 0)
+            {
+                return BadRequest(new BaseApiResponse<String>("Invalid Attraction Id!"));
+            }
+
+            try
+            {
+                var attraction = attractionRepository.GetAttractionById(attractionId);
+                if (attraction == null)
+                {
+                    throw new NotFoundException("Attraction not found");
+                }
+
+                var success = attractionRepository.DeleteAttraction(attractionId);
+
+                return Ok(new BaseApiResponse<string>(attractionId.ToString(), "Attraction deleted successfully"));
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(new BaseApiResponse<string>("Attraction not found!"));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error deleting attraction: {ex.Message}");
+                return StatusCode(500, new BaseApiResponse<String>("Failed to deleting Attraction!"));
+            }
+
+            return null;
+
         }
 
     }

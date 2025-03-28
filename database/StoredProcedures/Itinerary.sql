@@ -151,3 +151,16 @@ BEGIN
 END;')
 END
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'DeleteAttractionById')
+BEGIN
+    EXEC('
+CREATE PROCEDURE DeleteAttractionById
+    @attractionId INT
+AS
+BEGIN
+    DELETE FROM Attraction
+    WHERE Id = @attractionId;
+END;')
+END
+GO

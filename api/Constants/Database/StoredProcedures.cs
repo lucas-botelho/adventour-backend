@@ -19,6 +19,7 @@
         public const string GetNextDayNumber = "GetNextDayNumber";
         public const string AddAttraction = "AddAttraction";
         public const string GetCityById = "GetCityById";
+        public const string DeleteAttractionById = "DeleteAttractionById";
 
         public static class Parameters
         {

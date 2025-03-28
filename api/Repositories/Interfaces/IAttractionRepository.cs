@@ -7,5 +7,6 @@ namespace Adventour.Api.Repositories.Interfaces
     {
         Attraction GetAttractionById(int attractionId);
         int AddAttraction(AddAttractionRequest request);
+        bool DeleteAttraction(int attractionId);
     }
 }

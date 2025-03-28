@@ -93,5 +93,22 @@ namespace Adventour.Api.Repositories
                 throw;
             }
         }
+
+        public bool DeleteAttraction(int attractionId)
+        {
+            try
+            {
+                var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.DeleteAttractionById)
+                                .WithParameter(StoredProcedures.Parameters.AttractionId, attractionId)
+                                .Build();
+
+                return dbService.Delete();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} Error deleting attraction {attractionId}: {ex.Message}");
+                return false;
+            }
+        }
     }
 }
