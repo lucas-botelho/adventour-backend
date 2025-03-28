@@ -31,11 +31,9 @@ namespace Adventour.Api.Repositories
                     .WithParameter("AttractionId", attractionId)
                     .Build();
 
-                return dbService.Connection.QueryFirstOrDefault<Attraction>(
-                    dbService.StoredProcedure,
-                    param: dbService.Parameters,
-                    commandType: CommandType.StoredProcedure
-                );
+                var attraction = dbService.QuerySingle<Attraction>();
+
+                return attraction;
             }
             catch (Exception ex)
             {
