@@ -32,6 +32,7 @@ builder.Services.AddScoped<IEmailService, SendGridService>();
 builder.Services.AddScoped<IItineraryRepository, ItineraryRepository>();
 builder.Services.AddScoped<IDayRepository, DayRepository>();
 builder.Services.AddScoped<IDayService, DayService>();
+builder.Services.AddScoped<IAttractionRepository, AttractionRepository>();
 
 builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
 
