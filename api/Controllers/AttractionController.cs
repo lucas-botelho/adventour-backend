@@ -107,9 +107,6 @@ namespace Adventour.Api.Controllers
                 logger.LogError($"Error updating attraction: {ex.Message}");
                 return StatusCode(500, new BaseApiResponse<String>("Failed to deleting Attraction!"));
             }
-
-            return null;
-
         }
 
 
