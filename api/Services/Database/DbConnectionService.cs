@@ -76,9 +76,7 @@ namespace Adventour.Api.Services.Database
             try
             {
                 Connection.Open();
-
                 var result = Connection.Execute(this.StoredProcedure, this.Parameters, commandType: CommandType.StoredProcedure);
-
                 Connection.Close();
 
                 return result > 0;
@@ -96,9 +94,7 @@ namespace Adventour.Api.Services.Database
             try
             {
                 Connection.Open();
-
                 var result = Connection.Execute(this.StoredProcedure, this.Parameters, commandType: CommandType.StoredProcedure);
-
                 Connection.Close();
 
                 return result > 0;
@@ -108,6 +104,15 @@ namespace Adventour.Api.Services.Database
                 logger.LogError($"{logHeader} {ex.Message}");
                 return false;
             }
+        }
+
+        public IDatabaseConnectionService CloneService()
+        {
+            return new DbConnectionService(logger)
+            {
+                StoredProcedure = this.StoredProcedure,
+                Parameters = new DynamicParameters(this.Parameters)
+            };
         }
 
     }

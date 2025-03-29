@@ -14,6 +14,7 @@ namespace Adventour.Api.Services.Database
         T InsertSingleWithOutput<T>(String name);
         bool Update();
         bool Delete();
+        IDatabaseConnectionService CloneService();
 
     }
 

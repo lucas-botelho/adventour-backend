@@ -4,6 +4,7 @@ using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Responses.Attraction;
 using Adventour.Api.Responses.City;
+using Azure.Core;
 using Dapper;
 using SendGrid.Helpers.Errors.Model;
 using System.Data;
@@ -27,8 +28,8 @@ namespace Adventour.Api.Repositories
             try
             {
                 var dbService = queryServiceBuilder
-                    .WithStoredProcedure("GetAttractionById")
-                    .WithParameter("AttractionId", attractionId)
+                    .WithStoredProcedure(StoredProcedures.GetAttractionById)
+                    .WithParameter(StoredProcedures.Parameters.AttractionId, attractionId)
                     .Build();
 
                 var attraction = dbService.QuerySingle<Attraction>();
@@ -47,10 +48,9 @@ namespace Adventour.Api.Repositories
             try
             {
                 var city = GetCityById(request.CityId);
-
                 if (city == null)
                 {
-                    throw new NotFoundException("That city doesn't exist");
+                    throw new NotFoundException("The city doesn't exist");
                 }
 
                 var dbService = queryServiceBuilder
@@ -90,6 +90,41 @@ namespace Adventour.Api.Repositories
             catch (Exception ex)
             {
                 logger.LogError($"{logHeader} {ex.Message}");
+                throw;
+            }
+        }
+
+        public bool UpdateAttraction(UpdateAttractionRequest request)
+        {
+            try
+            {
+                var attraction = GetAttractionById(request.AttractionId);
+                if (attraction == null)
+                {
+                    throw new NotFoundException("The attraction doesn't exist");
+                }
+
+                var city = GetCityById(request.CityId);
+                if (city == null)
+                {
+                    throw new NotFoundException("The city doesn't exist");
+                }
+
+                var dbService = queryServiceBuilder
+                .WithStoredProcedure(StoredProcedures.UpdateAttraction)
+                .WithParameter(StoredProcedures.Parameters.AttractionId, request.AttractionId)
+                .WithParameter(StoredProcedures.Parameters.CityId, request.CityId)
+                .WithParameter(StoredProcedures.Parameters.Name, request.Name)
+                .WithParameter(StoredProcedures.Parameters.Description, request.Description)
+                .WithParameter(StoredProcedures.Parameters.AddressOne, request.AddressOne)
+                .WithParameter(StoredProcedures.Parameters.AddressTwo, request.AddressTwo)
+                .Build();
+
+                return dbService.Update();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} Error updating attraction {request.AttractionId}: {ex.Message}");
                 throw;
             }
         }

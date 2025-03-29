@@ -20,6 +20,7 @@
         public const string AddAttraction = "AddAttraction";
         public const string GetCityById = "GetCityById";
         public const string DeleteAttractionById = "DeleteAttractionById";
+        public const string UpdateAttraction = "UpdateAttraction";
 
         public static class Parameters
         {

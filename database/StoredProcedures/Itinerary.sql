@@ -164,3 +164,29 @@ BEGIN
 END;')
 END
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'UpdateAttraction')
+BEGIN
+    EXEC('
+CREATE PROCEDURE UpdateAttraction
+    @attractionId INT,
+    @cityId INT,
+    @name NVARCHAR(255),
+    @description NVARCHAR(MAX),
+    @addressOne NVARCHAR(255),
+    @addressTwo NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    UPDATE Attraction
+    SET 
+        id_city = @cityId,
+        name = @name,
+        description = @description,
+        address_one = @addressOne,
+        address_two = @addressTwo
+    WHERE Id = @attractionId;
+END;')
+END
+Go

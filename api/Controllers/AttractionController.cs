@@ -3,6 +3,7 @@ using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Attraction;
+using Adventour.Api.Responses.City;
 using Adventour.Api.Services.Day;
 using Microsoft.AspNetCore.Mvc;
 using SendGrid.Helpers.Errors.Model;
@@ -80,6 +81,35 @@ namespace Adventour.Api.Controllers
             }
 
             
+        }
+
+        [HttpPatch("UpdateAttraction")]
+        public IActionResult UpdateAttraction([FromBody] UpdateAttractionRequest request)
+        {
+            if (request.AttractionId <= 0)
+            {
+                return BadRequest(new BaseApiResponse<String>("Invalid Attraction Id!"));
+            }
+
+            try
+            {
+
+                var success = attractionRepository.UpdateAttraction(request);
+
+                return Ok(new BaseApiResponse<string>(request.AttractionId.ToString(), "Attraction updated successfully"));
+            }
+            catch (NotFoundException ex)
+            {
+                return ex.Message.Contains("attraction") ? NotFound(new BaseApiResponse<string>("Attraction not found!")) : NotFound(new BaseApiResponse<string>("City not found!"));                
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Error updating attraction: {ex.Message}");
+                return StatusCode(500, new BaseApiResponse<String>("Failed to deleting Attraction!"));
+            }
+
+            return null;
+
         }
 
 
