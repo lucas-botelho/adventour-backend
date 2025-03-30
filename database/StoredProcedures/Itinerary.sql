@@ -190,3 +190,81 @@ BEGIN
 END;')
 END
 Go
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'GetTimeSlotsByDayId')
+BEGIN
+    EXEC('
+CREATE PROCEDURE [dbo].[GetTimeSlotsByDayId]
+    @dayId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        Id,
+        id_attraction,
+        id_day,
+        start_time,
+        end_time
+    FROM TimeSlot
+    WHERE id_day = @dayId;
+END;')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'AddTimeSlot')
+BEGIN
+    EXEC('
+CREATE PROCEDURE AddTimeSlot
+    @attractionId INT,
+    @dayId INT,
+    @startTime DATETIME,
+    @endTime DATETIME,
+    @insertedId INT OUTPUT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO TimeSlot (id_attraction, id_day, start_time, end_time)
+    VALUES (@attractionId, @dayId, @startTime, @endTime);
+    
+    SET @insertedId = SCOPE_IDENTITY();
+END;')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'DeleteTimeSlot')
+BEGIN
+    EXEC('
+CREATE PROCEDURE DeleteTimeSlot
+    @timeSlotId INT
+AS
+BEGIN
+    DELETE FROM TimeSlot
+    WHERE Id = @timeSlotId;
+END;')
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = 'GetTimeSlotById')
+BEGIN
+    EXEC('
+CREATE PROCEDURE [dbo].[GetTimeSlotById]
+    @timeSlotId INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    SELECT 
+        Id,
+        id_attraction,
+        id_day,
+        start_time,
+        end_time
+    FROM TimeSlot
+    WHERE Id = @timeSlotId;
+END;')
+END
+GO
+
+

@@ -21,6 +21,9 @@
         public const string GetCityById = "GetCityById";
         public const string DeleteAttractionById = "DeleteAttractionById";
         public const string UpdateAttraction = "UpdateAttraction";
+        public const string AddTimeSlot = "AddTimeSlot";
+        public const string DeleteTimeSlot = "DeleteTimeSlot";
+        public const string GetTimeSlotsByDayId = "GetTimeSlotsByDayId";
 
         public static class Parameters
         {
@@ -41,6 +44,9 @@
             public const string Description = "@description";
             public const string AddressOne = "@addressOne";
             public const string AddressTwo = "@addressTwo";
+            public const string TimeSlotId = "@timeSlotId";
+            public const string StartTime = "@startTime";
+            public const string EndTime = "@endTime";
             
         }
     }
