@@ -1,11 +1,12 @@
 ﻿namespace Adventour.Api.Responses.Country
 {
+    using Adventour.Api.Models;
     public class CountriesListResponse
     {
-        public CountriesListResponse(IEnumerable<CountryResponse> countries)
+        public CountriesListResponse(IEnumerable<Country> countries)
         {
             this.Countries = countries;
         }
-        public IEnumerable<CountryResponse> Countries { get; set; }
+        public IEnumerable<Country> Countries { get; set; }
     }
 }

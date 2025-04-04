@@ -1,4 +1,5 @@
-﻿using Adventour.Api.Repositories.Interfaces;
+﻿using Adventour.Api.Models;
+using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Country;
 using Microsoft.AspNetCore.Mvc;
@@ -26,36 +27,29 @@ namespace Adventour.Api.Controllers
                 return BadRequest(new BaseApiResponse<string>("Invalid country code"));
             }
 
-            try
-            {
-                var country = countryRepository.GetCountry(code);
+            var country = countryRepository.GetCountry(code);
 
-                return Ok(new BaseApiResponse<CountryResponse>(country, "Country found"));
-            }
-            catch (Exception)
-            {
-                return NotFound(new BaseApiResponse<string>("Country not found"));
-            }
-
+            return country is null
+            ? NotFound(new BaseApiResponse<string>("Country not found"))
+            : Ok(new BaseApiResponse<Country>(country, "Country found"));
         }
 
         [HttpGet("list/countries")]
-        public IActionResult GetCountries([FromQuery]int page, [FromQuery]int pageSize, [FromQuery] string continent)
+        public IActionResult GetCountries([FromQuery] int page, [FromQuery] int pageSize, [FromQuery] string continent, [FromQuery] string selectedCountryCode)
         {
-            if (page < 1 || pageSize < 1 || string.IsNullOrWhiteSpace(continent))
+            if (page < 1 || pageSize < 1 || string.IsNullOrWhiteSpace(continent) || selectedCountryCode.Length != 2)
             {
-                return BadRequest(new BaseApiResponse<string>("Invalid query string."));
+                return BadRequest(new BaseApiResponse<string>("Invalid query string parameters."));
             }
 
-            try
-            {
-                var countries = countryRepository.GetCountries(page, pageSize, continent);
-                return Ok(new BaseApiResponse<CountriesListResponse>(new CountriesListResponse(countries), "Countries found"));
-            }
-            catch (Exception)
+            var countries = countryRepository.GetCountries(page, pageSize, continent, selectedCountryCode);
+
+            if (countries is null || !countries.Any())
             {
                 return NotFound(new BaseApiResponse<string>("Countries not found"));
             }
+
+            return Ok(new BaseApiResponse<CountriesListResponse>(new CountriesListResponse(countries), "Countries found"));
         }
     }
 }

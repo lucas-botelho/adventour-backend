@@ -1,4 +1,5 @@
-﻿using Adventour.Api.Requests.Authentication;
+﻿using Adventour.Api.Models;
+using Adventour.Api.Requests.Authentication;
 using Adventour.Api.Responses.Authentication;
 
 namespace Adventour.Api.Repositories.Interfaces
@@ -11,6 +12,6 @@ namespace Adventour.Api.Repositories.Interfaces
         string AuthenticateUser(UserRegistrationRequest registration);
         bool UpdatePublicData(UserUpdateRequest data, Guid userId);
         void ConfirmEmail(string userId);
-        Task<PersonDataResponse> GetUser(string token);
+        Task<Person?> GetUser(string token);
     }
 }

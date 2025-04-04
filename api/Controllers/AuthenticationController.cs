@@ -7,6 +7,8 @@ using Adventour.Api.Services.Email.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using FirebaseAdmin.Auth;
+using Adventour.Api.Data;
+using Adventour.Api.Models;
 
 
 namespace Adventour.Api.Controllers
@@ -30,11 +32,12 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpGet("exist/{email}")]
-        public IActionResult UserByEmail(string email) {
+        public IActionResult UserByEmail(string email)
+        {
 
             if (userRepository.UserExists(email))
             {
-                return StatusCode(409,new BaseApiResponse<EmailRegistredResponse>(new EmailRegistredResponse(true), "User exists"));
+                return StatusCode(409, new BaseApiResponse<EmailRegistredResponse>(new EmailRegistredResponse(true), "User exists"));
             }
 
             return Ok(new BaseApiResponse<EmailRegistredResponse>(new EmailRegistredResponse(false), "User doesn't exist"));
@@ -78,8 +81,8 @@ namespace Adventour.Api.Controllers
                 this.userRepository.ConfirmEmail(request.UserId);
 
                 return Ok(new BaseApiResponse<TokenResponse>(
-                    new TokenResponse() 
-                    { 
+                    new TokenResponse()
+                    {
                         Token = tokenProvider.Create(request.UserId)
                     },
                     "Email validated successfully")
@@ -96,50 +99,22 @@ namespace Adventour.Api.Controllers
         {
             var userIdGuid = new Guid(userId);
 
-            if (userRepository.UserExists(userIdGuid))
-            {
-                var isUpdated = userRepository.UpdatePublicData(data, userIdGuid);
+            var isUpdated = userRepository.UpdatePublicData(data, userIdGuid);
 
-                if (isUpdated)
-                {
-                    return Ok(new BaseApiResponse<UpdateUserPublicDataResponse>(new UpdateUserPublicDataResponse() { Updated = isUpdated }, "User updated successfully"));
-                }
-
-                return StatusCode(500, new BaseApiResponse<string>("User update failed"));
-            }
-
-            return StatusCode(404, new BaseApiResponse<string>("User does not exist"));
+            return isUpdated ? Ok(new BaseApiResponse<UpdateUserPublicDataResponse>(new UpdateUserPublicDataResponse(isUpdated), "User updated successfully"))
+                : StatusCode(404, new BaseApiResponse<string>("User does not exist"));
         }
 
         [HttpGet("user/me")]
         [Authorize]
         public async Task<IActionResult> GetUser()
         {
-            var authHeader = Request.Headers["Authorization"].ToString();
-            if (string.IsNullOrEmpty(authHeader))
-            {  
-                return Unauthorized();
-            }
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var user = await this.userRepository.GetUser(token);
 
-            try
-            {
-                
-                var user = await this.userRepository.GetUser(authHeader.Replace("Bearer ", ""));
-
-                if (user == null)
-                {
-                    return NotFound(new BaseApiResponse<string>("User not found."));
-                }
-
-                return Ok(new BaseApiResponse<PersonDataResponse>(user, ""));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new BaseApiResponse<string>("Internal error."));
-            }
+            return user is null 
+                ? NotFound(new BaseApiResponse<string>("User not found."))
+                : Ok(new BaseApiResponse<Person>(user, "User found."));
         }
-
-
-
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.Data.SqlClient;
 
 namespace Adventour.Api.Services.Database
 {
-    public interface IDatabaseConnectionService
+    public interface IDatabaseService
     {
         DynamicParameters Parameters { get; set; }
         string StoredProcedure { get; set; }
