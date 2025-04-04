@@ -14,15 +14,13 @@ namespace Adventour.Api.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly IQueryServiceBuilder queryServiceBuilder;
         private readonly ILogger<UserRepository> logger;
         private const string logHeader = "## UserRepository ##: ";
         private readonly AdventourContext db;
 
 
-        public UserRepository(IQueryServiceBuilder dbConnectionServiceBuilder, ILogger<UserRepository> logger, AdventourContext db)
+        public UserRepository(ILogger<UserRepository> logger, AdventourContext db)
         {
-            this.queryServiceBuilder = dbConnectionServiceBuilder;
             this.logger = logger;
             this.db = db;
         }
@@ -34,15 +32,6 @@ namespace Adventour.Api.Repositories
 
         public Guid CreateUser(UserRegistrationRequest registration)
         {
-            //todo : unit test
-
-            //var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CreateUser)
-            //    .WithParameter(StoredProcedures.Parameters.Name, registration.Name)
-            //    .WithParameter(StoredProcedures.Parameters.OAuthId, registration.OAuthId)
-            //    .WithParameter(StoredProcedures.Parameters.Email, registration.Email)
-            //    .WithParameter(StoredProcedures.Parameters.PhotoUrl, registration.PhotoUrl)
-            //    .Build();
-
             var user = new Person
             {
                 Name = registration.Name,
@@ -54,49 +43,49 @@ namespace Adventour.Api.Repositories
             db.Add(user);
             db.SaveChanges();
 
-
             return user.Id;
         }
 
         public bool UpdatePublicData(UserUpdateRequest data, Guid userId)
         {
-            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.UpdateUserPublicData)
-                .WithParameter(StoredProcedures.Parameters.UserId, userId)
-                .WithParameter(StoredProcedures.Parameters.Username, data.UserName)
-                .WithParameter(StoredProcedures.Parameters.PhotoUrl, data.PublicUrl)
-                .Build();
+            var person = db.Person.FirstOrDefault(p => p.Id == userId);
 
-            return dbService.Update();
+            if (person == null)
+            {
+                logger.LogError($"{logHeader} tried updating public data for non existing userId {userId}");
+                return false;
+            }
+            person.Username = data.UserName;
+            person.PhotoUrl = data.PublicUrl;
+            db.SaveChanges();
+
+            return true;
         }
 
         public bool UserExists(string email)
         {
-            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CheckUserExistsByEmail)
-            .WithParameter(StoredProcedures.Parameters.Email, email)
-            .Build();
-
-            return dbService.QuerySingle<int>() > 0;
+            return db.Person.Any(p => p.Email == email);
         }
 
         public bool UserExists(Guid userId)
         {
-            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CheckUserExistsById)
-            .WithParameter(StoredProcedures.Parameters.UserId, userId)
-            .Build();
-
-            return dbService.QuerySingle<int>() > 0;
+            return db.Person.Any(p => p.Id == userId);
         }
 
         public void ConfirmEmail(string userId)
         {
-            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.ConfirmEmail)
-                .WithParameter(StoredProcedures.Parameters.UserId, userId)
-                .Build();
+            var person = db.Person.FirstOrDefault(p => p.Id == new Guid(userId));
 
-            dbService.QuerySingle<int>();
+            if (person != null)
+            {
+                person.Verified = true;
+                db.SaveChanges();
+            }
+
+            logger.LogError($"{logHeader} tried confirming email for non existing userId");
         }
 
-        public async Task<Person>GetUser(string token)
+        public async Task<Person?> GetUser(string token)
         {
             if (token.IsNullOrEmpty())
                 return null;
@@ -106,11 +95,7 @@ namespace Adventour.Api.Repositories
             if (decodedToken is null)
                 return null;
 
-            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.GetPersonByOAuthId)
-                .WithParameter(StoredProcedures.Parameters.OAuthId, decodedToken.Uid)
-                .Build();
-
-            return dbService.QuerySingle<Person>();
+            return db.Person.FirstOrDefault(p => p.OauthId == decodedToken.Uid);
         }
     }
 }
