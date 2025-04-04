@@ -101,9 +101,7 @@ BEGIN
             SET NOCOUNT ON;
 
             SELECT 
-                name, 
-                email, 
-                photo_url 
+                * 
             FROM dbo.Person 
             WHERE oauth_id = @OAuthId;
         END;

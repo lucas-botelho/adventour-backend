@@ -30,15 +30,15 @@ BEGIN
         BEGIN
             SET NOCOUNT ON;
 
-            DECLARE @offsetRows INT = (@PageNumber - 1) * @FetchRows;
+            DECLARE @offsetRows INT = (@pageNumber - 1) * @fetchRows;
 
             SELECT * 
             FROM Country 
-            WHERE continent_name LIKE @continentName
+            WHERE continent_name LIKE @continentName AND svg IS NOT NULL 
             ORDER BY id
             OFFSET @offsetRows ROWS
             FETCH NEXT @fetchRows ROWS ONLY;
-        END;
+        END
     ');
 END;
 GO

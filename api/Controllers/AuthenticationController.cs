@@ -117,7 +117,7 @@ namespace Adventour.Api.Controllers
         {
             var authHeader = Request.Headers["Authorization"].ToString();
             if (string.IsNullOrEmpty(authHeader))
-            {
+            {  
                 return Unauthorized();
             }
 
