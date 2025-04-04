@@ -4,6 +4,7 @@ using Adventour.Api.Data;
 using Adventour.Api.Models;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses.Country;
+using Google.Apis.Upload;
 using System.Diagnostics.Metrics;
 
 namespace Adventour.Api.Repositories
@@ -25,12 +26,12 @@ namespace Adventour.Api.Repositories
         {
             try
             {
-                return db.Country.Where(c => c.Code.Equals(countryCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+                return db.Country.Where(c => c.Code.Equals(countryCode.ToUpper())).FirstOrDefault();
             }
             catch (Exception ex)
             {
                 logger.LogError($"{logHeader} {ex.Message}");
-                throw;
+                return null;
             }
         }
 
@@ -40,8 +41,8 @@ namespace Adventour.Api.Repositories
 			{
                 //Get all countries except the selected country
                 return db.Country.Where(c => 
-                c.ContinentName.Equals(continentName, StringComparison.OrdinalIgnoreCase) 
-                && c.Code.Equals(selectedCountryCode, StringComparison.OrdinalIgnoreCase))
+                c.ContinentName.ToLower().Equals(continentName.ToLower()) 
+                && !c.Code.Equals(selectedCountryCode.ToUpper()))
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
                     .ToList();
@@ -49,7 +50,7 @@ namespace Adventour.Api.Repositories
             catch (Exception ex)
 			{
                 logger.LogError($"{logHeader} {ex.Message}");
-                throw;
+                return null;
             }
         }
     }

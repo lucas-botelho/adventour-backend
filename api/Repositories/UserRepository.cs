@@ -7,6 +7,8 @@ using Adventour.Api.Responses.Authentication;
 using FirebaseAdmin.Auth;
 using Newtonsoft.Json.Linq;
 using Microsoft.IdentityModel.Tokens;
+using Adventour.Api.Data;
+using Adventour.Api.Models;
 
 namespace Adventour.Api.Repositories
 {
@@ -15,11 +17,14 @@ namespace Adventour.Api.Repositories
         private readonly IQueryServiceBuilder queryServiceBuilder;
         private readonly ILogger<UserRepository> logger;
         private const string logHeader = "## UserRepository ##: ";
+        private readonly AdventourContext db;
 
-        public UserRepository(IQueryServiceBuilder dbConnectionServiceBuilder, ILogger<UserRepository> logger)
+
+        public UserRepository(IQueryServiceBuilder dbConnectionServiceBuilder, ILogger<UserRepository> logger, AdventourContext db)
         {
             this.queryServiceBuilder = dbConnectionServiceBuilder;
             this.logger = logger;
+            this.db = db;
         }
 
         public string AuthenticateUser(UserRegistrationRequest registration)
@@ -31,15 +36,26 @@ namespace Adventour.Api.Repositories
         {
             //todo : unit test
 
-            var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CreateUser)
-                .WithParameter(StoredProcedures.Parameters.Name, registration.Name)
-                .WithParameter(StoredProcedures.Parameters.OAuthId, registration.OAuthId)
-                .WithParameter(StoredProcedures.Parameters.Email, registration.Email)
-                .WithParameter(StoredProcedures.Parameters.PhotoUrl, registration.PhotoUrl)
-                .Build();
+            //var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.CreateUser)
+            //    .WithParameter(StoredProcedures.Parameters.Name, registration.Name)
+            //    .WithParameter(StoredProcedures.Parameters.OAuthId, registration.OAuthId)
+            //    .WithParameter(StoredProcedures.Parameters.Email, registration.Email)
+            //    .WithParameter(StoredProcedures.Parameters.PhotoUrl, registration.PhotoUrl)
+            //    .Build();
+
+            var user = new Person
+            {
+                Name = registration.Name,
+                Email = registration.Email,
+                OauthId = registration.OAuthId,
+                PhotoUrl = registration.PhotoUrl
+            };
+
+            db.Add(user);
+            db.SaveChanges();
 
 
-            return dbService.QuerySingle<Guid>();
+            return user.Id;
         }
 
         public bool UpdatePublicData(UserUpdateRequest data, Guid userId)
@@ -80,7 +96,7 @@ namespace Adventour.Api.Repositories
             dbService.QuerySingle<int>();
         }
 
-        public async Task<PersonDataResponse >GetUser(string token)
+        public async Task<Person>GetUser(string token)
         {
             if (token.IsNullOrEmpty())
                 return null;
@@ -94,7 +110,7 @@ namespace Adventour.Api.Repositories
                 .WithParameter(StoredProcedures.Parameters.OAuthId, decodedToken.Uid)
                 .Build();
 
-            return dbService.QuerySingle<PersonDataResponse>();
+            return dbService.QuerySingle<Person>();
         }
     }
 }
