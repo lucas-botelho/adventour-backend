@@ -8,9 +8,9 @@ namespace Adventour.Api.Builders
 {
     public class QueryServiceBuilder : IQueryServiceBuilder
     {
-        private readonly IDatabaseConnectionService service;
+        private readonly IDatabaseService service;
 
-        public QueryServiceBuilder(IDatabaseConnectionService service)
+        public QueryServiceBuilder(IDatabaseService service)
         {
             this.service = service;
         }
@@ -27,7 +27,7 @@ namespace Adventour.Api.Builders
             return this;
         }
 
-        public IDatabaseConnectionService Build()
+        public IDatabaseService Build()
         {
             return service;
         }

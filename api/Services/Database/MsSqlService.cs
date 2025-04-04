@@ -4,7 +4,7 @@ using System.Data;
 
 namespace Adventour.Api.Services.Database
 {
-    public class DbConnectionService : IDatabaseConnectionService
+    public class MsSqlService : IDatabaseService
     {
 
         public SqlConnection Connection { get; set; }
@@ -12,9 +12,9 @@ namespace Adventour.Api.Services.Database
         public string StoredProcedure { get; set; }
 
         private const string logHeader = "## DbConnectionService ##: ";
-        private readonly ILogger<DbConnectionService> logger;
+        private readonly ILogger<MsSqlService> logger;
 
-        public DbConnectionService(ILogger<DbConnectionService> logger)
+        public MsSqlService(ILogger<MsSqlService> logger)
         {
             this.Parameters = new DynamicParameters();
             Connection = new SqlConnection(Environment.GetEnvironmentVariable("CONNECTION_STRING")!);
