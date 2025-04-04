@@ -1,5 +1,7 @@
 ﻿using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Constants.Database;
+using Adventour.Api.Data;
+using Adventour.Api.Models;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses.Country;
 using System.Diagnostics.Metrics;
@@ -11,46 +13,38 @@ namespace Adventour.Api.Repositories
 		private readonly IQueryServiceBuilder queryServiceBuilder;
         private readonly ILogger<CountryRepository> logger;
 		private const string logHeader = "## CountryRepository ##: ";
+        private readonly AdventourContext db;
 
-        public CountryRepository(IQueryServiceBuilder queryServiceBuilder, ILogger<CountryRepository> logger)
+        public CountryRepository(IQueryServiceBuilder queryServiceBuilder, ILogger<CountryRepository> logger, AdventourContext db)
         {
             this.queryServiceBuilder = queryServiceBuilder;
             this.logger = logger;
-
+            this.db = db;
         }
-        public CountryResponse GetCountry(string countryCode)
-		{
-			try
-			{
-				var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.GetCountryByCode)
-                    .WithParameter(StoredProcedures.Parameters.Code, countryCode)
-                    .Build();
-
-				var country = dbService.QuerySingle<CountryResponse>();
-
-				return country is not null ? country : new CountryResponse();
+        public Country? GetCountry(string countryCode)
+        {
+            try
+            {
+                return db.Country.Where(c => c.Code.Equals(countryCode, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
             }
-			catch (Exception ex)
-			{
-				logger.LogError($"{logHeader} {ex.Message}");
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
                 throw;
-			}
-		}
+            }
+        }
 
-        public IEnumerable<CountryResponse> GetCountries(int page, int pageSize, string continentName)
+        public IEnumerable<Country>? GetCountries(int page, int pageSize, string continentName, string selectedCountryCode)
         {
 			try
 			{
-                var dbService = queryServiceBuilder.WithStoredProcedure(StoredProcedures.GetCountriesByContinent)
-                    .WithParameter(StoredProcedures.Parameters.PageNumber, page)
-                    .WithParameter(StoredProcedures.Parameters.FetchRows, pageSize)
-                    .WithParameter(StoredProcedures.Parameters.ContinentName, continentName)
-                    .Build();
-
-                var countries = dbService.QueryMultiple<CountryResponse>();
-
-                return countries is not null ? countries : new List<CountryResponse>();
-
+                //Get all countries except the selected country
+                return db.Country.Where(c => 
+                c.ContinentName.Equals(continentName, StringComparison.OrdinalIgnoreCase) 
+                && c.Code.Equals(selectedCountryCode, StringComparison.OrdinalIgnoreCase))
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
             }
             catch (Exception ex)
 			{
