@@ -29,13 +29,6 @@ services:
       ACCEPT_EULA: "Y"
     volumes:
       - mssql_data:/var/opt/mssql
-      # - ./database/init:/scripts
-    # command: >
-      # /bin/bash -c "
-      # sleep 20s &&
-      # /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '${SQL_PASSWORD}' -d master -i /scripts/database_setup.sql
-      # echo 'Init done.';
-      # "
     entrypoint: ["/bin/bash", "-c", "
       /opt/mssql/bin/sqlservr & 
       pid=$$!;
@@ -45,11 +38,7 @@ services:
       done;
       echo 'SQL Server is up! Running script database_setup';
       /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '${SQL_PASSWORD}' -d master -i /scripts/database_setup.sql;
-      echo 'Running script stored-procedures/authentication';
-      /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '${SQL_PASSWORD}' -d master -i /scripts/stored-procedures/authentication.sql;
-      echo 'Running script stored-procedures/country';
-      /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '${SQL_PASSWORD}' -d master -i /scripts/stored-procedures/country.sql;
-      echo 'Running script data-dumps/updated_countries';
+      echo 'Running script data-dumps/countries';
       /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '${SQL_PASSWORD}' -d master -i /scripts/data-dumps/countries.sql;
       wait $pid;
     "]
