@@ -10,15 +10,13 @@ using System.Diagnostics.Metrics;
 namespace Adventour.Api.Repositories
 {
     public class CountryRepository : ICountryRepository
-	{
-		private readonly IQueryServiceBuilder queryServiceBuilder;
+    {
         private readonly ILogger<CountryRepository> logger;
-		private const string logHeader = "## CountryRepository ##: ";
+        private const string logHeader = "## CountryRepository ##: ";
         private readonly AdventourContext db;
 
-        public CountryRepository(IQueryServiceBuilder queryServiceBuilder, ILogger<CountryRepository> logger, AdventourContext db)
+        public CountryRepository(ILogger<CountryRepository> logger, AdventourContext db)
         {
-            this.queryServiceBuilder = queryServiceBuilder;
             this.logger = logger;
             this.db = db;
         }
@@ -35,23 +33,52 @@ namespace Adventour.Api.Repositories
             }
         }
 
-        public IEnumerable<Country>? GetCountries(int page, int pageSize, string continentName, string selectedCountryCode)
+        public IEnumerable<Country>? GetCountries(string continentName, string selectedCountryCode, int pageSize, int page, out int total)
         {
-			try
-			{
-                //Get all countries except the selected country
-                return db.Country.Where(c => 
-                c.ContinentName.ToLower().Equals(continentName.ToLower()) 
-                && !c.Code.Equals(selectedCountryCode.ToUpper()))
-                    .Skip((page - 1) * pageSize)
-                    .Take(pageSize)
+            total = 0;
+
+            try
+            {
+                var allCountries = db.Country
+                    .Where(c => c.ContinentName.ToLower().Equals(continentName.ToLower()) && !string.IsNullOrEmpty(c.Svg))
+                    .OrderBy(c => c.Name)
+                    .ToList();
+
+                int selectedIndex = allCountries.FindIndex(c => c.Code.Equals(selectedCountryCode.ToUpper()));
+
+
+                if (selectedIndex == -1)
+                {
+                    logger.LogError($"{logHeader} Country code not found.");
+                    return null;
+                }
+
+                total = allCountries.Count;
+                if (page >= 0)
+                {
+                    // Positive page (next countries)
+                    return allCountries
+                        .Skip(selectedIndex + page * pageSize)
+                        .Take(pageSize)
+                        .ToList();
+                }
+
+                // Nagative Page (previous countries)
+                int startIndex = Math.Max(0, selectedIndex + page * pageSize); 
+                int count = Math.Min(pageSize, selectedIndex - startIndex);
+
+                return allCountries
+                    .Skip(startIndex)
+                    .Take(count)
                     .ToList();
             }
             catch (Exception ex)
-			{
+            {
                 logger.LogError($"{logHeader} {ex.Message}");
                 return null;
             }
         }
+
+
     }
 }

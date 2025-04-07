@@ -74,15 +74,26 @@ namespace Adventour.Api.Repositories
 
         public void ConfirmEmail(string userId)
         {
-            var person = db.Person.FirstOrDefault(p => p.Id == new Guid(userId));
+            Person? person;
 
-            if (person != null)
+            try
             {
-                person.Verified = true;
-                db.SaveChanges();
+                person = db.Person.FirstOrDefault(p => p.Id == new Guid(userId));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader}: {ex.Message}");
+                return;
             }
 
-            logger.LogError($"{logHeader} tried confirming email for non existing userId");
+            if (person == null)
+            {
+                logger.LogError($"{logHeader} userId doesn't exist in database.");
+                return;
+            }
+
+            person.Verified = true;
+            db.SaveChanges();
         }
 
         public async Task<Person?> GetUser(string token)

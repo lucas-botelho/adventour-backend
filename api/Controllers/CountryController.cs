@@ -35,21 +35,33 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpGet("list/countries")]
-        public IActionResult GetCountries([FromQuery] int page, [FromQuery] int pageSize, [FromQuery] string continent, [FromQuery] string selectedCountryCode)
+        public IActionResult GetCountries(
+                [FromQuery] int pageSize,
+                [FromQuery] string continent,
+                [FromQuery] string selectedCountryCode,
+                [FromQuery] int page = 0
+            )
         {
-            if (page < 1 || pageSize < 1 || string.IsNullOrWhiteSpace(continent) || selectedCountryCode.Length != 2)
+            if (pageSize < 1 || string.IsNullOrWhiteSpace(continent) || selectedCountryCode.Length != 2)
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid query string parameters."));
             }
 
-            var countries = countryRepository.GetCountries(page, pageSize, continent, selectedCountryCode);
+            int total = 0;
+            var countries = countryRepository.GetCountries(
+                continent,
+                selectedCountryCode.ToUpper(),
+                pageSize,
+                page,
+                out total
+            );
 
             if (countries is null || !countries.Any())
             {
                 return NotFound(new BaseApiResponse<string>("Countries not found"));
             }
 
-            return Ok(new BaseApiResponse<CountriesListResponse>(new CountriesListResponse(countries), "Countries found"));
+            return Ok(new BaseApiResponse<CountriesListResponse>(new CountriesListResponse(countries, total), "Countries found"));
         }
     }
 }

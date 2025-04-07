@@ -5,7 +5,7 @@ namespace Adventour.Api.Repositories.Interfaces
 {
     public interface ICountryRepository
     {
-        IEnumerable<Country>? GetCountries(int page, int pageSize, string continentName, string selectedCountryCode);
+        IEnumerable<Country>? GetCountries(string continentName, string selectedCountryCode, int pageSize, int page, out int total);
         Country? GetCountry(string countryCode);
     }
 }
