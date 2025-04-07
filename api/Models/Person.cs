@@ -11,7 +11,7 @@ namespace Adventour.Api.Models
         public Guid Id { get; set; }
 
         [Column("oauth_id")]
-        public string OauthId { get; set; }
+        public string? OauthId { get; set; }
 
         [Required]
         [MaxLength(200)]
@@ -20,7 +20,7 @@ namespace Adventour.Api.Models
 
         [MaxLength(25)]
         [Column("username")]
-        public string Username { get; set; }
+        public string? Username { get; set; }
 
         [Required]
         [MaxLength(200)]
@@ -31,7 +31,7 @@ namespace Adventour.Api.Models
         public bool Verified { get; set; }
 
         [Column("photo_url")]
-        public string PhotoUrl { get; set; }
+        public string? PhotoUrl { get; set; }
 
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Itinerary> Itineraries { get; set; }

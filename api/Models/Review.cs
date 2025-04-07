@@ -25,6 +25,6 @@ namespace Adventour.Api.Models
         public Person Person { get; set; }
 
         [Column("comment")]
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
     }
 }

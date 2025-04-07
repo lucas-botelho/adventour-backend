@@ -23,13 +23,13 @@ namespace Adventour.Api.Models
         public int? AverageRating { get; set; }
 
         [Column("description")]
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         [Column("address_one")]
-        public string AddressOne { get; set; }
+        public string? AddressOne { get; set; }
 
         [Column("address_two")]
-        public string AddressTwo { get; set; }
+        public string? AddressTwo { get; set; }
 
         public ICollection<AttractionInfo> AttractionInfos { get; set; }
         public ICollection<AttractionImages> AttractionImages { get; set; }
