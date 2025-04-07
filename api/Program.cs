@@ -2,6 +2,7 @@
 using Adventour.Api.Builders;
 using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Configurations;
+using Adventour.Api.Data;
 using Adventour.Api.Repositories;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Services.Authentication;
@@ -12,10 +13,16 @@ using Adventour.Api.Services.FileUpload.Interfaces;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//EF database connection
+builder.Services.AddDbContext<AdventourContext>(options =>
+    options.UseSqlServer(Environment.GetEnvironmentVariable("CONNECTION_STRING")));
+
 
 //Transient objects are always different; a new instance is provided to every controller and every service.
 //builder.Services.AddTransient
@@ -24,7 +31,7 @@ var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddScoped
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
-builder.Services.AddScoped<IDatabaseConnectionService, DbConnectionService>();
+builder.Services.AddScoped<IDatabaseService, MsSqlService>();
 builder.Services.AddScoped<IFileUploadService, CloudinaryService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IEmailService, SendGridService>();
