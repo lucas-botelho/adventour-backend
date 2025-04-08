@@ -21,15 +21,15 @@ BEGIN
     );
 END;
 
-IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'City')
-BEGIN
-    CREATE TABLE City (
-         id INT PRIMARY KEY IDENTITY(1,1),
-        id_country INT NOT NULL,
-        name NVARCHAR(255) NOT NULL,
-        FOREIGN KEY (id_country) REFERENCES Country(id)
-    );
-END;
+--IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'City')
+--BEGIN
+--    CREATE TABLE City (
+--         id INT PRIMARY KEY IDENTITY(1,1),
+--        id_country INT NOT NULL,
+--        name NVARCHAR(255) NOT NULL,
+--        FOREIGN KEY (id_country) REFERENCES Country(id)
+--    );
+--END;
 
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Person')
 BEGIN
@@ -48,13 +48,13 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 BEGIN
     CREATE TABLE Attraction (
          id INT PRIMARY KEY IDENTITY(1,1),
-        id_city INT NULL,
+        id_country INT NOT NULL,
         name NVARCHAR(255) NOT NULL,
         average_rating INT NULL,
         description NVARCHAR(MAX),
         address_one NVARCHAR(150) NULL,
         address_two NVARCHAR(150) NULL,
-        FOREIGN KEY (id_city) REFERENCES City(id)
+        FOREIGN KEY (id_country) REFERENCES Country(id)
     );
 END;
 

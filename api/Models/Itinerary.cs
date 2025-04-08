@@ -11,7 +11,7 @@ namespace Adventour.Api.Models
         public int Id { get; set; }
 
         [ForeignKey("Person")]
-        [Column("user_id")]
+        [Column("id_user")]
         public Guid UserId { get; set; }
         public Person Person { get; set; }
 

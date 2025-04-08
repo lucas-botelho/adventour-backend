@@ -10,7 +10,7 @@ namespace Adventour.Api.Models
         public int Id { get; set; }
 
         [ForeignKey("Attraction")]
-        [Column("attraction_id")]
+        [Column("id_attraction")]
         public int AttractionId { get; set; }
         public Attraction Attraction { get; set; }
 

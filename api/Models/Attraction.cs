@@ -9,10 +9,11 @@ namespace Adventour.Api.Models
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("City")]
-        [Column("city_id")] // Mapeamento para a coluna correta no SQL
-        public int? CityId { get; set; }
-        public City City { get; set; }
+        [Required]
+        [ForeignKey("Country")]
+        [Column("id_country")]
+        public int CountryId { get; set; }
+        public Country Country { get; set; }
 
         [Required]
         [MaxLength(255)]

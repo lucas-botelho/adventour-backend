@@ -11,7 +11,7 @@ namespace Adventour.Api.Models
         public int Id { get; set; }
 
         [ForeignKey("Itinerary")]
-        [Column("itinerary_id")]
+        [Column("id_itinerary")]
         public int ItineraryId { get; set; }
         public Itinerary Itinerary { get; set; }
 

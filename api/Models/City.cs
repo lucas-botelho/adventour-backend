@@ -12,7 +12,7 @@ namespace Adventour.Api.Models
 
         [Required]
         [ForeignKey("Country")]
-        [Column("country_id")]
+        [Column("id_country")]
         public int CountryId { get; set; }
         public Country Country { get; set; }
 

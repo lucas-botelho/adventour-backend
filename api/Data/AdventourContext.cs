@@ -19,7 +19,7 @@ namespace Adventour.Api.Data
         public DbSet<Rating> Rating { get; set; }
         public DbSet<Review> Review { get; set; }
         public DbSet<Favorites> Favorite { get; set; }
-        public DbSet<City> City { get; set; }
+        //public DbSet<City> City { get; set; }
         public DbSet<AttractionImages> AttractionImages { get; set; }
         public DbSet<Itinerary> Itinerarie { get; set; }
         public DbSet<Day> Day { get; set; }

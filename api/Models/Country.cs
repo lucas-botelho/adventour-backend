@@ -27,6 +27,6 @@ namespace Adventour.Api.Models
         [Column("svg")]
         public string? Svg { get; set; }
 
-        public ICollection<City> Cities { get; set; }
+        public ICollection<Attraction> Attractions { get; set; }
     }
 }

@@ -10,17 +10,17 @@ namespace Adventour.Api.Models
         public int Id { get; set; }
 
         [ForeignKey("Rating")]
-        [Column("rating_id")]
+        [Column("id_rating")]
         public int RatingId { get; set; }
         public Rating Rating { get; set; }
 
         [ForeignKey("Attraction")]
-        [Column("attraction_id")]
+        [Column("id_attraction")]
         public int AttractionId { get; set; }
         public Attraction Attraction { get; set; }
 
         [ForeignKey("Person")]
-        [Column("user_id")]
+        [Column("id_user")]
         public Guid UserId { get; set; }
         public Person Person { get; set; }
 
