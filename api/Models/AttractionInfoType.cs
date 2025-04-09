@@ -10,6 +10,6 @@ namespace Adventour.Api.Models
         public int Id { get; set; }
 
         [Column("type_title")]
-        public int TypeTitle { get; set; }
+        public string TypeTitle { get; set; }
     }
 }

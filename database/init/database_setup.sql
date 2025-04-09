@@ -62,7 +62,7 @@ IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo
 BEGIN
     CREATE TABLE Attraction_Info_Type (
          id INT PRIMARY KEY IDENTITY(1,1),
-        type_title INT
+        type_title varchar(50)
     );
 END;
 

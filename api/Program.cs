@@ -30,8 +30,9 @@ builder.Services.AddDbContext<AdventourContext>(options =>
 //Scoped objects are the same within a request, but different across different requests.
 //builder.Services.AddScoped
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
-builder.Services.AddScoped<IDatabaseService, MsSqlService>();
+builder.Services.AddScoped<IAttractionRepository, AttractionRepository>();
+//builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
+//builder.Services.AddScoped<IDatabaseService, MsSqlService>();
 builder.Services.AddScoped<IFileUploadService, CloudinaryService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IEmailService, SendGridService>();

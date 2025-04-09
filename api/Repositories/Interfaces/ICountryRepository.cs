@@ -1,5 +1,4 @@
 ﻿using Adventour.Api.Models;
-using Adventour.Api.Responses.Country;
 
 namespace Adventour.Api.Repositories.Interfaces
 {

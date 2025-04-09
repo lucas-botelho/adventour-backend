@@ -1,11 +1,6 @@
-﻿using Adventour.Api.Builders.Interfaces;
-using Adventour.Api.Constants.Database;
-using Adventour.Api.Data;
+﻿using Adventour.Api.Data;
 using Adventour.Api.Models;
 using Adventour.Api.Repositories.Interfaces;
-using Adventour.Api.Responses.Country;
-using Google.Apis.Upload;
-using System.Diagnostics.Metrics;
 
 namespace Adventour.Api.Repositories
 {
@@ -39,13 +34,12 @@ namespace Adventour.Api.Repositories
 
             try
             {
-                var allCountries = db.Country
+                var countriesByContinent = db.Country
                     .Where(c => c.ContinentName.ToLower().Equals(continentName.ToLower()) && !string.IsNullOrEmpty(c.Svg))
                     .OrderBy(c => c.Name)
                     .ToList();
 
-                int selectedIndex = allCountries.FindIndex(c => c.Code.Equals(selectedCountryCode.ToUpper()));
-
+                int selectedIndex = countriesByContinent.FindIndex(c => c.Code.Equals(selectedCountryCode.ToUpper()));
 
                 if (selectedIndex == -1)
                 {
@@ -53,22 +47,32 @@ namespace Adventour.Api.Repositories
                     return null;
                 }
 
-                total = allCountries.Count;
+                total = countriesByContinent.Count;
+
                 if (page >= 0)
                 {
                     // Positive page (next countries)
-                    return allCountries
+                    return countriesByContinent
                         .Skip(selectedIndex + page * pageSize)
                         .Take(pageSize)
                         .ToList();
                 }
+                // Negative page (previous countries)
+                int endIndex = selectedIndex;
+                int startIndex = selectedIndex + page * pageSize;
 
-                // Nagative Page (previous countries)
-                int startIndex = Math.Max(0, selectedIndex + page * pageSize); 
-                int count = Math.Min(pageSize, selectedIndex - startIndex);
+                // If startIndex is outside the list bounds or after endIndex, return empty
+                if (startIndex < 0 || startIndex >= endIndex)
+                {
+                    return new List<Country>();
+                }
 
-                return allCountries
-                    .Skip(startIndex)
+                // Ensure we don't go below 0
+                int validStartIndex = Math.Max(0, startIndex);
+                int count = Math.Min(pageSize, endIndex - validStartIndex);
+
+                return countriesByContinent
+                    .Skip(validStartIndex)
                     .Take(count)
                     .ToList();
             }
@@ -78,7 +82,5 @@ namespace Adventour.Api.Repositories
                 return null;
             }
         }
-
-
     }
 }
