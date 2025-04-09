@@ -1,4 +1,4 @@
-﻿using Adventour.Api.Models;
+﻿using Adventour.Api.Models.Database;
 
 namespace Adventour.Api.Repositories.Interfaces
 {

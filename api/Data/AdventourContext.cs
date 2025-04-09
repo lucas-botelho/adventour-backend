@@ -1,4 +1,4 @@
-﻿using Adventour.Api.Models;
+﻿using Adventour.Api.Models.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -18,7 +18,7 @@ namespace Adventour.Api.Data
         public DbSet<AttractionInfo> AttractionInfo { get; set; }
         public DbSet<Rating> Rating { get; set; }
         public DbSet<Review> Review { get; set; }
-        public DbSet<Favorites> Favorite { get; set; }
+        public DbSet<Favorites> Favorites { get; set; }
         //public DbSet<City> City { get; set; }
         public DbSet<AttractionImages> AttractionImages { get; set; }
         public DbSet<Itinerary> Itinerarie { get; set; }

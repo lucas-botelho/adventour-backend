@@ -1,15 +1,16 @@
-﻿using Adventour.Api.Models;
+﻿using Adventour.Api.Models.Attractions;
+using Adventour.Api.Models.Database;
 
 namespace Adventour.Api.Responses.Country
 {
     public class BasicAttractionListResponse
     {
 
-        public BasicAttractionListResponse(IEnumerable<Attraction> Attractions)
+        public BasicAttractionListResponse(IEnumerable<BasicAttractionDetails> Attractions)
         {
             this.Attractions = Attractions.ToList();
         }
 
-        public IEnumerable<Attraction> Attractions{ get; set; }
+        public IEnumerable<BasicAttractionDetails> Attractions{ get; set; }
     }
 }

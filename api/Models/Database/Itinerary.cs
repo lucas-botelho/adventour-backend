@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 
-namespace Adventour.Api.Models
+namespace Adventour.Api.Models.Database
 {
     public class Itinerary
     {

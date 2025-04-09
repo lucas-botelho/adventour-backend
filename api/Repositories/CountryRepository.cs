@@ -1,5 +1,5 @@
 ﻿using Adventour.Api.Data;
-using Adventour.Api.Models;
+using Adventour.Api.Models.Database;
 using Adventour.Api.Repositories.Interfaces;
 
 namespace Adventour.Api.Repositories

@@ -3,6 +3,7 @@ using Adventour.Api.Responses.Country;
 using Adventour.Api.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Adventour.Api.Repositories.Interfaces;
+using Adventour.Api.Requests.Attraction;
 
 namespace Adventour.Api.Controllers
 {
@@ -21,18 +22,30 @@ namespace Adventour.Api.Controllers
         }
        
         [HttpGet("list/attractions")]
-        public IActionResult GetCountryActivities(string countryCode)
+        public IActionResult GetCountryActivities(string countryCode, [FromQuery] string oAuthId)
         {
             if (string.IsNullOrWhiteSpace(countryCode) || countryCode.Length != 2)
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid country code"));
             }
 
-            var attractions = attractionRepository.GetBaseAttractionData(countryCode);
+            var attractions = attractionRepository.GetBaseAttractionData(countryCode, oAuthId);
 
             return attractions is null
             ? NotFound(new BaseApiResponse<string>("Sorry, we dont have any attractions yet for this country."))
             : Ok(new BaseApiResponse<BasicAttractionListResponse>(new BasicAttractionListResponse(attractions), "Attractions found."));
+        }
+
+        [HttpPost("favorite")]
+        public IActionResult AddToFavorites([FromBody] AddToFavoriteRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.UserId) || request.AttractionId < 0)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
+            }
+           
+            var success = attractionRepository.AddToFavorites(request.AttractionId, request.UserId);
+            return Ok(new BaseApiResponse<string>("Attraction added to favorites", true));
         }
     }
 }

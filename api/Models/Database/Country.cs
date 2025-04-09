@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Adventour.Api.Models
+namespace Adventour.Api.Models.Database
 {
     public class Country
     {

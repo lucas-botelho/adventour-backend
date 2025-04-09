@@ -1,6 +1,7 @@
 ﻿namespace Adventour.Api.Responses.Country
 {
-    using Adventour.Api.Models;
+    using Adventour.Api.Models.Database;
+
     public class CountriesListResponse
     {
         public CountriesListResponse(IEnumerable<Country> countries, int total = 0)

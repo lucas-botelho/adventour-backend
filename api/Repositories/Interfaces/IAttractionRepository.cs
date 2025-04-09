@@ -1,10 +1,12 @@
-﻿using Adventour.Api.Models;
+﻿
+using Adventour.Api.Models.Attractions;
 
 namespace Adventour.Api.Repositories.Interfaces
 {
     public interface IAttractionRepository
     {
-        IEnumerable<Attraction> GetBaseAttractionData(string countryCode);
+        bool AddToFavorites(int attractionId, string userId);
+        IEnumerable<BasicAttractionDetails> GetBaseAttractionData(string countryCode, string userId);
 
     }
 }

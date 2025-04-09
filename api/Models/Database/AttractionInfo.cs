@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Adventour.Api.Models
+namespace Adventour.Api.Models.Database
 {
     [Table("Attraction_Info")]
     public class AttractionInfo

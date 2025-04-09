@@ -8,7 +8,7 @@ using FirebaseAdmin.Auth;
 using Newtonsoft.Json.Linq;
 using Microsoft.IdentityModel.Tokens;
 using Adventour.Api.Data;
-using Adventour.Api.Models;
+using Adventour.Api.Models.Database;
 
 namespace Adventour.Api.Repositories
 {

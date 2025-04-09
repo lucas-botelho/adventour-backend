@@ -1,4 +1,4 @@
-﻿using Adventour.Api.Models;
+﻿using Adventour.Api.Models.Database;
 using Adventour.Api.Requests.Authentication;
 using Adventour.Api.Responses.Authentication;
 

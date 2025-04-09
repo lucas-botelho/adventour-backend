@@ -1,18 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Adventour.Api.Models
+namespace Adventour.Api.Models.Database
 {
-    public class Review
+    public class Favorites
     {
         [Key]
         [Column("id")]
         public int Id { get; set; }
-
-        [ForeignKey("Rating")]
-        [Column("id_rating")]
-        public int RatingId { get; set; }
-        public Rating Rating { get; set; }
 
         [ForeignKey("Attraction")]
         [Column("id_attraction")]
@@ -23,8 +18,5 @@ namespace Adventour.Api.Models
         [Column("id_user")]
         public Guid UserId { get; set; }
         public Person Person { get; set; }
-
-        [Column("comment")]
-        public string? Comment { get; set; }
     }
 }

@@ -13,6 +13,12 @@
             Success = false;
             Message = errorMessage;
         }
+
+        public BaseApiResponse(string message,bool isSuccess)
+        {
+            Success = isSuccess;
+            Message = message;
+        }
         public bool Success { get; set; }
         public T Data { get; set; }
         public string Message { get; set; }

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using FirebaseAdmin.Auth;
 using Adventour.Api.Data;
-using Adventour.Api.Models;
+using Adventour.Api.Models.Database;
 
 
 namespace Adventour.Api.Controllers
