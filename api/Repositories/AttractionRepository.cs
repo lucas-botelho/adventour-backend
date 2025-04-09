@@ -99,5 +99,27 @@ namespace Adventour.Api.Repositories
 
             return false;
         }
+
+        public bool RemoveFavorite(int attractionId, string userId)
+        {
+            try
+            {
+                Person? user = db.Person.FirstOrDefault(person => person.OauthId != null && person.OauthId.Equals(userId));
+                var favorite = db.Favorites.FirstOrDefault(f => f.AttractionId == attractionId && f.UserId.Equals(user.Id));
+                if (favorite is not null)
+                {
+                    db.Remove(favorite);
+                    db.SaveChanges();
+                    return true;
+                }
+              
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+            }
+
+            return false;
+        }
     }
 }

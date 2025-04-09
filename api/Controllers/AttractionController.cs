@@ -45,7 +45,19 @@ namespace Adventour.Api.Controllers
             }
            
             var success = attractionRepository.AddToFavorites(request.AttractionId, request.UserId);
-            return Ok(new BaseApiResponse<string>("Attraction added to favorites", true));
+            return Ok(new BaseApiResponse<string>("Attraction added to favorites", success));
+        }
+
+        [HttpPost("favorite/remove")]
+        public IActionResult RemoveFavorite([FromBody] AddToFavoriteRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.UserId) || request.AttractionId < 0)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
+            }
+
+            var success = attractionRepository.RemoveFavorite(request.AttractionId, request.UserId);
+            return Ok(new BaseApiResponse<string>("Attraction added to favorites", success));
         }
     }
 }
