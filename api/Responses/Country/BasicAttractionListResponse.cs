@@ -1,5 +1,5 @@
-﻿using Adventour.Api.Models.Attractions;
-using Adventour.Api.Models.Database;
+﻿using Adventour.Api.Models.Database;
+using Adventour.Api.Responses.Attractions;
 
 namespace Adventour.Api.Responses.Country
 {

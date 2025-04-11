@@ -1,6 +1,6 @@
 ﻿using Adventour.Api.Models.Database;
 
-namespace Adventour.Api.Models.Attractions
+namespace Adventour.Api.Responses.Attractions
 {
     public class BasicAttractionDetails
     {

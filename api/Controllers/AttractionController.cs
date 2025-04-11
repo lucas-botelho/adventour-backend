@@ -1,9 +1,9 @@
-﻿using Adventour.Api.Repositories;
-using Adventour.Api.Responses.Country;
+﻿using Adventour.Api.Responses.Country;
 using Adventour.Api.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
+using Adventour.Api.Models.Database;
 
 namespace Adventour.Api.Controllers
 {
@@ -58,6 +58,19 @@ namespace Adventour.Api.Controllers
 
             var success = attractionRepository.RemoveFavorite(request.AttractionId, request.UserId);
             return Ok(new BaseApiResponse<string>("Attraction added to favorites", success));
+        }
+
+        [HttpGet("attraction/{id}")]
+        public IActionResult GetAttraction(int id)
+        {
+            if (id < 0)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
+            }
+            var attraction = attractionRepository.GetAttraction(id);
+            return attraction is null
+            ? NotFound(new BaseApiResponse<string>("Attraction not found"))
+            : Ok(new BaseApiResponse<Attraction>(attraction, "Attraction found"));
         }
     }
 }

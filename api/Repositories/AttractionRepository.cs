@@ -1,7 +1,7 @@
 ﻿using Adventour.Api.Data;
-using Adventour.Api.Models.Attractions;
 using Adventour.Api.Models.Database;
 using Adventour.Api.Repositories.Interfaces;
+using Adventour.Api.Responses.Attractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Adventour.Api.Repositories
@@ -46,7 +46,7 @@ namespace Adventour.Api.Repositories
                     {
                         Id = attraction.Id,
                         Name = attraction.Name,
-                        Description = attraction.Description,
+                        Description = attraction.ShortDescription,
                         IsFavorited = db.Favorites.Any(favorite => favorite.AttractionId == attraction.Id && favorite.UserId.Equals(user.Id)),
                         AttractionImages = attraction.AttractionImages
                             .Where(i => i.IsMain)
@@ -120,6 +120,24 @@ namespace Adventour.Api.Repositories
             }
 
             return false;
+        }
+
+        public Attraction GetAttraction(int id)
+        {
+            try
+            {
+                var attraction = db.Attraction
+                    .Include(a => a.AttractionImages)
+                    .FirstOrDefault(a => a.Id == id);
+
+                return attraction;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+            }
+
+            return null;
         }
     }
 }

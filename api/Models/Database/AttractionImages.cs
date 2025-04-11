@@ -21,7 +21,7 @@ namespace Adventour.Api.Models.Database
         [ForeignKey("Attraction")]
         [Column("id_attraction")]
         public int AttractionId { get; set; }
-        public Attraction Attraction { get; set; }
+        //public Attraction Attraction { get; set; }
 
     }
 }

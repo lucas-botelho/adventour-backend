@@ -21,16 +21,6 @@ BEGIN
     );
 END;
 
---IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'City')
---BEGIN
---    CREATE TABLE City (
---         id INT PRIMARY KEY IDENTITY(1,1),
---        id_country INT NOT NULL,
---        name NVARCHAR(255) NOT NULL,
---        FOREIGN KEY (id_country) REFERENCES Country(id)
---    );
---END;
-
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Person')
 BEGIN
 	CREATE TABLE Person (
@@ -51,9 +41,10 @@ BEGIN
         id_country INT NOT NULL,
         name NVARCHAR(255) NOT NULL,
         average_rating INT NULL,
-        description NVARCHAR(MAX),
+        short_description nvarchar(150),
         address_one NVARCHAR(150) NULL,
         address_two NVARCHAR(150) NULL,
+		long_description nvarchar(MAX) NULL,
         FOREIGN KEY (id_country) REFERENCES Country(id)
     );
 END;
