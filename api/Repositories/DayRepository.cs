@@ -6,6 +6,7 @@ using Adventour.Api.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Adventour.Api.Requests.TimeSlot;
+using Azure.Core;
 
 namespace Adventour.Api.Repositories
 {
@@ -32,20 +33,10 @@ namespace Adventour.Api.Repositories
                     throw new NotFoundException($"Itinerary with ID {request.itineraryId} not found!");
                 }
 
-                var nextDayNumber = 1;
-
-                var existingDays = db.Day
-                    .Where(d => d.ItineraryId == request.itineraryId);
-
-                if (existingDays.Any())
-                {
-                    nextDayNumber = existingDays.Max(d => d.DayNumber) + 1;
-                }
-
                 var newDay = new Day
                 {
                     ItineraryId = request.itineraryId,
-                    DayNumber = nextDayNumber
+                    DayNumber = CalculateNextDayNumber(request.itineraryId)
                 };
 
                 db.Day.Add(newDay);
@@ -68,6 +59,30 @@ namespace Adventour.Api.Repositories
                     ItineraryId = newDay.ItineraryId,
                     DayNumber = newDay.DayNumber
                 };
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public int CalculateNextDayNumber(int itineraryId)
+        {
+           try
+            {
+                var nextDayNumber = 1;
+
+                var existingDays = db.Day
+                    .Where(d => d.ItineraryId == itineraryId);
+
+                if (existingDays.Any())
+                {
+                    nextDayNumber = existingDays.Max(d => d.DayNumber) + 1;
+                }
+
+                return nextDayNumber;
             }
             catch (Exception ex)
             {

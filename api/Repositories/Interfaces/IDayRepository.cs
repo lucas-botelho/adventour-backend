@@ -9,5 +9,6 @@ namespace Adventour.Api.Repositories.Interfaces
     public interface IDayRepository
     {
         BasicDayDetails AddDay([FromBody] AddDayRequest request);
+        int CalculateNextDayNumber(int itineraryId);
     }
 }
