@@ -67,6 +67,28 @@ namespace Adventour.Api.Repositories
             }
         }
 
+        public bool RemoveDay(int dayId)
+        {
+            try
+            {
+                var day = db.Day.FirstOrDefault(d => d.Id == dayId);
+                if (day is null)
+                {
+                    logger.LogError($"{logHeader} Day with ID {dayId} not found!");
+                    throw new NotFoundException($"Day with ID {dayId} not found!");
+                }
+
+                db.Day.Remove(day);
+                db.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                throw;
+            }
+        }
 
         public int CalculateNextDayNumber(int itineraryId)
         {

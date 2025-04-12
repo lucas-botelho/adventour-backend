@@ -52,5 +52,29 @@ namespace Adventour.Api.Controllers
             }
         }
 
+        [HttpDelete("delete")]
+        public IActionResult RemoveDay(int dayId)
+        {
+            try
+            {
+                if (dayId <= 0)
+                {
+                    return BadRequest(new BaseApiResponse<string>("Invalid data to remove Day."));
+                }
+
+                dayRepository.RemoveDay(dayId);
+
+                return Ok(new BaseApiResponse<BasicDayDetails>("Day removed successfully"));
+            }
+            catch (AppException ex)
+            {
+                return StatusCode(ex.StatusCode, new BaseApiResponse<string>(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Unexpected error when removing Day."));
+            }
+        }
+
     }
 }
