@@ -8,6 +8,5 @@ namespace Adventour.Api.Models.Day
         public int Id { get; set; }
         public int ItineraryId { get; set; }
         public int DayNumber { get; set; }
-        public ICollection<Timeslot> Timeslots { get; set; }
     }
 }
