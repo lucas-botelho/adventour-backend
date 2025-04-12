@@ -7,5 +7,6 @@ namespace Adventour.Api.Repositories.Interfaces
     {
         BasicTimeSlotDetails? AddTimeSlot(AddTimeSlotRequest request);
         bool RemoveTimeSlot(int idTimeSlot);
+        BasicTimeSlotDetails UpdateTimeSlot(UpdateTimeSlotRequest request);
     }
 }

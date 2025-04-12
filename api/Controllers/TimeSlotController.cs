@@ -3,6 +3,8 @@ using Adventour.Api.Requests.TimeSlot;
 using Adventour.Api.Responses;
 using Adventour.Api.Models.TimeSlots;
 using Microsoft.AspNetCore.Mvc;
+using Adventour.Api.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Adventour.Api.Controllers
 {
@@ -24,43 +26,73 @@ namespace Adventour.Api.Controllers
         {
             try
             {
-                if (request.DayId <= 0 || request.StartTime >= request.EndTime)
+                if (request.DayId <= 0 || request.AttractionId <= 0 || request.StartTime >= request.EndTime)
                 {
-                    return BadRequest(new BaseApiResponse<string>("Dados inválidos para criar o TimeSlot."));
+                    return BadRequest(new BaseApiResponse<string>("Invalid data to create the TimeSlot."));
                 }
 
                 var result = timeSlotRepository.AddTimeSlot(request);
 
-                if (result is null)
-                {
-                    return NotFound(new BaseApiResponse<string>("Não foi possível criar o TimeSlot."));
-                }
-
-                return Ok(new BaseApiResponse<BasicTimeSlotDetails>(result, "TimeSlot criado com sucesso."));
+                return Ok(new BaseApiResponse<BasicTimeSlotDetails>(result, "TimeSlot created successfully."));
             }
-            catch(Exception ex)
+            catch (AppException ex)
             {
-                return BadRequest(new BaseApiResponse<string>("Erro ao criar o TimeSlot: " + ex.Message));
+                return StatusCode(ex.StatusCode, new BaseApiResponse<string>(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Unexpected error when creating TimeSlot."));
             }
         }
-
 
         [HttpDelete("remove")]
         public IActionResult RemoveTimeSlot(int timeSlotId)
         {
-            if (timeSlotId <= 0)
+            try
             {
-                return BadRequest(new BaseApiResponse<string>("Id de TimeSlot inválido."));
+                if (timeSlotId <= 0)
+                {
+                    return BadRequest(new BaseApiResponse<string>("Invalid TimeSlot ID."));
+                }
+
+                var wasDeleted = timeSlotRepository.RemoveTimeSlot(timeSlotId);
+
+                return Ok(new BaseApiResponse<BasicTimeSlotDetails>("TimeSlot successfully deleted."));
+                
             }
-
-            var wasDeleted = timeSlotRepository.RemoveTimeSlot(timeSlotId);
-
-            if (!wasDeleted)
+            catch(AppException ex)
             {
-                return NotFound(new BaseApiResponse<string>("Não foi possível criar o TimeSlot."));
+                return StatusCode(ex.StatusCode, new BaseApiResponse<string>(ex.Message));
             }
-
-            return Ok(new BaseApiResponse<BasicTimeSlotDetails>("TimeSlot apagado com sucesso."));
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Unexpected error when deleting TimeSlot."));
+            }
         }
+
+        [HttpPut("update")]
+        public IActionResult UpdateTimeSlot([FromBody] UpdateTimeSlotRequest request)
+        {
+            try
+            {
+                if (request.TimeSlotId <= 0 || request.AttractionId <= 0 || request.DayId <= 0 || request.StartTime >= request.EndTime)
+                {
+                    return BadRequest(new BaseApiResponse<string>("Invalid data to update TimeSlot."));
+                }
+
+                var result = timeSlotRepository.UpdateTimeSlot(request);
+
+                return Ok(new BaseApiResponse<BasicTimeSlotDetails>(result, "TimeSlot updated successfully."));
+            }
+            catch (AppException ex)
+            {
+                return StatusCode(ex.StatusCode, new BaseApiResponse<string>(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Unexpected error when updating TimeSlot."));
+            }
+        }
+
     }
 }
