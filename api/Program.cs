@@ -32,6 +32,7 @@ builder.Services.AddDbContext<AdventourContext>(options =>
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAttractionRepository, AttractionRepository>();
 builder.Services.AddScoped<ITimeSlotRepository, TimeSlotRepository>();
+builder.Services.AddScoped<IDayRepository, DayRepository>();
 //builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
 //builder.Services.AddScoped<IDatabaseService, MsSqlService>();
 builder.Services.AddScoped<IFileUploadService, CloudinaryService>();

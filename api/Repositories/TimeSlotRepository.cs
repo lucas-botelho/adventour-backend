@@ -12,10 +12,10 @@ namespace Adventour.Api.Repositories
     public class TimeSlotRepository : ITimeSlotRepository
     {
         private readonly AdventourContext db;
-        private readonly ILogger<CountryRepository> logger;
+        private readonly ILogger<TimeSlotRepository> logger;
         private const string logHeader = "## TimeSlotRepository ##: ";
 
-        public TimeSlotRepository(ILogger<CountryRepository> logger, AdventourContext context)
+        public TimeSlotRepository(ILogger<TimeSlotRepository> logger, AdventourContext context)
         {
             this.logger = logger;
             db = context;
