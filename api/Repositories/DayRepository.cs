@@ -81,6 +81,8 @@ namespace Adventour.Api.Repositories
                 db.Day.Remove(day);
                 db.SaveChanges();
 
+                RenumberDays(day.ItineraryId);
+
                 return true;
             }
             catch (Exception ex)
@@ -112,5 +114,23 @@ namespace Adventour.Api.Repositories
                 throw;
             }
         }
+
+        private void RenumberDays(int itineraryId)
+        {
+            var days = db.Day
+                .Where(d => d.ItineraryId == itineraryId)
+                .OrderBy(d => d.DayNumber)
+                .ToList();
+
+            int counter = 1;
+
+            foreach (var day in days)
+            {
+                day.DayNumber = counter++;
+            }
+
+            db.SaveChanges();
+        }
+
     }
 }
