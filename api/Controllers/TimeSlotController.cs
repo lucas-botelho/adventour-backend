@@ -22,19 +22,45 @@ namespace Adventour.Api.Controllers
         [HttpPost("create")]
         public IActionResult AddTimeSlot([FromBody] AddTimeSlotRequest request)
         {
-            if (request.DayId <= 0 || request.StartTime >= request.EndTime)
+            try
             {
-                return BadRequest(new BaseApiResponse<string>("Dados inválidos para criar o TimeSlot."));
+                if (request.DayId <= 0 || request.StartTime >= request.EndTime)
+                {
+                    return BadRequest(new BaseApiResponse<string>("Dados inválidos para criar o TimeSlot."));
+                }
+
+                var result = timeSlotRepository.AddTimeSlot(request);
+
+                if (result is null)
+                {
+                    return NotFound(new BaseApiResponse<string>("Não foi possível criar o TimeSlot."));
+                }
+
+                return Ok(new BaseApiResponse<BasicTimeSlotDetails>(result, "TimeSlot criado com sucesso."));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(new BaseApiResponse<string>("Erro ao criar o TimeSlot: " + ex.Message));
+            }
+        }
+
+
+        [HttpDelete("remove")]
+        public IActionResult RemoveTimeSlot(int timeSlotId)
+        {
+            if (timeSlotId <= 0)
+            {
+                return BadRequest(new BaseApiResponse<string>("Id de TimeSlot inválido."));
             }
 
-            var result = timeSlotRepository.AddTimeSlot(request);
+            var wasDeleted = timeSlotRepository.RemoveTimeSlot(timeSlotId);
 
-            if (result is null)
+            if (!wasDeleted)
             {
                 return NotFound(new BaseApiResponse<string>("Não foi possível criar o TimeSlot."));
             }
 
-            return Ok(new BaseApiResponse<BasicTimeSlotDetails>(result, "TimeSlot criado com sucesso."));
+            return Ok(new BaseApiResponse<BasicTimeSlotDetails>("TimeSlot apagado com sucesso."));
         }
     }
 }

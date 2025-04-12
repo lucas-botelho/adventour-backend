@@ -5,6 +5,7 @@ using Adventour.Api.Models.TimeSlots;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.TimeSlot;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Adventour.Api.Repositories
 {
@@ -29,6 +30,18 @@ namespace Adventour.Api.Repositories
                 {
                     logger.LogError($"{logHeader} Dia com ID {request.DayId} não encontrado.");
                     return null;
+                }
+
+                bool overlapExists = db.Timeslot.Any(ts =>
+                    ts.DayId == request.DayId &&
+                    ts.StartTime < request.EndTime &&
+                    ts.EndTime > request.StartTime
+                );
+
+                if (overlapExists)
+                {
+                    logger.LogError($"{logHeader} Já existe um TimeSlot que se sobrepõe no mesmo dia e horário.");
+                    throw new Exception("Já existe um TimeSlot que se sobrepõe no mesmo dia e horário.");
                 }
 
                 var newTimeSlot = new Timeslot
@@ -82,7 +95,33 @@ namespace Adventour.Api.Repositories
             catch (Exception ex)
             {
                 logger.LogError($"{logHeader} {ex.Message}");
-                return null;
+                throw new Exception(ex.Message);
+            }
+        }
+
+
+        // ...
+
+        public bool RemoveTimeSlot(int idTimeSlot)
+        {
+            try
+            {
+                var timeslot = db.Timeslot.FirstOrDefault(ts => ts.Id == idTimeSlot);
+                if (timeslot is null)
+                {
+                    var errorMessage = $"{logHeader} Timeslot com ID {idTimeSlot} não encontrado.";
+                    logger.LogError(errorMessage);
+                }
+
+                db.Timeslot.Remove(timeslot);
+                db.SaveChanges();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                return false;
             }
         }
     }
