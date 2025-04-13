@@ -1,5 +1,4 @@
-﻿using Adventour.Api.Models.Database;
-using Adventour.Api.Models.TimeSlots;
+﻿using Adventour.Api.Models.TimeSlots;
 
 namespace Adventour.Api.Models.Day
 {
@@ -8,5 +7,6 @@ namespace Adventour.Api.Models.Day
         public int Id { get; set; }
         public int ItineraryId { get; set; }
         public int DayNumber { get; set; }
+        public ICollection<BasicTimeSlotDetails> Timeslots { get; set; } = new List<BasicTimeSlotDetails>();
     }
 }

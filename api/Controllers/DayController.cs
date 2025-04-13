@@ -1,10 +1,8 @@
 ﻿using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.TimeSlot;
 using Adventour.Api.Responses;
-using Adventour.Api.Models.TimeSlots;
 using Microsoft.AspNetCore.Mvc;
 using Adventour.Api.Exceptions;
-using Microsoft.Extensions.Logging;
 using Adventour.Api.Models.Day;
 
 namespace Adventour.Api.Controllers
