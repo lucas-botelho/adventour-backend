@@ -75,6 +75,11 @@ namespace Adventour.Api.Repositories
                 throw new NotFoundException($"Itinerary not found with ID: {itineraryId}.");
             }
 
+            return MapToFullItineraryDetails(itinerary, user);
+        }
+
+        private FullItineraryDetails MapToFullItineraryDetails(Itinerary itinerary, Person user)
+        {
             return new FullItineraryDetails
             {
                 Id = itinerary.Id,
@@ -116,7 +121,8 @@ namespace Adventour.Api.Repositories
                                     : null
                             }).ToList()
                     }).ToList()
-                };
-            }
+            };
         }
+
     }
+}
