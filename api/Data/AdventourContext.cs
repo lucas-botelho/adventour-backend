@@ -21,7 +21,7 @@ namespace Adventour.Api.Data
         public DbSet<Favorites> Favorites { get; set; }
         //public DbSet<City> City { get; set; }
         public DbSet<AttractionImages> AttractionImages { get; set; }
-        public DbSet<Itinerary> Itinerarie { get; set; }
+        public DbSet<Itinerary> Itinerary { get; set; }
         public DbSet<Day> Day { get; set; }
         public DbSet<Timeslot> Timeslot { get; set; }
         public DbSet<ReviewImages> ReviewImages { get; set; }
