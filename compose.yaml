@@ -12,6 +12,7 @@ services:
       - DOTNET_RUNNING_IN_CONTAINER=true
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - SQL_CONNECTION_STRING=Server=mssql;Database=${DATABASE};User Id=${SQL_USER};Password=${SQL_PASSWORD}
+      - TOMTOM_API_KEY=${TOMTOM_API_KEY}
     # volumes:
       # - ./api/bin/Debug/net8.0:/app:ro
     depends_on:
