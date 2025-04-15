@@ -1,7 +1,7 @@
 ﻿using Adventour.Api.Models.Database;
-using Adventour.Api.Models.TimeSlots;
+using Adventour.Api.Responses.TimeSlots;
 
-namespace Adventour.Api.Models.Day
+namespace Adventour.Api.Responses.Day
 {
     public class BasicDayDetails
     {

@@ -1,9 +1,9 @@
 ﻿using Adventour.Api.Models.Database;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Adventour.Api.Models.Attractions;
+using Adventour.Api.Responses.Attractions;
 
-namespace Adventour.Api.Models.TimeSlots
+namespace Adventour.Api.Responses.TimeSlots
 {
 
     public class BasicTimeSlotDetails
