@@ -1,12 +1,12 @@
 ﻿using Adventour.Api.Data;
 using Adventour.Api.Models.Database;
-using Adventour.Api.Models.Day;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Adventour.Api.Requests.TimeSlot;
 using Azure.Core;
+using Adventour.Api.Responses.Day;
 
 namespace Adventour.Api.Repositories
 {

@@ -1,5 +1,5 @@
-﻿using Adventour.Api.Models.TimeSlots;
-using Adventour.Api.Requests.TimeSlot;
+﻿using Adventour.Api.Requests.TimeSlot;
+using Adventour.Api.Responses.TimeSlots;
 
 namespace Adventour.Api.Repositories.Interfaces
 {
