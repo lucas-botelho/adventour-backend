@@ -1,11 +1,11 @@
 ﻿using Adventour.Api.Data;
-using Adventour.Api.Models.Attractions;
+using Adventour.Api.Responses.Attractions;
 using Adventour.Api.Models.Database;
-using Adventour.Api.Models.TimeSlots;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.TimeSlot;
 using Microsoft.EntityFrameworkCore;
 using Adventour.Api.Exceptions;
+using Adventour.Api.Responses.TimeSlots;
 
 namespace Adventour.Api.Repositories
 {
