@@ -1,6 +1,6 @@
-﻿using Adventour.Api.Models.Day;
+﻿using Adventour.Api.Responses.Day;
 
-namespace Adventour.Api.Models.Itinerary
+namespace Adventour.Api.Responses.Itinerary
 {
     public class FullItineraryDetails
     {

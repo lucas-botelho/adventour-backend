@@ -1,5 +1,5 @@
-﻿using Adventour.Api.Models.Itinerary;
-using Adventour.Api.Requests.Itinerary;
+﻿using Adventour.Api.Requests.Itinerary;
+using Adventour.Api.Responses.Itinerary;
 
 namespace Adventour.Api.Repositories.Interfaces
 {

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Adventour.Api.Repositories.Interfaces; 
-using Adventour.Api.Repositories; 
-using Adventour.Api.Requests.Itinerary; 
-using Adventour.Api.Models.Itinerary; 
-using Adventour.Api.Exceptions; 
-using Adventour.Api.Responses; 
+using Adventour.Api.Repositories.Interfaces;
+using Adventour.Api.Repositories;
+using Adventour.Api.Requests.Itinerary;
+using Adventour.Api.Exceptions;
+using Adventour.Api.Responses;
+using Adventour.Api.Responses.Itinerary;
 
 namespace Adventour.Api.Controllers
 {

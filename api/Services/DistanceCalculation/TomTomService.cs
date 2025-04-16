@@ -24,7 +24,7 @@ namespace Adventour.Api.Services.DistanceCalculation
         public async Task<string> GeocodeAsync(string address)
         {
             var encoded = Uri.EscapeDataString(address);
-            var url = $"https://api.tomtom.com/search/2/geocode/{encoded}.json?key={_apiKey}";
+            var url = $"https://api.tomtom.com/search/2/geocode/{encoded}.json?key={apiKey}";
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
@@ -34,7 +34,7 @@ namespace Adventour.Api.Services.DistanceCalculation
 
         public async Task<string> ReverseGeocodeAsync(double lat, double lon)
         {
-            var url = $"https://api.tomtom.com/search/2/reverseGeocode/{lat},{lon}.json?key={_apiKey}";
+            var url = $"https://api.tomtom.com/search/2/reverseGeocode/{lat},{lon}.json?key={apiKey}";
 
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();

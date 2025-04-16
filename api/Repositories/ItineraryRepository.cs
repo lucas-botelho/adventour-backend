@@ -1,13 +1,13 @@
 ﻿using Adventour.Api.Requests.Itinerary;
-using Adventour.Api.Models.Itinerary;
 using Adventour.Api.Exceptions;
 using Adventour.Api.Data;
 using Adventour.Api.Models.Database;
-using Adventour.Api.Models.Attractions;
-using Adventour.Api.Models.TimeSlots;
+using Adventour.Api.Responses.Attractions;
+using Adventour.Api.Responses.TimeSlots;
 using Microsoft.EntityFrameworkCore;
-using Adventour.Api.Models.Day;
+using Adventour.Api.Responses.Day;
 using Adventour.Api.Repositories.Interfaces;
+using Adventour.Api.Responses.Itinerary;
 
 namespace Adventour.Api.Repositories
 {
@@ -105,7 +105,7 @@ namespace Adventour.Api.Repositories
                                     {
                                         Id = ts.Attraction.Id,
                                         Name = ts.Attraction.Name,
-                                        Description = ts.Attraction.Description,
+                                        Description = ts.Attraction.ShortDescription,
                                         IsFavorited = db.Favorites.Any(f =>
                                             f.AttractionId == ts.Attraction.Id &&
                                             f.UserId == user.Id
