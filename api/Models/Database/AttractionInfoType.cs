@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Adventour.Api.Models.Database
 {
+    [Table("Attraction_Info_Type")]
     public class AttractionInfoType
     {
         [Key]

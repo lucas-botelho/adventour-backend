@@ -3,6 +3,7 @@ using Adventour.Api.Models.Database;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Responses.Attractions;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Adventour.Api.Repositories
 {
@@ -112,7 +113,7 @@ namespace Adventour.Api.Repositories
                     db.SaveChanges();
                     return true;
                 }
-              
+
             }
             catch (Exception ex)
             {
@@ -122,7 +123,7 @@ namespace Adventour.Api.Repositories
             return false;
         }
 
-        public Attraction GetAttraction(int id)
+        public Attraction? GetAttractionWithImages(int id)
         {
             try
             {
@@ -131,6 +132,39 @@ namespace Adventour.Api.Repositories
                     .FirstOrDefault(a => a.Id == id);
 
                 return attraction;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+            }
+
+            return null;
+        }
+
+        public IEnumerable<AttractionInfo>? GetAttractionInfo(int id)
+        {
+            try
+            {
+                var attraction = db.Attraction
+                   .Include(a => a.AttractionInfos)
+                   .ThenInclude(i => i.AttractionInfoType)
+                   .Where(a => a.Id == id)
+                   .FirstOrDefault();
+
+                return  attraction?.AttractionInfos.Select(
+                    info => new AttractionInfo
+                    {
+                        AttractionId = info.AttractionId,
+                        AttractionInfoTypeId = info.AttractionInfoTypeId,
+                        Title = info.Title,
+                        Description = info.Description,
+                        AttractionInfoType = new AttractionInfoType
+                        {
+                            Id = info.AttractionInfoType.Id,
+                            TypeTitle = info.AttractionInfoType.TypeTitle,
+                        }
+
+                    }).ToList();
             }
             catch (Exception ex)
             {

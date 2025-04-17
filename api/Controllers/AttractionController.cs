@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Models.Database;
+using Adventour.Api.Responses.Attractions;
 
 namespace Adventour.Api.Controllers
 {
@@ -61,16 +62,38 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpGet("attraction/{id}")]
-        public IActionResult GetAttraction(int id)
+        public IActionResult GetAttraction(string id)
         {
-            if (id < 0)
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
             }
-            var attraction = attractionRepository.GetAttraction(id);
+            var attraction = attractionRepository.GetAttractionWithImages(Convert.ToInt32(id));
             return attraction is null
             ? NotFound(new BaseApiResponse<string>("Attraction not found"))
             : Ok(new BaseApiResponse<Attraction>(attraction, "Attraction found"));
+        }
+
+        [HttpGet("info/{id}")]
+        public IActionResult AttractionInfo(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
+            }
+            var infos = attractionRepository.GetAttractionInfo(Convert.ToInt32(id));
+
+            if (infos is null || !infos.Any())
+            {
+                return NotFound(new BaseApiResponse<string>("Attraction not found"));
+            }
+
+            HashSet<AttractionInfoType> types = new HashSet<AttractionInfoType>();
+
+            foreach (var info in infos)
+                types.Add(info.AttractionInfoType);
+
+           return Ok(new BaseApiResponse<AttractionInfoResponse>(new AttractionInfoResponse { AttractionInfos = infos, InfoTypes = types}, "Attraction found"));
         }
     }
 }

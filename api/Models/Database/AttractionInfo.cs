@@ -18,6 +18,7 @@ namespace Adventour.Api.Models.Database
         [ForeignKey("AttractionInfoType")]
         [Column("id_attraction_info_type")]
         public int AttractionInfoTypeId { get; set; }
+
         public AttractionInfoType AttractionInfoType { get; set; }
 
         [Column("title")]
