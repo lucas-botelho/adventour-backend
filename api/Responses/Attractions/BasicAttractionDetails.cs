@@ -7,7 +7,8 @@ namespace Adventour.Api.Responses.Attractions
         public int Id { get; set; }
         public bool IsFavorited { get; set; }
         public string Name { get; set; }
-        public string? Description { get; set; }
+        public string? ShortDescription { get; set; }
+        public string? LongDescription { get; set; }
         public IEnumerable<AttractionImages> AttractionImages { get; set; }
 
     }

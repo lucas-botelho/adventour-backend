@@ -105,7 +105,8 @@ namespace Adventour.Api.Repositories
                                     {
                                         Id = ts.Attraction.Id,
                                         Name = ts.Attraction.Name,
-                                        Description = ts.Attraction.Description,
+                                        ShortDescription = ts.Attraction.ShortDescription,
+                                        LongDescription = ts.Attraction.LongDescription,
                                         IsFavorited = db.Favorites.Any(f =>
                                             f.AttractionId == ts.Attraction.Id &&
                                             f.UserId == user.Id

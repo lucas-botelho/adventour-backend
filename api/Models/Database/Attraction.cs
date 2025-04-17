@@ -13,11 +13,8 @@ namespace Adventour.Api.Models.Database
         [Column("name")]
         public string Name { get; set; }
 
-        /*[Column("short_description")]
-        public string? ShortDescription { get; set; }*/
-
-        [Column("description")]
-        public string? Description { get; set; }
+        [Column("short_description")]
+        public string? ShortDescription { get; set; }
 
         public ICollection<AttractionImages> AttractionImages { get; set; }
 
@@ -36,8 +33,8 @@ namespace Adventour.Api.Models.Database
         [Column("address_two")]
         public string? AddressTwo { get; set; }
 
-        /*[Column("long_description")]
-        public string? LongDescription { get; set; }*/
+        [Column("long_description")]
+        public string? LongDescription { get; set; }
 
         public ICollection<AttractionInfo> AttractionInfos { get; set; }
     }
