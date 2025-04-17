@@ -1,6 +1,7 @@
 ﻿using Adventour.Api.Data;
 using Adventour.Api.Models.Database;
 using Adventour.Api.Repositories.Interfaces;
+using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Responses.Attractions;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -151,7 +152,7 @@ namespace Adventour.Api.Repositories
                    .Where(a => a.Id == id)
                    .FirstOrDefault();
 
-                return  attraction?.AttractionInfos.Select(
+                return attraction?.AttractionInfos.Select(
                     info => new AttractionInfo
                     {
                         AttractionId = info.AttractionId,
@@ -172,6 +173,50 @@ namespace Adventour.Api.Repositories
             }
 
             return null;
+        }
+
+        public bool AddReview(int id, AddReviewRequest data)
+        {
+            using var transaction = db.Database.BeginTransaction();
+
+            try
+            {
+                var user = db.Person.FirstOrDefault(p => p.OauthId != null && p.OauthId.Equals(data.OAuthId));
+                var rating = db.Rating.FirstOrDefault(r => r.Value == data.Rating);
+
+                if (user != null && rating != null)
+                {
+                    var review = db.Review.Add(new Review
+                    {
+                        AttractionId = id,
+                        UserId = user.Id,
+                        Rating = rating,
+                        Comment = data.Review,
+                        Title = data.Title
+                    });
+                    db.SaveChanges();
+
+
+                    db.ReviewImages.AddRange(data.ImagesUrls.Select(url => new ReviewImages
+                    {
+                        PictureRef = url,
+                        ReviewId = review.Entity.Id
+                    }));
+
+                    db.SaveChanges();
+                    transaction.Commit();
+                    return true;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} ${ex.Message}");
+            }
+
+            transaction.Rollback();
+            return false;
+
         }
     }
 }

@@ -33,8 +33,6 @@ namespace Adventour.Api.Controllers
                     return StatusCode(500, new BaseApiResponse<string>("File upload failed"));
                 }
 
-                //todo: update da conta do user com o link da imagem
-
                 return Ok(new BaseApiResponse<FileUploadResponse>(
                     new FileUploadResponse()
                     {
@@ -45,6 +43,43 @@ namespace Adventour.Api.Controllers
             }
 
             return BadRequest(new BaseApiResponse<string>("Submitted image is not valid."));
+        }
+
+        [HttpPost("upload/multiple")]
+        //[Authorize]
+        public async Task<IActionResult> Upload([FromForm] MultipleFilesUploadRequest request)
+        {
+            if (request.Files == null || request.Files.Count == 0)
+            {
+                return BadRequest(new BaseApiResponse<string>("No files were submitted."));
+            }
+
+            var uploadResults = new List<FileUploadResponse>();
+
+            foreach (var file in request.Files)
+            {
+                if (file.Length > 0)
+                {
+                    var result = await fileUploadService.UploadFileAsync(file);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        uploadResults.Add(new FileUploadResponse
+                        {
+                            PublicUrl = result
+                        });
+                    }
+                }
+            }
+
+            if (uploadResults.Count == 0)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("File upload failed."));
+            }
+
+            return Ok(new BaseApiResponse<MultipleFilesUploadResponse>(
+                new MultipleFilesUploadResponse (uploadResults),
+                "Files uploaded successfully"
+            ));
         }
     }
 }

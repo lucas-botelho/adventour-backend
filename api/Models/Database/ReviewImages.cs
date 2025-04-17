@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Adventour.Api.Models.Database
 {
+    [Table("Review_Images")]
     public class ReviewImages
     {
         [Key]

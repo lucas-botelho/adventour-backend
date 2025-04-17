@@ -1,4 +1,5 @@
 ﻿using Adventour.Api.Models.Database;
+using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Responses.Attractions;
 
 namespace Adventour.Api.Repositories.Interfaces
@@ -10,5 +11,6 @@ namespace Adventour.Api.Repositories.Interfaces
         IEnumerable<BasicAttractionDetails> GetBaseAttractionData(string countryCode, string userId);
         Attraction? GetAttractionWithImages(int id);
         public IEnumerable<AttractionInfo>? GetAttractionInfo(int id);
+        bool AddReview(int id, AddReviewRequest data);
     }
 }

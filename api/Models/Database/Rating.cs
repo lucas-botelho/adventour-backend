@@ -9,7 +9,7 @@ namespace Adventour.Api.Models.Database
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("value")]
+        [Column("rating")]
         public int Value { get; set; }
     }
 }

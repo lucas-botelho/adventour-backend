@@ -26,5 +26,8 @@ namespace Adventour.Api.Models.Database
 
         [Column("comment")]
         public string? Comment { get; set; }
+        
+        [Column("title")]
+        public string Title { get; set; }
     }
 }

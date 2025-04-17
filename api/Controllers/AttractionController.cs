@@ -5,6 +5,7 @@ using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Models.Database;
 using Adventour.Api.Responses.Attractions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Adventour.Api.Controllers
 {
@@ -94,6 +95,20 @@ namespace Adventour.Api.Controllers
                 types.Add(info.AttractionInfoType);
 
            return Ok(new BaseApiResponse<AttractionInfoResponse>(new AttractionInfoResponse { AttractionInfos = infos, InfoTypes = types}, "Attraction found"));
+        }
+
+        [HttpPost("review/{id}")]
+        [Authorize]
+        public IActionResult AddReview(string id, [FromBody] AddReviewRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
+            }
+            
+            bool success = attractionRepository.AddReview(Convert.ToInt32(id), request);
+
+            return Ok(new BaseApiResponse<string>("Attraction review added successufly", success));
         }
     }
 }
