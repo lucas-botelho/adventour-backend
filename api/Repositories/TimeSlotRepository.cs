@@ -83,7 +83,7 @@ namespace Adventour.Api.Repositories
                         {
                             Id = createdTimeSlot.Attraction.Id,
                             Name = createdTimeSlot.Attraction.Name,
-                            Description = createdTimeSlot.Attraction.ShortDescription,
+                            Description = createdTimeSlot.Attraction.Description,
                             IsFavorited = db.Favorites.Any(f =>
                                 f.AttractionId == createdTimeSlot.Attraction.Id
                                 ),
@@ -184,7 +184,7 @@ namespace Adventour.Api.Repositories
                     {
                         Id = timeSlot.Attraction.Id,
                         Name = timeSlot.Attraction.Name,
-                        Description = timeSlot.Attraction.ShortDescription,
+                        Description = timeSlot.Attraction.Description,
                         IsFavorited = db.Favorites.Any(f =>
                             f.AttractionId == timeSlot.Attraction.Id),
                         AttractionImages = timeSlot.Attraction.AttractionImages

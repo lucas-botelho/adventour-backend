@@ -18,18 +18,18 @@ namespace Adventour.Api.Controllers
             this.tomTomService = tomTomService;
         }
 
-        [HttpGet("distance")]
+        [HttpPost("distance")]
         public async Task<IActionResult> GetDistance([FromQuery] double originLat, [FromQuery] double originLon, [FromQuery] double destLat, [FromQuery] double destLon)
         {
             if (originLat == destLat && originLon == destLon)
             {
-                return BadRequest(new BaseApiResponse<string>("Origem e destino não podem ser iguais."));
+                return BadRequest(new BaseApiResponse<string>("Source and Destination cannot be the same."));
             }
 
             try
             {
                 var distance = await tomTomService.GetDistanceInMetersAsync(originLat, originLon, destLat, destLon);
-                return Ok(new BaseApiResponse<DistanceResult>(distance, "Distância calculada com sucesso."));
+                return Ok(new BaseApiResponse<DistanceResult>(distance, "Distance calculated successfully."));
             }
             catch (AppException ex)
             {
@@ -37,7 +37,7 @@ namespace Adventour.Api.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseApiResponse<string>("Erro inesperado ao calcular a distância."));
+                return StatusCode(500, new BaseApiResponse<string>("Unexpected error calculating distance."));
             }
         }
 

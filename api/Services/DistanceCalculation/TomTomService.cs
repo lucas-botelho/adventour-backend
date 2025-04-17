@@ -1,11 +1,9 @@
-﻿using System.Net.Http;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using Adventour.Api.Exceptions;
 using Adventour.Api.Responses.DistanceCalculation;
 using Adventour.Api.Services.DistanceCalculation.Interfaces;
-using Microsoft.Extensions.Configuration;
-using SendGrid.Helpers.Errors.Model;
+using Microsoft.Extensions.Logging;
 
 namespace Adventour.Api.Services.DistanceCalculation
 {
@@ -13,12 +11,14 @@ namespace Adventour.Api.Services.DistanceCalculation
     {
         private readonly HttpClient _httpClient;
         private readonly string apiKey;
+        private readonly ILogger<TomTomService> logger;
 
-        public TomTomService(IConfiguration configuration, HttpClient httpClient)
+        public TomTomService(IConfiguration configuration, HttpClient httpClient, ILogger<TomTomService> logger)
         {
             _httpClient = httpClient;
             apiKey = configuration["TOMTOM_API_KEY"]
                       ?? throw new Exception("TomTom API key not found.");
+            this.logger = logger;
         }
 
         public async Task<string> GeocodeAsync(string address)
@@ -51,9 +51,7 @@ namespace Adventour.Api.Services.DistanceCalculation
                 var body = new
                 {
                     origins = new[] { new { point = new { latitude = originLat, longitude = originLon } } },
-                    destinations = new[] { new { point = new { latitude = destLat, longitude = destLon } } },
-                    metrics = new[] { "distance" },
-                    travelMode = "car"
+                    destinations = new[] { new { point = new { latitude = destLat, longitude = destLon } } }
                 };
 
                 var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
@@ -62,14 +60,14 @@ namespace Adventour.Api.Services.DistanceCalculation
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new BadRequestException("Erro ao comunicar com a API da TomTom.");
+                    throw new NotFoundException("Error communicating with TomTom API.");
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
                 using var doc = JsonDocument.Parse(json);
 
                 var length = doc.RootElement
-                    .GetProperty("matrix")[0][0]
+                    .GetProperty("data")[0]
                     .GetProperty("routeSummary")
                     .GetProperty("lengthInMeters")
                     .GetInt32();
@@ -81,7 +79,7 @@ namespace Adventour.Api.Services.DistanceCalculation
             }
             catch (JsonException ex)
             {
-                throw new BadRequestException("Erro ao interpretar a resposta da API da TomTom.");
+                throw new NotFoundException("Error interpreting TomTom API's response.");
             }
             catch (Exception)
             {

@@ -46,7 +46,7 @@ namespace Adventour.Api.Repositories
                     {
                         Id = attraction.Id,
                         Name = attraction.Name,
-                        Description = attraction.ShortDescription,
+                        Description = attraction.Description,
                         IsFavorited = db.Favorites.Any(favorite => favorite.AttractionId == attraction.Id && favorite.UserId.Equals(user.Id)),
                         AttractionImages = attraction.AttractionImages
                             .Where(i => i.IsMain)
