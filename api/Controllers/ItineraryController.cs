@@ -21,7 +21,7 @@ namespace Adventour.Api.Controllers
             this.itineraryRepository = itineraryRepository;
         }
 
-        [HttpPost("create")]
+        [HttpPost()]
         public IActionResult AddItinerary([FromBody] AddItineraryRequest request)
         {
             try
@@ -51,7 +51,7 @@ namespace Adventour.Api.Controllers
         }
 
 
-        [HttpGet("get")]
+        [HttpGet()]
         public IActionResult GetItineraryById([FromQuery] int itineraryId, [FromQuery] string userId)
         {
             try

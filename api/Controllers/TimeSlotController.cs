@@ -21,7 +21,7 @@ namespace Adventour.Api.Controllers
             this.timeSlotRepository = timeSlotRepository;
         }
 
-        [HttpPost("create")]
+        [HttpPost()]
         public IActionResult AddTimeSlot([FromBody] AddTimeSlotRequest request)
         {
             try
@@ -70,7 +70,7 @@ namespace Adventour.Api.Controllers
             }
         }
 
-        [HttpPut("update")]
+        [HttpPut()]
         public IActionResult UpdateTimeSlot([FromBody] UpdateTimeSlotRequest request)
         {
             try
