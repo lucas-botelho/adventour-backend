@@ -82,7 +82,7 @@ END;
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Review')
 BEGIN
     CREATE TABLE Review (
-         id INT PRIMARY KEY IDENTITY(1,1),
+        id INT PRIMARY KEY IDENTITY(1,1),
         id_rating INT NOT NULL,
         id_attraction INT NOT NULL,
         id_user uniqueidentifier NOT NULL,
@@ -164,3 +164,4 @@ GO
 
 
 CREATE UNIQUE INDEX idx_person_oauth_id ON Person(oauth_id);
+ALTER TABLE Review ADD title VARCHAR(50) NOT NULL DEFAULT '';

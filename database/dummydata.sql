@@ -1,6 +1,26 @@
 USE Adventour;
 GO
 
+INSERT INTO Person (
+    id,
+    oauth_id,
+    name,
+    username,
+    email,
+    verified,
+    photo_url
+)
+VALUES (
+    '40EFFEF5-1449-404E-51F1-08DD7C4DACC0',
+    'SEtuxdaKHsXjKRHR31T2cXVxp1h1',
+    'Adventour',
+    'botelho',
+    'adventour.helpcenter@gmail.com',
+    1,
+    'https://res.cloudinary.com/dgskluspn/image/upload/v1744702589/33.jpg'
+);
+
+
 -- Attractions (Directly linked to Countries instead of Cities)
 INSERT INTO Attraction (id_country, name, average_rating, short_description, address_one, address_two, long_description)
 VALUES (180, 'Belem Tower', 5, 'A historic tower on the riverbank.', 'Avenida Brasilia', 'Lisbon', 'A Torre de Belém, antigamente Torre de São Vicente a Par de Belém, oficialmente Torre de São Vicente,[1] é uma fortificação localizada na freguesia de Belém, Município e Distrito de Lisboa, em Portugal. Na margem direita do rio Tejo, onde existiu outrora a praia de Belém, era primitivamente cercada pelas águas em todo o seu perímetro. Ao longo dos séculos foi envolvida pela praia, até se incorporar hoje à terra firme. Um dos ex libris da cidade, o monumento é um ícone da arquitetura do reinado de D. Manuel I, numa síntese entre a torre de menagem de tradição medieval e o baluarte moderno, onde se dispunham peças de artilharia.');
@@ -29,12 +49,6 @@ VALUES (180, 'Dom Luis I Bridge', 4, 'Famous double-deck iron bridge in Porto.',
 
 GO
 
--- Attraction_Info_Type
-INSERT INTO Attraction_Info_Type (type_title) VALUES ('Curiositys');
-INSERT INTO Attraction_Info_Type (type_title) VALUES ('What to Expect');
-INSERT INTO Attraction_Info_Type (type_title) VALUES ('Practical Information');
-GO
-
 -- Attraction_Info
 INSERT INTO Attraction_Info (id_attraction, id_attraction_info_type, title, description, duration_seconds)
 VALUES (1, 1, 'History', 'A brief history of the Belem Tower.', 3600);
@@ -46,13 +60,6 @@ INSERT INTO Attraction_Info (id_attraction, id_attraction_info_type, title, desc
 VALUES (3, 3, 'Artworks', 'Famous paintings and sculptures.', 5400);
 GO
 
--- Rating
-INSERT INTO Rating (rating) VALUES (1);
-INSERT INTO Rating (rating) VALUES (2);
-INSERT INTO Rating (rating) VALUES (3);
-INSERT INTO Rating (rating) VALUES (4);
-INSERT INTO Rating (rating) VALUES (5);
-GO
 
 -- Attraction_Images
 INSERT INTO Attraction_Images (id_attraction, is_main, picture_ref)
@@ -72,13 +79,41 @@ INSERT INTO Attraction_Images (id_attraction, is_main, picture_ref)
 VALUES (5, 1, 'https://res.cloudinary.com/dgskluspn/image/upload/v1739805925/1000000033.jpg');
 GO
 
----- Review_Images
---INSERT INTO Review_Images (id_review, is_main, picture_ref)
---VALUES (1, 1, 'https://res.cloudinary.com/dgskluspn/image/upload/v1739805925/1000000033.jpg');
+INSERT INTO Review (
+    id_rating,
+    id_attraction,
+    id_user,
+    comment
+)
+VALUES (
+    3,
+    1,
+    '40EFFEF5-1449-404E-51F1-08DD7C4DACC0',
+    'asdfasdfasdfasdfasdfasdf'
+);
 
---INSERT INTO Review_Images (id_review, is_main, picture_ref)
---VALUES (2, 0, 'https://res.cloudinary.com/dgskluspn/image/upload/v1739805925/1000000033.jpg');
+go
+INSERT INTO Review_Images (
+    id_review,
+    is_main,
+    picture_ref
+)
+VALUES
+    (1, 0, 'https://res.cloudinary.com/dgskluspn/image/upload/v1739805925/1000000033.jpg'),
+    (1, 0, 'https://res.cloudinary.com/dgskluspn/image/upload/v1739805925/1000000033.jpg');
 
---INSERT INTO Review_Images (id_review, is_main, picture_ref)
---VALUES (3, 1, 'https://res.cloudinary.com/dgskluspn/image/upload/v1739805925/1000000033.jpg');
 GO
+INSERT INTO Favorites (
+id_attraction,
+id_user
+)
+VALUES (
+    1,
+    '40EFFEF5-1449-404E-51F1-08DD7C4DACC0'
+);
+
+
+GO
+
+
+
