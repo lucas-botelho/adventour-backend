@@ -6,6 +6,7 @@ using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Models.Database;
 using Adventour.Api.Responses.Attractions;
 using Microsoft.AspNetCore.Authorization;
+using Adventour.Api.Models.Attraction;
 
 namespace Adventour.Api.Controllers
 {
@@ -22,7 +23,7 @@ namespace Adventour.Api.Controllers
             _logger = logger;
             this.attractionRepository = attractionRepository;
         }
-       
+
         [HttpGet("list/attractions")]
         public IActionResult GetCountryActivities(string countryCode, [FromQuery] string oAuthId)
         {
@@ -45,7 +46,7 @@ namespace Adventour.Api.Controllers
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
             }
-           
+
             var success = attractionRepository.AddToFavorites(request.AttractionId, request.UserId);
             return Ok(new BaseApiResponse<string>("Attraction added to favorites", success));
         }
@@ -94,21 +95,34 @@ namespace Adventour.Api.Controllers
             foreach (var info in infos)
                 types.Add(info.AttractionInfoType);
 
-           return Ok(new BaseApiResponse<AttractionInfoResponse>(new AttractionInfoResponse { AttractionInfos = infos, InfoTypes = types}, "Attraction found"));
+            return Ok(new BaseApiResponse<AttractionInfoResponse>(new AttractionInfoResponse { AttractionInfos = infos, InfoTypes = types }, "Attraction found"));
         }
 
-        [HttpPost("review/{id}")]
+        [HttpPost("review/{attractionId}")]
         [Authorize]
-        public IActionResult AddReview(string id, [FromBody] AddReviewRequest request)
+        public IActionResult AddReview(string attractionId, [FromBody] AddReviewRequest request)
         {
-            if (string.IsNullOrWhiteSpace(id))
+            if (string.IsNullOrWhiteSpace(attractionId))
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
             }
-            
-            bool success = attractionRepository.AddReview(Convert.ToInt32(id), request);
+
+            bool success = attractionRepository.AddReview(Convert.ToInt32(attractionId), request);
 
             return Ok(new BaseApiResponse<string>("Attraction review added successufly", success));
+        }
+
+        [HttpGet("review/{attractionId}")]
+        public IActionResult GetReviews(string attractionId)
+        {
+            if (string.IsNullOrWhiteSpace(attractionId))
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
+            }
+            var reviews = attractionRepository.GetAttractionReviews(Convert.ToInt32(attractionId));
+            return reviews is null
+            ? NotFound(new BaseApiResponse<string>("Attraction not found"))
+            : Ok(new BaseApiResponse<ReviewWithImagesResponse>(new ReviewWithImagesResponse(reviews), "Attraction found"));
         }
     }
 }

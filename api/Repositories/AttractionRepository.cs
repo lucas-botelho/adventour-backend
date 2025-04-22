@@ -1,4 +1,5 @@
 ﻿using Adventour.Api.Data;
+using Adventour.Api.Models.Attraction;
 using Adventour.Api.Models.Database;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
@@ -217,6 +218,57 @@ namespace Adventour.Api.Repositories
             transaction.Rollback();
             return false;
 
+        }
+
+        public IEnumerable<ReviewWithImages> GetAttractionReviews(int attractionId)
+        {
+            try
+            {
+                var reviews = db.Review.Where(r => r.AttractionId == attractionId)
+                    .Include(r => r.Person)
+                    .Include(r => r.Rating)
+                    .Select(
+                        r => new Review
+                        {
+                            Rating = r.Rating,
+                            Id = r.Id,
+                            Person = new Person
+                            {
+                                Username = r.Person.Username,
+                                PhotoUrl = r.Person.PhotoUrl,
+                                OauthId = r.Person.OauthId,
+                            },
+                            Comment = r.Comment,
+                            Title = r.Title,
+                        }
+                    )
+                    .ToList();
+
+                var images = db.ReviewImages
+                    .Where(i => reviews.Select(r => r.Id).Contains(i.ReviewId))
+                    .ToList();
+
+                var result = new List<ReviewWithImages>();
+
+                foreach (var review in reviews)
+                {
+                    var reviewResponse = new ReviewWithImages
+                    {
+                        Review = review,
+                        Images = images.Where(i => i.ReviewId == review.Id).ToList(),
+                    };
+
+                    result.Add(reviewResponse);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+            }
+
+            return null;
         }
     }
 }
