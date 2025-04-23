@@ -1,12 +1,8 @@
-
-using Adventour.Api.Builders;
-using Adventour.Api.Builders.Interfaces;
 using Adventour.Api.Configurations;
 using Adventour.Api.Data;
 using Adventour.Api.Repositories;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Services.Authentication;
-using Adventour.Api.Services.Database;
 using Adventour.Api.Services.Email.Interfaces;
 using Adventour.Api.Services.FileUpload;
 using Adventour.Api.Services.FileUpload.Interfaces;
@@ -15,7 +11,8 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +40,10 @@ builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("S
 
 //Singleton objects are the same for every object and every request.
 builder.Services.AddSingleton<ITokenProviderService, JwtTokenProviderService>();
+
+
+builder.Services.AddHttpClient();
+
 
 //Dapper settings
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -119,6 +120,7 @@ FirebaseApp.Create(new AppOptions()
         ""universe_domain"": ""{Environment.GetEnvironmentVariable("FIREBASE_UNIVERSE_DOMAIN")}""
     }}")
 });
+
 var app = builder.Build();
 
 // Set the base path

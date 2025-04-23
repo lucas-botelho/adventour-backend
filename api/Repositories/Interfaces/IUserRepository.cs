@@ -12,6 +12,6 @@ namespace Adventour.Api.Repositories.Interfaces
         string AuthenticateUser(UserRegistrationRequest registration);
         bool UpdatePublicData(UserUpdateRequest data, Guid userId);
         void ConfirmEmail(string userId);
-        Task<Person?> GetUser(string token);
+        Task<Person?> GetUser(string authHeader);
     }
 }

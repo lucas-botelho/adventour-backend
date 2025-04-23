@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.IdentityModel.Tokens;
 using Adventour.Api.Data;
 using Adventour.Api.Models.Database;
+using Azure.Core;
 
 namespace Adventour.Api.Repositories
 {
@@ -96,11 +97,12 @@ namespace Adventour.Api.Repositories
             db.SaveChanges();
         }
 
-        public async Task<Person?> GetUser(string token)
+        public async Task<Person?> GetUser(string authHeader)
         {
-            if (token.IsNullOrEmpty())
+            if (authHeader.IsNullOrEmpty())
                 return null;
 
+            var token = authHeader.Replace("Bearer ", "", StringComparison.OrdinalIgnoreCase);
             var decodedToken = await FirebaseAuth.DefaultInstance?.VerifyIdTokenAsync(token) ?? null;
 
             if (decodedToken is null)

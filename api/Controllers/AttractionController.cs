@@ -16,11 +16,13 @@ namespace Adventour.Api.Controllers
     {
         private readonly ILogger<CountryController> _logger;
         private readonly IAttractionRepository attractionRepository;
+        private readonly IUserRepository userRepository;
 
-        public AttractionController(ILogger<CountryController> logger, IAttractionRepository attractionRepository)
+        public AttractionController(ILogger<CountryController> logger, IAttractionRepository attractionRepository, IUserRepository userRespository)
         {
             _logger = logger;
             this.attractionRepository = attractionRepository;
+            this.userRepository = userRespository;
         }
 
         [HttpGet("list/attractions")]
@@ -131,14 +133,13 @@ namespace Adventour.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Favorites()
         {
-            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-            var decodedToken = await FirebaseAuth.DefaultInstance?.VerifyIdTokenAsync(token) ?? null;
+            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
 
 
-            if (decodedToken == null)
-                return BadRequest(new BaseApiResponse<string>("Invalid token."));
+            if (string.IsNullOrEmpty(user?.OauthId))
+                return BadRequest(new BaseApiResponse<string>("Invalid user."));
 
-            var favorites = attractionRepository.GetFavorites(decodedToken.Uid);
+            var favorites = attractionRepository.GetFavorites(user.OauthId);
             
             return favorites is null || !favorites.Any()
             ? NotFound(new BaseApiResponse<string>("The user has no favorites."))
