@@ -26,8 +26,5 @@ namespace Adventour.Api.Models.Database
 
         [Column("description")]
         public string Description { get; set; }
-
-        [Column("duration_seconds")]
-        public int? DurationSeconds { get; set; }
     }
 }

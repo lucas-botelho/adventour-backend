@@ -24,7 +24,10 @@ namespace Adventour.Api.Models.Database
         public Country Country { get; set; }
 
         [Column("average_rating")]
-        public int? AverageRating { get; set; }
+        public double AverageRating { get; set; }
+
+        [Column("duration_minutes")]
+        public int DurationMinutes { get; set; }
 
         [Column("address_one")]
         public string? AddressOne { get; set; }

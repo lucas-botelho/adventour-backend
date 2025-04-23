@@ -37,14 +37,15 @@ END;
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Attraction')
 BEGIN
     CREATE TABLE Attraction (
-         id INT PRIMARY KEY IDENTITY(1,1),
+        id INT PRIMARY KEY IDENTITY(1,1),
         id_country INT NOT NULL,
         name NVARCHAR(255) NOT NULL,
-        average_rating INT NULL,
+        average_rating FLOAT NOT NULL DEFAULT 0,
         short_description nvarchar(150),
         address_one NVARCHAR(150) NULL,
         address_two NVARCHAR(150) NULL,
 		long_description nvarchar(MAX) NULL,
+        duration_minutes INT NOT NULL DEFAULT 0,
         FOREIGN KEY (id_country) REFERENCES Country(id)
     );
 END;
@@ -65,7 +66,6 @@ BEGIN
         id_attraction_info_type INT NOT NULL,
         title NVARCHAR(255),
         description NVARCHAR(MAX),
-        duration_seconds INT NULL,
         FOREIGN KEY (id_attraction) REFERENCES Attraction(id) ON DELETE CASCADE,
         FOREIGN KEY (id_attraction_info_type) REFERENCES Attraction_Info_Type(id)
     );

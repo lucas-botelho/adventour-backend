@@ -205,6 +205,24 @@ namespace Adventour.Api.Repositories
                     }));
 
                     db.SaveChanges();
+
+                    var allRatings = db.Review
+                        .Where(r => r.AttractionId == id)
+                        .Select(r => r.Rating.Value)
+                        .ToList();
+
+                    if (allRatings.Any())
+                    {
+                        var average = Math.Round(allRatings.Average(), 1); // 1 casa decimal
+
+                        var attraction = db.Attraction.FirstOrDefault(a => a.Id == id);
+                        if (attraction != null)
+                        {
+                            attraction.AverageRating = average;
+                            db.SaveChanges();
+                        }
+                    }
+
                     transaction.Commit();
                     return true;
                 }
@@ -248,8 +266,9 @@ namespace Adventour.Api.Repositories
                     .Where(i => reviews.Select(r => r.Id).Contains(i.ReviewId))
                     .ToList();
 
-                var result = new List<ReviewWithImages>();
 
+                var result = new List<ReviewWithImages>();
+                
                 foreach (var review in reviews)
                 {
                     var reviewResponse = new ReviewWithImages
@@ -270,5 +289,19 @@ namespace Adventour.Api.Repositories
 
             return null;
         }
+
+        public IEnumerable<Attraction> GetFavorites(string oAuthId)
+        {
+            var favorites = db.Favorites
+                .Include(f => f.Attraction)
+                .ThenInclude(a => a.AttractionImages)
+                .Where(f => f.Person.OauthId != null && f.Person.OauthId.Equals(oAuthId))
+                .Select(f => f.Attraction)
+                .ToList();
+
+            return favorites;
+        }
+
+        public Attraction GetAttraction(int id) => db.Attraction.FirstOrDefault(a => a.Id == id);
     }
 }

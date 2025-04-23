@@ -6,7 +6,7 @@ using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Models.Database;
 using Adventour.Api.Responses.Attractions;
 using Microsoft.AspNetCore.Authorization;
-using Adventour.Api.Models.Attraction;
+using FirebaseAdmin.Auth;
 
 namespace Adventour.Api.Controllers
 {
@@ -99,7 +99,7 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpPost("review/{attractionId}")]
-        [Authorize]
+        //[Authorize]
         public IActionResult AddReview(string attractionId, [FromBody] AddReviewRequest request)
         {
             if (string.IsNullOrWhiteSpace(attractionId))
@@ -113,16 +113,38 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpGet("reviews/{attractionId}")]
-        public IActionResult GetReviews(string attractionId)
+        public IActionResult Reviews(string attractionId)
         {
                 if (string.IsNullOrWhiteSpace(attractionId))
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
             }
             var reviews = attractionRepository.GetAttractionReviews(Convert.ToInt32(attractionId));
+            Attraction attraction = attractionRepository.GetAttraction(Convert.ToInt32(attractionId));
+
+
             return reviews is null
             ? NotFound(new BaseApiResponse<string>("Attraction not found"))
-            : Ok(new BaseApiResponse<ReviewWithImagesResponse>(new ReviewWithImagesResponse(reviews), "Attraction found"));
+            : Ok(new BaseApiResponse<ReviewWithImagesResponse>(new ReviewWithImagesResponse(reviews, (double)(attraction?.AverageRating)), "Attraction found"));
+        }
+
+        [HttpGet("favorites")]
+        [Authorize]
+        public async Task<IActionResult> Favorites()
+        {
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            var decodedToken = await FirebaseAuth.DefaultInstance?.VerifyIdTokenAsync(token) ?? null;
+
+
+            if (decodedToken == null)
+                return BadRequest(new BaseApiResponse<string>("Invalid token."));
+
+
+            var favorites = attractionRepository.GetFavorites(decodedToken.Uid);
+            return Ok();
+            //return favorites is null || !favorites.Any()
+            //? NotFound(new BaseApiResponse<string>("The user has no favorites."))
+            //: Ok(new BaseApiResponse<BasicAttractionListResponse>(new BasicAttractionListResponse(favorites), "Attractions found"));
         }
     }
 }

@@ -14,5 +14,7 @@ namespace Adventour.Api.Repositories.Interfaces
         public IEnumerable<AttractionInfo>? GetAttractionInfo(int id);
         bool AddReview(int attractionId, AddReviewRequest data);
         IEnumerable<ReviewWithImages> GetAttractionReviews(int attractionId);
+        IEnumerable<Attraction> GetFavorites(string oAuthId);
+        Attraction GetAttraction(int id);
     }
 }
