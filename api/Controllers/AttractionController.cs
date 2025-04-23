@@ -112,10 +112,10 @@ namespace Adventour.Api.Controllers
             return Ok(new BaseApiResponse<string>("Attraction review added successufly", success));
         }
 
-        [HttpGet("review/{attractionId}")]
+        [HttpGet("reviews/{attractionId}")]
         public IActionResult GetReviews(string attractionId)
         {
-            if (string.IsNullOrWhiteSpace(attractionId))
+                if (string.IsNullOrWhiteSpace(attractionId))
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
             }
