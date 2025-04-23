@@ -20,7 +20,7 @@ namespace Adventour.Api.Repositories
             db = context;
         }
 
-        public IEnumerable<BasicAttractionDetails> GetBaseAttractionData(string countryCode, string userId)
+        public IEnumerable<AttractionDetails> GetBaseAttractionData(string countryCode, string userId)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace Adventour.Api.Repositories
                 if (selectedCountry is null)
                 {
                     logger.LogError($"{logHeader} Country code not found.");
-                    return Enumerable.Empty<BasicAttractionDetails>();
+                    return Enumerable.Empty<AttractionDetails>();
                 }
 
                 var attractions = selectedCountry.Attractions;
@@ -41,11 +41,11 @@ namespace Adventour.Api.Repositories
                 if (user is null)
                 {
                     logger.LogError($"{logHeader} User code not found.");
-                    return Enumerable.Empty<BasicAttractionDetails>();
+                    return Enumerable.Empty<AttractionDetails>();
                 }
 
-                List<BasicAttractionDetails> baseAttractions = attractions.Where(a => a.AttractionImages.Count > 0).Select(
-                    attraction => new BasicAttractionDetails
+                List<AttractionDetails> baseAttractions = attractions.Where(a => a.AttractionImages.Count > 0).Select(
+                    attraction => new AttractionDetails
                     {
                         Id = attraction.Id,
                         Name = attraction.Name,
@@ -68,7 +68,7 @@ namespace Adventour.Api.Repositories
                 logger.LogError($"{logHeader} {ex.Message}");
             }
 
-            return Enumerable.Empty<BasicAttractionDetails>();
+            return Enumerable.Empty<AttractionDetails>();
 
         }
 
@@ -290,13 +290,18 @@ namespace Adventour.Api.Repositories
             return null;
         }
 
-        public IEnumerable<Attraction> GetFavorites(string oAuthId)
+        public IEnumerable<FavoritedAttractionDetails> GetFavorites(string oAuthId)
         {
             var favorites = db.Favorites
                 .Include(f => f.Attraction)
                 .ThenInclude(a => a.AttractionImages)
                 .Where(f => f.Person.OauthId != null && f.Person.OauthId.Equals(oAuthId))
-                .Select(f => f.Attraction)
+                .Select(f => new FavoritedAttractionDetails
+                {
+                    Name = f.Attraction.Name,
+                    AverageRating = f.Attraction.AverageRating,
+                    CountryName = f.Attraction.Country.Name,
+                })
                 .ToList();
 
             return favorites;

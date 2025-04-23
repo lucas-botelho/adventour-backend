@@ -14,7 +14,6 @@ namespace Adventour.Api.Controllers
     [ApiController]
     public class AttractionController : Controller
     {
-
         private readonly ILogger<CountryController> _logger;
         private readonly IAttractionRepository attractionRepository;
 
@@ -36,7 +35,7 @@ namespace Adventour.Api.Controllers
 
             return attractions is null
             ? NotFound(new BaseApiResponse<string>("Sorry, we dont have any attractions yet for this country."))
-            : Ok(new BaseApiResponse<BasicAttractionListResponse>(new BasicAttractionListResponse(attractions), "Attractions found."));
+            : Ok(new BaseApiResponse<AttractionDetailsListResponse>(new AttractionDetailsListResponse(attractions), "Attractions found."));
         }
 
         [HttpPost("favorite")]
@@ -139,12 +138,11 @@ namespace Adventour.Api.Controllers
             if (decodedToken == null)
                 return BadRequest(new BaseApiResponse<string>("Invalid token."));
 
-
             var favorites = attractionRepository.GetFavorites(decodedToken.Uid);
-            return Ok();
-            //return favorites is null || !favorites.Any()
-            //? NotFound(new BaseApiResponse<string>("The user has no favorites."))
-            //: Ok(new BaseApiResponse<BasicAttractionListResponse>(new BasicAttractionListResponse(favorites), "Attractions found"));
+            
+            return favorites is null || !favorites.Any()
+            ? NotFound(new BaseApiResponse<string>("The user has no favorites."))
+            : Ok(new BaseApiResponse<FavoritedAttractionListResponse>(new FavoritedAttractionListResponse(favorites), "Attractions found"));
         }
     }
 }

@@ -9,12 +9,12 @@ namespace Adventour.Api.Repositories.Interfaces
     {
         bool AddToFavorites(int attractionId, string userId);
         bool RemoveFavorite(int attractionId, string userId);
-        IEnumerable<BasicAttractionDetails> GetBaseAttractionData(string countryCode, string userId);
+        IEnumerable<AttractionDetails> GetBaseAttractionData(string countryCode, string userId);
         Attraction? GetAttractionWithImages(int id);
         public IEnumerable<AttractionInfo>? GetAttractionInfo(int id);
         bool AddReview(int attractionId, AddReviewRequest data);
         IEnumerable<ReviewWithImages> GetAttractionReviews(int attractionId);
-        IEnumerable<Attraction> GetFavorites(string oAuthId);
+        IEnumerable<FavoritedAttractionDetails> GetFavorites(string oAuthId);
         Attraction GetAttraction(int id);
     }
 }

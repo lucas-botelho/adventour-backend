@@ -79,7 +79,7 @@ namespace Adventour.Api.Repositories
                     StartTime = createdTimeSlot.StartTime,
                     EndTime = createdTimeSlot.EndTime,
                     Attraction = createdTimeSlot.Attraction != null
-                        ? new BasicAttractionDetails
+                        ? new AttractionDetails
                         {
                             Id = createdTimeSlot.Attraction.Id,
                             Name = createdTimeSlot.Attraction.Name,
@@ -180,7 +180,7 @@ namespace Adventour.Api.Repositories
                 StartTime = timeSlot.StartTime,
                 EndTime = timeSlot.EndTime,
                 Attraction = timeSlot.Attraction != null
-                    ? new BasicAttractionDetails
+                    ? new AttractionDetails
                     {
                         Id = timeSlot.Attraction.Id,
                         Name = timeSlot.Attraction.Name,
