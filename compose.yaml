@@ -1,26 +1,10 @@
 version: "3.8"
-services:
-  api:
-    env_file: ".env"
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-      - "8081:8081"
-    environment:
-      - DOTNET_RUNNING_IN_CONTAINER=true
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - SQL_CONNECTION_STRING=Server=mssql;Database=${DATABASE};User Id=${SQL_USER};Password=${SQL_PASSWORD}
-    # volumes:
-      # - ./api/bin/Debug/net8.0:/app:ro
-    depends_on:
-      - db
 
+services:
   db:
     build:
-        context: ./database
-        dockerfile: Dockerfile
+      context: ./database
+      dockerfile: Dockerfile
     container_name: mssql
     ports:
       - "1433:1433"
@@ -29,22 +13,36 @@ services:
       ACCEPT_EULA: "Y"
     volumes:
       - mssql_data:/var/opt/mssql
-    entrypoint: ["/bin/bash", "-c", "
-      /opt/mssql/bin/sqlservr & 
-      pid=$$!;
-      echo 'Waiting for SQL Server to start...';
-      until /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '${SQL_PASSWORD}' -Q 'SELECT 1' > /dev/null 2>&1; do
-          sleep 2;
-      done;
-      echo 'SQL Server is up! Running script database_setup';
-      /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '${SQL_PASSWORD}' -d master -i /scripts/database_setup.sql;
-      echo 'Running script data-dumps/countries';
-      /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P '${SQL_PASSWORD}' -d master -i /scripts/data-dumps/countries.sql;
-      wait $pid;
-    "]
-        
-      
-      
+
+  sql-init:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: sqlinit
+    depends_on:
+      - db
+    environment:
+      SQL_PASSWORD: ${SQL_PASSWORD}
+    restart: "no"
+
+  api:
+    env_file: ".env"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final
+    ports:
+      - "8080:8080"
+    environment:
+      - DOTNET_RUNNING_IN_CONTAINER=true
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+      - SQL_CONNECTION_STRING=Server=mssql;Database=${DATABASE};User Id=${SQL_USER};Password=${SQL_PASSWORD}
+    volumes:
+      - ./database:/database
+    depends_on:
+      - db
+      - sql-init
+
   nginx:
     build:
       context: ./gateway
@@ -52,6 +50,7 @@ services:
     container_name: nginx_reverse_proxy
     ports:
       - "80:80"
+      # - "8181:80"
     depends_on:
       - api
 
