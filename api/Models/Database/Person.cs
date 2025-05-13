@@ -33,9 +33,6 @@ namespace Adventour.Api.Models.Database
         [Column("photo_url")]
         public string? PhotoUrl { get; set; }
 
-        [Column("bio")]
-        public string? Bio { get; set; }
-
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Itinerary> Itineraries { get; set; }
     }
