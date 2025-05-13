@@ -298,9 +298,14 @@ namespace Adventour.Api.Repositories
                 .Where(f => f.Person.OauthId != null && f.Person.OauthId.Equals(oAuthId))
                 .Select(f => new FavoritedAttractionDetails
                 {
+                    Id = f.Attraction.Id,
                     Name = f.Attraction.Name,
                     AverageRating = f.Attraction.AverageRating,
                     CountryName = f.Attraction.Country.Name,
+                    Image = f.Attraction.AttractionImages
+                        .Where(i => i.IsMain)
+                        .Select(i => i.PictureRef)
+                        .FirstOrDefault() ?? string.Empty,
                 })
                 .ToList();
 

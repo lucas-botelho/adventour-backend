@@ -133,13 +133,12 @@ namespace Adventour.Api.Controllers
         [Authorize]
         public async Task<IActionResult> Favorites()
         {
-            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            var token = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
 
-
-            if (string.IsNullOrEmpty(user?.OauthId))
+            if (string.IsNullOrEmpty(token?.OauthId))
                 return BadRequest(new BaseApiResponse<string>("Invalid user."));
 
-            var favorites = attractionRepository.GetFavorites(user.OauthId);
+            var favorites = attractionRepository.GetFavorites(token.OauthId);
             
             return favorites is null || !favorites.Any()
             ? NotFound(new BaseApiResponse<string>("The user has no favorites."))
