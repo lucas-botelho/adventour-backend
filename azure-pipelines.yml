@@ -1,0 +1,27 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+
+- task: UseSSH@0
+  inputs:
+    sshEndpoint: 'adventour-ssh-connection'  # 👈 must match the name of your SSH service connection
+    runOptions: 'inline'
+    inline: |
+      echo "🔁 Pulling latest code..."
+      cd /home/azureuser/adventour-backend || exit 1
+      git pull origin main
+
+      echo "🛑 Stopping old containers..."
+      docker-compose down
+
+      echo "🚀 Building and starting containers..."
+      docker-compose up -d --build
+
+      echo "✅ Deployment complete!"
