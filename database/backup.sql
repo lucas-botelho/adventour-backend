@@ -4,21 +4,21 @@ INSERT [dbo].[Person] ([id], [oauth_id], [name], [username], [email], [verified]
 GO
 SET IDENTITY_INSERT [dbo].[Attraction] ON 
 GO
-INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description]) VALUES (1, 180, N'Belem Tower', 5, N'A historic tower on the riverbank.', N'Avenida Brasilia', N'Lisbon', N'A Torre de Belém, antigamente Torre de São Vicente a Par de Belém, oficialmente Torre de São Vicente,[1] é uma fortificação localizada na freguesia de Belém, Município e Distrito de Lisboa, em Portugal. Na margem direita do rio Tejo, onde existiu outrora a praia de Belém, era primitivamente cercada pelas águas em todo o seu perímetro. Ao longo dos séculos foi envolvida pela praia, até se incorporar hoje à terra firme. Um dos ex libris da cidade, o monumento é um ícone da arquitetura do reinado de D. Manuel I, numa síntese entre a torre de menagem de tradição medieval e o baluarte moderno, onde se dispunham peças de artilharia.')
+INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description], [duration_minutes]) VALUES (1, 180, N'Belem Tower', 5, N'A historic tower on the riverbank.', N'Avenida Brasilia', N'Lisbon', N'A Torre de Belém, antigamente Torre de São Vicente a Par de Belém, oficialmente Torre de São Vicente,[1] é uma fortificação localizada na freguesia de Belém, Município e Distrito de Lisboa, em Portugal. Na margem direita do rio Tejo, onde existiu outrora a praia de Belém, era primitivamente cercada pelas águas em todo o seu perímetro. Ao longo dos séculos foi envolvida pela praia, até se incorporar hoje à terra firme. Um dos ex libris da cidade, o monumento é um ícone da arquitetura do reinado de D. Manuel I, numa síntese entre a torre de menagem de tradição medieval e o baluarte moderno, onde se dispunham peças de artilharia.', 15)
 GO
-INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description]) VALUES (2, 180, N'Clerigos Tower', 4, N'Iconic Baroque tower with stunning views.', N'Rua dos Clérigos', N'Porto', NULL)
+INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description], [duration_minutes]) VALUES (2, 180, N'Clerigos Tower', 4, N'Iconic Baroque tower with stunning views.', N'Rua dos Clérigos', N'Porto', NULL, 15)
 GO
-INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description]) VALUES (3, 180, N'Prado Museum', 5, N'Famous museum with European art.', N'Calle Ruiz de Alarcon', N'Madrid', NULL)
+INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description], [duration_minutes]) VALUES (3, 180, N'Prado Museum', 5, N'Famous museum with European art.', N'Calle Ruiz de Alarcon', N'Madrid', NULL, 15)
 GO
-INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description]) VALUES (4, 180, N'Sagrada Familia', 5, N'Magnificent basilica designed by Gaudi.', N'Carrer de Mallorca', N'Barcelona', NULL)
+INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description], [duration_minutes]) VALUES (4, 180, N'Sagrada Familia', 5, N'Magnificent basilica designed by Gaudi.', N'Carrer de Mallorca', N'Barcelona', NULL, 15)
 GO
-INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description]) VALUES (5, 180, N'Eiffel Tower', 5, N'Famous iron tower with city views.', N'Champ de Mars', N'Paris', NULL)
+INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description], [duration_minutes]) VALUES (5, 180, N'Eiffel Tower', 5, N'Famous iron tower with city views.', N'Champ de Mars', N'Paris', NULL, 15)
 GO
-INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description]) VALUES (6, 180, N'Sintra Palace', 5, N'Beautiful palace surrounded by lush gardens.', N'Largo Rainha Dona Amélia', N'Sintra', NULL)
+INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description], [duration_minutes]) VALUES (6, 180, N'Sintra Palace', 5, N'Beautiful palace surrounded by lush gardens.', N'Largo Rainha Dona Amélia', N'Sintra', NULL, 15)
 GO
-INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description]) VALUES (7, 180, N'Quinta da Regaleira', 5, N'Mystical palace with underground tunnels.', N'Rua Barbosa du Bocage', N'Sintra', NULL)
+INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description], [duration_minutes]) VALUES (7, 180, N'Quinta da Regaleira', 5, N'Mystical palace with underground tunnels.', N'Rua Barbosa du Bocage', N'Sintra', NULL, 15)
 GO
-INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description]) VALUES (8, 180, N'Dom Luis I Bridge', 4, N'Famous double-deck iron bridge in Porto.', N'Ponte Luiz I', N'Porto', NULL)
+INSERT [dbo].[Attraction] ([id], [id_country], [name], [average_rating], [short_description], [address_one], [address_two], [long_description], [duration_minutes]) VALUES (8, 180, N'Dom Luis I Bridge', 4, N'Famous double-deck iron bridge in Porto.', N'Ponte Luiz I', N'Porto', NULL, 15)
 GO
 SET IDENTITY_INSERT [dbo].[Attraction] OFF
 GO
