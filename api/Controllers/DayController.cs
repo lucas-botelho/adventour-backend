@@ -22,7 +22,7 @@ namespace Adventour.Api.Controllers
             this.dayRepository = dayRepository;
         }
 
-        [HttpPost("create")] 
+        [HttpPost()] 
         public IActionResult AddDay([FromBody] AddDayRequest request)
         {
             try
@@ -52,7 +52,7 @@ namespace Adventour.Api.Controllers
             }
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete()]
         public IActionResult RemoveDay(int dayId)
         {
             try

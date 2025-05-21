@@ -3,6 +3,9 @@ using Adventour.Api.Data;
 using Adventour.Api.Repositories;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Services.Authentication;
+using Adventour.Api.Services.Database;
+using Adventour.Api.Services.DistanceCalculation.Interfaces;
+using Adventour.Api.Services.DistanceCalculation;
 using Adventour.Api.Services.Email.Interfaces;
 using Adventour.Api.Services.FileUpload;
 using Adventour.Api.Services.FileUpload.Interfaces;
@@ -30,11 +33,14 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IAttractionRepository, AttractionRepository>();
 builder.Services.AddScoped<ITimeSlotRepository, TimeSlotRepository>();
 builder.Services.AddScoped<IDayRepository, DayRepository>();
+builder.Services.AddScoped<IItineraryRepository, ItineraryRepository>();
 //builder.Services.AddScoped<IQueryServiceBuilder, QueryServiceBuilder>();
 //builder.Services.AddScoped<IDatabaseService, MsSqlService>();
 builder.Services.AddScoped<IFileUploadService, CloudinaryService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IEmailService, SendGridService>();
+
+builder.Services.AddHttpClient<ITomTomService, TomTomService>();
 
 builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
 

@@ -15,6 +15,7 @@ namespace Adventour.Api.Models.Database
 
         [Column("short_description")]
         public string? ShortDescription { get; set; }
+
         public ICollection<AttractionImages> AttractionImages { get; set; }
 
         [Required]
