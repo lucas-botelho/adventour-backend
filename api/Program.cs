@@ -40,7 +40,7 @@ builder.Services.AddScoped<IFileUploadService, CloudinaryService>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IEmailService, SendGridService>();
 
-builder.Services.AddHttpClient<ITomTomService, TomTomService>();
+builder.Services.AddHttpClient<IGeoLocationService, TomTomService>();
 
 builder.Services.Configure<SendGridSettings>(builder.Configuration.GetSection("SendGrid"));
 

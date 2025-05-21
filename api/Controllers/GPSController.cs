@@ -1,4 +1,5 @@
 ﻿using Adventour.Api.Exceptions;
+using Adventour.Api.Models.Geolocation;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.DistanceCalculation;
 using Adventour.Api.Services.DistanceCalculation.Interfaces;
@@ -10,15 +11,15 @@ namespace Adventour.Api.Controllers
     {
         private readonly ILogger<GPSController> logger;
         private const string logHeader = "## GPSController ##: ";
-        private readonly ITomTomService tomTomService;
+        private readonly IGeoLocationService tomTomService;
 
-        public GPSController(ILogger<GPSController> logger, ITomTomService tomTomService) 
-        { 
+        public GPSController(ILogger<GPSController> logger, IGeoLocationService tomTomService)
+        {
             this.logger = logger;
             this.tomTomService = tomTomService;
         }
 
-        [HttpPost("distance")]
+        [HttpGet("distance")]
         public async Task<IActionResult> GetDistance([FromQuery] double originLat, [FromQuery] double originLon, [FromQuery] double destLat, [FromQuery] double destLon)
         {
             if (originLat == destLat && originLon == destLon)
@@ -41,7 +42,27 @@ namespace Adventour.Api.Controllers
             }
         }
 
-
-
+        [HttpGet("geocode")]
+        public async Task<IActionResult> Geocode(string address)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid address."));
+            }
+            try
+            {
+                var result = await tomTomService.AddressToGeoCode(address);
+                return Ok(new BaseApiResponse<GeocodeResult>(result, "Geocode successful."));
+            }
+            catch (AppException ex)
+            {
+                return StatusCode(ex.StatusCode, new BaseApiResponse<string>(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Unexpected error during geocoding."));
+            }
+        }
     }
+
 }

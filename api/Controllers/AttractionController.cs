@@ -7,6 +7,7 @@ using Adventour.Api.Models.Database;
 using Adventour.Api.Responses.Attractions;
 using Microsoft.AspNetCore.Authorization;
 using FirebaseAdmin.Auth;
+using Adventour.Api.Services.DistanceCalculation.Interfaces;
 
 namespace Adventour.Api.Controllers
 {
@@ -17,12 +18,14 @@ namespace Adventour.Api.Controllers
         private readonly ILogger<CountryController> _logger;
         private readonly IAttractionRepository attractionRepository;
         private readonly IUserRepository userRepository;
+        private readonly IGeoLocationService geoLocationService;
 
-        public AttractionController(ILogger<CountryController> logger, IAttractionRepository attractionRepository, IUserRepository userRespository)
+        public AttractionController(ILogger<CountryController> logger, IAttractionRepository attractionRepository, IUserRepository userRepository, IGeoLocationService geoLocationService)
         {
             _logger = logger;
             this.attractionRepository = attractionRepository;
-            this.userRepository = userRespository;
+            this.userRepository = userRepository;
+            this.geoLocationService = geoLocationService;
         }
 
         [HttpGet("list/attractions")]
@@ -116,7 +119,7 @@ namespace Adventour.Api.Controllers
         [HttpGet("reviews/{attractionId}")]
         public IActionResult Reviews(string attractionId)
         {
-                if (string.IsNullOrWhiteSpace(attractionId))
+            if (string.IsNullOrWhiteSpace(attractionId))
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid attraction ID"));
             }
@@ -139,10 +142,44 @@ namespace Adventour.Api.Controllers
                 return BadRequest(new BaseApiResponse<string>("Invalid user."));
 
             var favorites = attractionRepository.GetFavorites(token.OauthId);
-            
+
             return favorites is null || !favorites.Any()
             ? NotFound(new BaseApiResponse<string>("The user has no favorites."))
             : Ok(new BaseApiResponse<FavoritedAttractionListResponse>(new FavoritedAttractionListResponse(favorites), "Attractions found"));
         }
+
+        [HttpGet("attraction/")]
+        public async Task<IActionResult> AttractionsByLocation([FromQuery] string latitute, [FromQuery] string longitude, [FromQuery] string countryCode)
+        {
+            if (string.IsNullOrEmpty(latitute) || string.IsNullOrEmpty(longitude))
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid location"));
+            }
+
+            var token = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+
+            if (string.IsNullOrEmpty(token?.OauthId))
+                return BadRequest(new BaseApiResponse<string>("Invalid user."));
+
+
+            var attractions = attractionRepository.GetBaseAttractionData(countryCode, token.OauthId);
+
+
+            //foreach (var attraction in attractions)
+            //{
+            //    geoLocationService.GetDistanceInMetersAsync(
+            //        Convert.ToDouble(latitute),
+            //        Convert.ToDouble(longitude),
+            //        attraction.Latitude,
+            //        attraction.Longitude
+            //    ).Wait();
+            //}
+
+
+            return attractions is null
+            ? NotFound(new BaseApiResponse<string>("Sorry, we dont have any attractions yet for this country."))
+            : Ok(new BaseApiResponse<AttractionDetailsListResponse>(new AttractionDetailsListResponse(attractions), "Attractions found."));
+        }
     }
 }
+

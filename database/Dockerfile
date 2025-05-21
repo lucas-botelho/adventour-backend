@@ -17,11 +17,11 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 # Criar diretório para scripts SQL e copiar
-RUN mkdir -p /scripts
+#RUN mkdir -p /scripts
 
-COPY init/ /scripts/
+#COPY init/ /scripts/
 
 # Ajustar permissões para garantir que o usuário 'mssql' (10001) possa acessar
-RUN chown -R 10001:10001 /scripts && chmod -R 755 /scripts
+#RUN chown -R 10001:10001 /scripts && chmod -R 755 /scripts
 
-USER 10001
+#USER 10001
