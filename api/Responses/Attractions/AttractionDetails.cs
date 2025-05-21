@@ -9,7 +9,10 @@ namespace Adventour.Api.Responses.Attractions
         public string Name { get; set; }
         public string? ShortDescription { get; set; }
         public string? LongDescription { get; set; }
-        public string? DistanceMeters { get; set; }
+        public int? DistanceMeters { get; set; }
         public IEnumerable<AttractionImages> AttractionImages { get; set; }
+        public string? Country { get; set; }
+        public string? Address { get; set; }
+        public double Rating { get; set; }
     }
 }

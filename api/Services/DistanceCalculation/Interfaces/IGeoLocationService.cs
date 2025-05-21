@@ -11,6 +11,7 @@ namespace Adventour.Api.Services.DistanceCalculation.Interfaces
         Task<GeocodeResult> AddressToGeoCode(string address);
         Task<string> GeoCodeToAddress(double lat, double lon);
         Task<DistanceResult> GetDistanceInMetersAsync(double originLat, double originLon, double destLat, double destLon);
+        Task<DistanceResult> GetDistanceInMetersAsync(double originLat, double originLon, string address);
 
     }
 

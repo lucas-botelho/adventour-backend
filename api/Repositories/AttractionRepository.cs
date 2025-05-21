@@ -49,6 +49,9 @@ namespace Adventour.Api.Repositories
                     {
                         Id = attraction.Id,
                         Name = attraction.Name,
+                        Country = attraction.Country.Name,
+                        Rating = attraction.AverageRating,
+                        Address = $"{attraction.AddressOne }, {attraction.AddressTwo}",
                         ShortDescription = attraction.ShortDescription,
                         LongDescription = attraction.LongDescription,
                         IsFavorited = db.Favorites.Any(favorite => favorite.AttractionId == attraction.Id && favorite.UserId.Equals(user.Id)),

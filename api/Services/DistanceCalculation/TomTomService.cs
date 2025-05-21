@@ -112,6 +112,18 @@ namespace Adventour.Api.Services.DistanceCalculation
             };
         }
 
+        public async Task<DistanceResult> GetDistanceInMetersAsync(double originLat, double originLon, string address)
+        {
+            var geocodeDestination = await AddressToGeoCode(address);
 
+            if (geocodeDestination != null)
+            {
+                return await GetDistanceInMetersAsync(originLat, originLon, geocodeDestination.Latitude, geocodeDestination.Longitude);
+            }
+            else
+            {
+                throw new NotFoundException("Error communicating with TomTom API.");
+            }
+        }
     }
 }

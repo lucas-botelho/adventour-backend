@@ -148,8 +148,8 @@ namespace Adventour.Api.Controllers
             : Ok(new BaseApiResponse<FavoritedAttractionListResponse>(new FavoritedAttractionListResponse(favorites), "Attractions found"));
         }
 
-        [HttpGet("attraction/")]
-        public async Task<IActionResult> AttractionsByLocation([FromQuery] string latitute, [FromQuery] string longitude, [FromQuery] string countryCode)
+        [HttpGet("attraction/sorted/location")]
+        public async Task<IActionResult> AttractionsByLocation([FromQuery] string latitute, [FromQuery] string longitude, [FromQuery] string countryCode, [FromQuery] bool descendant = true)
         {
             if (string.IsNullOrEmpty(latitute) || string.IsNullOrEmpty(longitude))
             {
@@ -165,20 +165,78 @@ namespace Adventour.Api.Controllers
             var attractions = attractionRepository.GetBaseAttractionData(countryCode, token.OauthId);
 
 
-            //foreach (var attraction in attractions)
-            //{
-            //    geoLocationService.GetDistanceInMetersAsync(
-            //        Convert.ToDouble(latitute),
-            //        Convert.ToDouble(longitude),
-            //        attraction.Latitude,
-            //        attraction.Longitude
-            //    ).Wait();
-            //}
+            foreach (var attraction in attractions)
+            {
+                var result = await geoLocationService.GetDistanceInMetersAsync(
+                     Convert.ToDouble(latitute),
+                     Convert.ToDouble(longitude),
+                     $"{attraction.Address}, {attraction.Country}"
+
+                 );
+
+                attraction.DistanceMeters = result.DistanceInMeters;
+            }
+
+            if (descendant)
+                attractions = attractions.OrderByDescending(x => x.DistanceMeters);
+            else
+                attractions = attractions.OrderBy(x => x.DistanceMeters);
 
 
             return attractions is null
             ? NotFound(new BaseApiResponse<string>("Sorry, we dont have any attractions yet for this country."))
             : Ok(new BaseApiResponse<AttractionDetailsListResponse>(new AttractionDetailsListResponse(attractions), "Attractions found."));
+        }
+
+        [HttpGet("attraction/sorted/rating")]
+        public async Task<IActionResult> AttractionsByRating([FromQuery] string countryCode, [FromQuery] bool descentant = true)
+        {
+            if (string.IsNullOrWhiteSpace(countryCode) || countryCode.Length != 2)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid country code"));
+            }
+            var token = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            if (string.IsNullOrEmpty(token?.OauthId))
+                return BadRequest(new BaseApiResponse<string>("Invalid user."));
+
+            var attractions = attractionRepository.GetBaseAttractionData(countryCode, token.OauthId);
+
+            if (attractions is null || !attractions.Any())
+            {
+                return NotFound(new BaseApiResponse<string>("Sorry, we dont have any attractions yet for this country."));
+            }
+
+            if (descentant)
+                attractions = attractions.OrderByDescending(x => x.Rating);
+            else
+                attractions = attractions.OrderBy(x => x.Rating);
+
+            return Ok(new BaseApiResponse<AttractionDetailsListResponse>(new AttractionDetailsListResponse(attractions), "Attractions found."));
+        }
+
+        [HttpGet("attraction/sorted/favorited")]
+        public async Task<IActionResult> AttractionByFavorited([FromQuery] string countryCode, [FromQuery] bool descentant = true)
+        {
+            if (string.IsNullOrWhiteSpace(countryCode) || countryCode.Length != 2)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid country code"));
+            }
+            var token = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            if (string.IsNullOrEmpty(token?.OauthId))
+                return BadRequest(new BaseApiResponse<string>("Invalid user."));
+
+            var attractions = attractionRepository.GetBaseAttractionData(countryCode, token.OauthId);
+
+            if (attractions is null || !attractions.Any())
+            {
+                return NotFound(new BaseApiResponse<string>("Sorry, we dont have any attractions yet for this country."));
+            }
+
+            if (descentant)
+                attractions = attractions.OrderByDescending(x => x.IsFavorited);
+            else
+                attractions = attractions.OrderBy(x => x.IsFavorited);
+            return Ok(new BaseApiResponse<AttractionDetailsListResponse>(new AttractionDetailsListResponse(attractions), "Attractions found."));
         }
     }
 }
