@@ -63,5 +63,15 @@ namespace Adventour.Api.Controllers
 
             return Ok(new BaseApiResponse<CountriesListResponse>(new CountriesListResponse(countries, total), "Countries found"));
         }
+
+        [HttpGet("countries/all")]
+        public IActionResult GetAllCountries()
+        {
+            var countries = countryRepository.GetAllCountries();
+
+            return countries is null
+            ? NotFound(new BaseApiResponse<string>("Country not found"))
+            : Ok(new BaseApiResponse<List<AllCountryDto>>(countries, "Countries found"));
+        }
     }
 }

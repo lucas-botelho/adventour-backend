@@ -1,6 +1,7 @@
 ﻿using Adventour.Api.Data;
 using Adventour.Api.Models.Database;
 using Adventour.Api.Repositories.Interfaces;
+using Adventour.Api.Responses.Country;
 
 namespace Adventour.Api.Repositories
 {
@@ -75,6 +76,19 @@ namespace Adventour.Api.Repositories
                     .Skip(validStartIndex)
                     .Take(count)
                     .ToList();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                return null;
+            }
+        }
+
+        public List<AllCountryDto> GetAllCountries()
+        {
+            try
+            {
+                return db.Country.Select(c => new AllCountryDto { Id = c.Id, Name = c.Name }).ToList();
             }
             catch (Exception ex)
             {
