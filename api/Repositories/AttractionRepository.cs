@@ -4,6 +4,7 @@ using Adventour.Api.Models.Database;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Responses.Attractions;
+using Azure.Core;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -316,5 +317,71 @@ namespace Adventour.Api.Repositories
         }
 
         public Attraction GetAttraction(int id) => db.Attraction.FirstOrDefault(a => a.Id == id);
+
+        public bool AddAttraction(AddAttractionRequest data)
+        {
+            using var transaction = db.Database.BeginTransaction();
+
+            try
+            {
+                var country = db.Country.FirstOrDefault(c => c.Id == data.IdCountry);
+                if (country == null)
+                    return false;
+
+                var attraction = new Attraction
+                {
+                    Name = data.Name,
+                    ShortDescription = data.ShortDescription,
+                    LongDescription = data.LongDescription,
+                    DurationMinutes = data.DurationMinutes,
+                    AddressOne = data.AddressOne,
+                    AddressTwo = data.AddressTwo,
+                    CountryId = country.Id
+                };
+
+                db.Attraction.Add(attraction);
+                db.SaveChanges();
+
+                if (data.Infos != null && data.Infos.Any())
+                {
+                    foreach (var info in data.Infos)
+                    {
+                        db.AttractionInfo.Add(new AttractionInfo
+                        {
+                            AttractionId = attraction.Id,
+                            AttractionInfoTypeId = info.IdAttractionInfoType,
+                            Title = info.Title,
+                            Description = info.Description
+                        });
+                    }
+                }
+
+                if (data.Images != null && data.Images.Any())
+                {
+                    foreach (var image in data.Images)
+                    {
+                        db.AttractionImages.Add(new AttractionImages
+                        {
+                            AttractionId = attraction.Id,
+                            PictureRef = image.PictureRef,
+                            IsMain = image.IsMain
+                        });
+                    }
+                }
+
+                db.SaveChanges();
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                transaction.Rollback();
+                return false;
+            }
+        }
+
+
+
     }
 }
