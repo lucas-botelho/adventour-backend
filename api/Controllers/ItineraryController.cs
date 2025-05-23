@@ -56,7 +56,7 @@ namespace Adventour.Api.Controllers
             }
         }
 
-        [HttpGet("itenerary")]
+        [HttpGet("itinerary")]
         public async Task<IActionResult> Itenerary([FromQuery] string countryCode)
         {
             var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
@@ -69,7 +69,7 @@ namespace Adventour.Api.Controllers
             {
                 IEnumerable<FullItineraryDetails> itineraries = itineraryRepository.GetUserItineraries(user, country);
 
-                return Ok(new BaseApiResponse<IEnumerable<FullItineraryDetails>>(itineraries, "Itineraries retrieved successfully"));
+                return Ok(new BaseApiResponse<ItineraryListResponse>(new ItineraryListResponse(itineraries), "Itineraries retrieved successfully"));
             }
             catch (Exception ex)
             {
