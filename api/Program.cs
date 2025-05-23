@@ -129,15 +129,14 @@ FirebaseApp.Create(new AppOptions()
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:5173") // Your frontend dev server
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
-        });
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
 });
-
 
 var app = builder.Build();
 
@@ -159,8 +158,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowFrontend");
-
+app.UseCors();
 app.MapControllers();
 
 app.Run();
