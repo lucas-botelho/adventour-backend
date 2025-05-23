@@ -40,7 +40,7 @@ namespace Adventour.Api.Controllers
 
                 var day = dayRepository.AddDay(request);
 
-                return Ok(new BaseApiResponse<BasicDayDetails>(day, "Day created successfully"));
+                return Ok(new BaseApiResponse<DayDetails>(day, "Day created successfully"));
             }
             catch (AppException ex)
             {
@@ -64,7 +64,7 @@ namespace Adventour.Api.Controllers
 
                 dayRepository.RemoveDay(dayId);
 
-                return Ok(new BaseApiResponse<BasicDayDetails>("Day removed successfully"));
+                return Ok(new BaseApiResponse<DayDetails>("Day removed successfully"));
             }
             catch (AppException ex)
             {

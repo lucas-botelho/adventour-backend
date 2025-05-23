@@ -22,7 +22,7 @@ namespace Adventour.Api.Repositories
             db = context;
         }
 
-        public BasicDayDetails AddDay([FromBody] AddDayRequest request)
+        public DayDetails AddDay([FromBody] AddDayRequest request)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace Adventour.Api.Repositories
                 }
 
 
-                return new BasicDayDetails
+                return new DayDetails
                 {
                     Id = newDay.Id,
                     ItineraryId = newDay.ItineraryId,

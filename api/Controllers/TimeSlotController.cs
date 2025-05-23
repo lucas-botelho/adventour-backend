@@ -33,7 +33,7 @@ namespace Adventour.Api.Controllers
 
                 var result = timeSlotRepository.AddTimeSlot(request);
 
-                return Ok(new BaseApiResponse<BasicTimeSlotDetails>(result, "TimeSlot created successfully."));
+                return Ok(new BaseApiResponse<TimeSlotDetails>(result, "TimeSlot created successfully."));
             }
             catch (AppException ex)
             {
@@ -57,7 +57,7 @@ namespace Adventour.Api.Controllers
 
                 var wasDeleted = timeSlotRepository.RemoveTimeSlot(timeSlotId);
 
-                return Ok(new BaseApiResponse<BasicTimeSlotDetails>("TimeSlot successfully deleted."));
+                return Ok(new BaseApiResponse<TimeSlotDetails>("TimeSlot successfully deleted."));
                 
             }
             catch(AppException ex)
@@ -82,7 +82,7 @@ namespace Adventour.Api.Controllers
 
                 var result = timeSlotRepository.UpdateTimeSlot(request);
 
-                return Ok(new BaseApiResponse<BasicTimeSlotDetails>(result, "TimeSlot updated successfully."));
+                return Ok(new BaseApiResponse<TimeSlotDetails>(result, "TimeSlot updated successfully."));
             }
             catch (AppException ex)
             {

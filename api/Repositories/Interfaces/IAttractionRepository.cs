@@ -9,7 +9,7 @@ namespace Adventour.Api.Repositories.Interfaces
     {
         bool AddToFavorites(int attractionId, string userId);
         bool RemoveFavorite(int attractionId, string userId);
-        IEnumerable<AttractionDetails> GetBaseAttractionData(string countryCode, string userId);
+        IEnumerable<AttractionDetails> GetBaseAttractionData(string countryCode, Person userId);
         Attraction? GetAttractionWithImages(int id);
         public IEnumerable<AttractionInfo>? GetAttractionInfo(int id);
         bool AddReview(int attractionId, AddReviewRequest data);

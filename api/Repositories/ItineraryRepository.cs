@@ -23,34 +23,75 @@ namespace Adventour.Api.Repositories
             db = context;
         }
 
-        public FullItineraryDetails AddItinerary(AddItineraryRequest request)
+        public Itinerary AddItinerary(ItineraryRequest request, Person user)
         {
+            if (request == null || user == null)
+            {
+                return null;
+            }
+
             try
             {
-                Person? user = db.Person.FirstOrDefault(person => person.OauthId != null && person.OauthId.Equals(request.UserId));
-                if (user == null)
-                {
-                    logger.LogError($"{logHeader} User not found with ID: {request.UserId}.");
-                    throw new NotFoundException($"User not found with ID: {request.UserId}.");
-                }
 
-                Itinerary itinerary = new Itinerary
+                var itinerary = new Itinerary
                 {
-                    Title = request.Title,
+                    Title = string.IsNullOrEmpty(request.Name) ? "New Itinerary" : request.Name,
                     UserId = user.Id,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.Now,
+                    Days = request.Days?.Select(dayRequest => new Day
+                    {
+                        DayNumber = dayRequest.DayNumber,
+                        Timeslots = dayRequest.Timeslots?.Select(timeslotRequest => new Timeslot
+                        {
+                            StartTime = DateTime.Parse(timeslotRequest.StartTime),
+                            EndTime = DateTime.Parse(timeslotRequest.EndTime),
+                            AttractionId = timeslotRequest.AttractionId
+                        }).ToList() ?? new List<Timeslot>()
+                    }).ToList() ?? new List<Day>()
                 };
+
 
                 db.Itinerary.Add(itinerary);
                 db.SaveChanges();
 
-                return GetItineraryById(itinerary.Id, request.UserId);
+
+                return db.Itinerary
+                    .Include(i => i.Days)
+                        .ThenInclude(d => d.Timeslots)
+                            .ThenInclude(t => t.Attraction)
+                    .Where(i => i.Id == itinerary.Id)
+                    .Select(i => new Itinerary
+                    {
+                        Id = i.Id,
+                        Title = i.Title,
+                        CreatedAt = i.CreatedAt,
+                        UserId = i.UserId,
+                        Days = i.Days.Select(d => new Day
+                        {
+                            Id = d.Id,
+                            DayNumber = d.DayNumber,
+                            Timeslots = d.Timeslots.Select(ts => new Timeslot
+                            {
+                                Id = ts.Id,
+                                StartTime = ts.StartTime,
+                                EndTime = ts.EndTime,
+                                AttractionId = ts.AttractionId,
+                                Attraction = new Attraction
+                                {
+                                    Id = ts.Attraction.Id,
+                                    Name = ts.Attraction.Name
+                                }
+                            }).ToList()
+                        }).ToList()
+                    })
+                    .FirstOrDefault()! ;
             }
             catch (Exception ex)
             {
                 logger.LogError($"{logHeader} {ex.Message}");
-                throw;
             }
+
+            return null;
         }
 
         public FullItineraryDetails GetItineraryById(int itineraryId, string userId)
@@ -87,14 +128,14 @@ namespace Adventour.Api.Repositories
                 CreatedAt = itinerary.CreatedAt,
                 Days = itinerary.Days
                     .OrderBy(d => d.DayNumber)
-                    .Select(d => new BasicDayDetails
+                    .Select(d => new DayDetails
                     {
                         Id = d.Id,
                         ItineraryId = d.ItineraryId,
                         DayNumber = d.DayNumber,
                         Timeslots = d.Timeslots
                             .OrderBy(ts => ts.StartTime)
-                            .Select(ts => new BasicTimeSlotDetails
+                            .Select(ts => new TimeSlotDetails
                             {
                                 Id = ts.Id,
                                 DayId = ts.DayId,
@@ -125,5 +166,32 @@ namespace Adventour.Api.Repositories
             };
         }
 
+        public IEnumerable<FullItineraryDetails> GetUserItineraries(Person user, Country country)
+        {
+
+            var itineraries = db.Itinerary
+                                .Include(i => i.Days)
+                                    .ThenInclude(d => d.Timeslots)
+                                        .ThenInclude(ts => ts.Attraction)
+                                            .ThenInclude(a => a.AttractionImages)
+                                .Where(i => i.UserId == user.Id &&
+                                            i.Days.Any(d =>
+                                                d.Timeslots.Any(ts =>
+                                                    ts.Attraction != null && ts.Attraction.CountryId == country.Id)))
+                                .ToList();
+
+
+
+            var result = new List<FullItineraryDetails>();
+
+            foreach (var itinerary in itineraries)
+            {
+                var fullItineraryDetails = MapToFullItineraryDetails(itinerary, user);
+                result.Add(fullItineraryDetails);
+            }
+
+
+            return result;
+        }
     }
 }

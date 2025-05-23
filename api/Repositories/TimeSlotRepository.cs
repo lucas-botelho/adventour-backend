@@ -21,7 +21,7 @@ namespace Adventour.Api.Repositories
             db = context;
         }
 
-        public BasicTimeSlotDetails? AddTimeSlot(AddTimeSlotRequest request)
+        public TimeSlotDetails? AddTimeSlot(AddTimeSlotRequest request)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace Adventour.Api.Repositories
                     throw new NotFoundException("Error reloading TimeSlot after creation.");
                 }
 
-                return new BasicTimeSlotDetails
+                return new TimeSlotDetails
                 {
                     Id = createdTimeSlot.Id,
                     DayId = createdTimeSlot.DayId,
@@ -129,7 +129,7 @@ namespace Adventour.Api.Repositories
             }
         }
 
-        public BasicTimeSlotDetails UpdateTimeSlot(UpdateTimeSlotRequest request)
+        public TimeSlotDetails UpdateTimeSlot(UpdateTimeSlotRequest request)
         {
             var timeSlot = db.Timeslot
                 .Include(ts => ts.Attraction)
@@ -174,7 +174,7 @@ namespace Adventour.Api.Repositories
 
             db.SaveChanges();
 
-            return new BasicTimeSlotDetails
+            return new TimeSlotDetails
             {
                 Id = timeSlot.Id,
                 DayId = timeSlot.DayId,

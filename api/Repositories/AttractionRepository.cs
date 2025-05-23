@@ -20,7 +20,7 @@ namespace Adventour.Api.Repositories
             db = context;
         }
 
-        public IEnumerable<AttractionDetails> GetBaseAttractionData(string countryCode, string userId)
+        public IEnumerable<AttractionDetails> GetBaseAttractionData(string countryCode, Person user)
         {
             try
             {
@@ -37,7 +37,6 @@ namespace Adventour.Api.Repositories
                 }
 
                 var attractions = selectedCountry.Attractions;
-                var user = db.Person.FirstOrDefault(p => p.OauthId != null && p.OauthId.Equals(userId));
                 if (user is null)
                 {
                     logger.LogError($"{logHeader} User code not found.");

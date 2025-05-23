@@ -6,7 +6,7 @@ using Adventour.Api.Responses.Attractions;
 namespace Adventour.Api.Responses.TimeSlots
 {
 
-    public class BasicTimeSlotDetails
+    public class TimeSlotDetails
     {
         public int Id { get; set; }
         public AttractionDetails? Attraction { get; set; }

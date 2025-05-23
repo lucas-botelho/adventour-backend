@@ -5,6 +5,8 @@ using Adventour.Api.Requests.Itinerary;
 using Adventour.Api.Exceptions;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Itinerary;
+using Adventour.Api.Models.Database;
+using Azure.Core;
 
 namespace Adventour.Api.Controllers
 {
@@ -14,42 +16,16 @@ namespace Adventour.Api.Controllers
     {
         private readonly ILogger<ItineraryController> _logger;
         private readonly IItineraryRepository itineraryRepository;
+        private readonly IUserRepository userRepository;
+        private readonly ICountryRepository countryRepository;
 
-        public ItineraryController(ILogger<ItineraryController> logger, IItineraryRepository itineraryRepository)
+        public ItineraryController(ILogger<ItineraryController> logger, IItineraryRepository itineraryRepository, IUserRepository userRepository, ICountryRepository countryRespository)
         {
             _logger = logger;
             this.itineraryRepository = itineraryRepository;
+            this.userRepository = userRepository;
+            this.countryRepository = countryRespository;
         }
-
-        [HttpPost()]
-        public IActionResult AddItinerary([FromBody] AddItineraryRequest request)
-        {
-            try
-            {
-                if (request == null)
-                {
-                    return BadRequest(new BaseApiResponse<string>("Empty request."));
-                }
-
-                if (string.IsNullOrEmpty(request.UserId) || string.IsNullOrEmpty(request.Title))
-                {
-                    return BadRequest(new BaseApiResponse<string>("Invalid data to create Itinerary."));
-                }
-
-                var itinerary = itineraryRepository.AddItinerary(request);
-
-                return Ok(new BaseApiResponse<FullItineraryDetails>(itinerary, "Itinerary created successfully"));
-            }
-            catch (AppException ex)
-            {
-                return StatusCode(ex.StatusCode, new BaseApiResponse<string>(ex.Message));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new BaseApiResponse<string>("Unexpected error when creating Itinerary."));
-            }
-        }
-
 
         [HttpGet()]
         public IActionResult GetItineraryById([FromQuery] int itineraryId, [FromQuery] string userId)
@@ -78,6 +54,45 @@ namespace Adventour.Api.Controllers
             {
                 return StatusCode(500, new BaseApiResponse<string>("Unexpected error when retrieving Itinerary."));
             }
+        }
+
+        [HttpGet("itenerary")]
+        public async Task<IActionResult> Itenerary([FromQuery] string countryCode)
+        {
+            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            if (string.IsNullOrEmpty(user?.OauthId))
+                return BadRequest(new BaseApiResponse<string>("Invalid user."));
+
+
+            var country = countryRepository.GetCountry(countryCode);
+            try
+            {
+                IEnumerable<FullItineraryDetails> itineraries = itineraryRepository.GetUserItineraries(user, country);
+
+                return Ok(new BaseApiResponse<IEnumerable<FullItineraryDetails>>(itineraries, "Itineraries retrieved successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Unexpected error when retrieving Itineraries."));
+            }
+        }
+
+        [HttpPost("itinerary")]
+        public async Task<IActionResult> CreateItinerary([FromBody] ItineraryRequest body)
+        {
+            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            if (string.IsNullOrEmpty(user?.OauthId))
+                return BadRequest(new BaseApiResponse<string>("Invalid user."));
+
+
+            var itinerary = itineraryRepository.AddItinerary(body, user);
+
+            if (itinerary == null)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid Itinerary data."));
+            }
+
+            return Ok(new BaseApiResponse<Itinerary>(itinerary, "Itinerary created successfully"));
         }
     }
 }

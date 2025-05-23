@@ -37,6 +37,7 @@ services:
       - DOTNET_RUNNING_IN_CONTAINER=true
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - SQL_CONNECTION_STRING=Server=mssql;Database=${DATABASE};User Id=${SQL_USER};Password=${SQL_PASSWORD}
+      - TOMTOM_API_KEY=hxWDxSFNpJl86Y0yFIpnkO0zALaj2D9o
     volumes:
       - ./database:/database
     depends_on:
@@ -49,8 +50,8 @@ services:
       dockerfile: Dockerfile
     container_name: nginx_reverse_proxy
     ports:
-      - "80:80"
-      # - "8181:80"
+      # - "80:80"
+      - "8181:80"
     depends_on:
       - api
 

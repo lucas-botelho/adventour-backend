@@ -29,14 +29,18 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpGet("list/attractions")]
-        public IActionResult GetCountryActivities(string countryCode, [FromQuery] string oAuthId)
+        public async Task<IActionResult> GetCountryActivities(string countryCode, [FromQuery] string oAuthId)
         {
             if (string.IsNullOrWhiteSpace(countryCode) || countryCode.Length != 2)
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid country code"));
             }
 
-            var attractions = attractionRepository.GetBaseAttractionData(countryCode, oAuthId);
+            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            if (string.IsNullOrEmpty(user?.OauthId))
+                return BadRequest(new BaseApiResponse<string>("Invalid user."));
+
+            var attractions = attractionRepository.GetBaseAttractionData(countryCode, user);
 
             return attractions is null
             ? NotFound(new BaseApiResponse<string>("Sorry, we dont have any attractions yet for this country."))
@@ -156,13 +160,11 @@ namespace Adventour.Api.Controllers
                 return BadRequest(new BaseApiResponse<string>("Invalid location"));
             }
 
-            var token = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
-
-            if (string.IsNullOrEmpty(token?.OauthId))
+            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            if (string.IsNullOrEmpty(user?.OauthId))
                 return BadRequest(new BaseApiResponse<string>("Invalid user."));
 
-
-            var attractions = attractionRepository.GetBaseAttractionData(countryCode, token.OauthId);
+            var attractions = attractionRepository.GetBaseAttractionData(countryCode, user);
 
 
             foreach (var attraction in attractions)
@@ -195,11 +197,11 @@ namespace Adventour.Api.Controllers
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid country code"));
             }
-            var token = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
-            if (string.IsNullOrEmpty(token?.OauthId))
+            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            if (string.IsNullOrEmpty(user?.OauthId))
                 return BadRequest(new BaseApiResponse<string>("Invalid user."));
 
-            var attractions = attractionRepository.GetBaseAttractionData(countryCode, token.OauthId);
+            var attractions = attractionRepository.GetBaseAttractionData(countryCode, user);
 
             if (attractions is null || !attractions.Any())
             {
@@ -221,11 +223,11 @@ namespace Adventour.Api.Controllers
             {
                 return BadRequest(new BaseApiResponse<string>("Invalid country code"));
             }
-            var token = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
-            if (string.IsNullOrEmpty(token?.OauthId))
+            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            if (string.IsNullOrEmpty(user?.OauthId))
                 return BadRequest(new BaseApiResponse<string>("Invalid user."));
 
-            var attractions = attractionRepository.GetBaseAttractionData(countryCode, token.OauthId);
+            var attractions = attractionRepository.GetBaseAttractionData(countryCode, user);
 
             if (attractions is null || !attractions.Any())
             {
