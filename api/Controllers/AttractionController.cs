@@ -238,6 +238,29 @@ namespace Adventour.Api.Controllers
                 attractions = attractions.OrderBy(x => x.IsFavorited);
             return Ok(new BaseApiResponse<AttractionDetailsListResponse>(new AttractionDetailsListResponse(attractions), "Attractions found."));
         }
+
+        [HttpPost("attraction")]
+        public IActionResult AddAttraction([FromBody] AddAttractionRequest request)
+        {
+            if (request.DurationMinutes < 1 || request.DurationMinutes > 1440)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid Duration"));
+            }
+
+            if (request.IdCountry <= 0)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid Country Id"));
+            }
+
+            var success = attractionRepository.AddAttraction(request);
+
+            if (!success)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Failed to create attraction."));
+            }
+
+            return Ok(new BaseApiResponse<bool>("Attraction added successfully", success));
+        }
     }
 }
 
