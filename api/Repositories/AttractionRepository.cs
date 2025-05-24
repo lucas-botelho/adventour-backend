@@ -51,7 +51,7 @@ namespace Adventour.Api.Repositories
                         Name = attraction.Name,
                         Country = attraction.Country.Name,
                         Rating = attraction.AverageRating,
-                        Address = $"{attraction.AddressOne }, {attraction.AddressTwo}",
+                        Address = $"{attraction.AddressOne}, {attraction.AddressTwo}",
                         ShortDescription = attraction.ShortDescription,
                         LongDescription = attraction.LongDescription,
                         IsFavorited = db.Favorites.Any(favorite => favorite.AttractionId == attraction.Id && favorite.UserId.Equals(user.Id)),
@@ -272,7 +272,7 @@ namespace Adventour.Api.Repositories
 
 
                 var result = new List<ReviewWithImages>();
-                
+
                 foreach (var review in reviews)
                 {
                     var reviewResponse = new ReviewWithImages
@@ -381,7 +381,24 @@ namespace Adventour.Api.Repositories
             }
         }
 
-
+        public List<InfoTypeResponse> GetInfoTypes()
+        {
+            try
+            {
+                return db.AttractionInfoType
+                    .Select(it => new InfoTypeResponse
+                    {
+                        Id = it.Id,
+                        TypeTitle = it.TypeTitle
+                    })
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                return new List<InfoTypeResponse>();
+            }
+        }
 
     }
 }

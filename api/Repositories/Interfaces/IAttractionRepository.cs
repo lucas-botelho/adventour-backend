@@ -17,5 +17,6 @@ namespace Adventour.Api.Repositories.Interfaces
         IEnumerable<FavoritedAttractionDetails> GetFavorites(string oAuthId);
         Attraction GetAttraction(int id);
         bool AddAttraction(AddAttractionRequest data);
+        List<InfoTypeResponse> GetInfoTypes();
     }
 }

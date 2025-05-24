@@ -263,6 +263,19 @@ namespace Adventour.Api.Controllers
 
             return Ok(new BaseApiResponse<bool>("Attraction added successfully", success));
         }
+
+        [HttpGet("infoTypes")]
+        public IActionResult getInfoTypes()
+        {
+            var infoTypes = attractionRepository.GetInfoTypes();
+
+            if (infoTypes == null)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Failed to get Info Types."));
+            }
+
+            return Ok(new BaseApiResponse<List<InfoTypeResponse>>(infoTypes, "Info Types retrieved successfully"));
+        }
     }
 }
 
