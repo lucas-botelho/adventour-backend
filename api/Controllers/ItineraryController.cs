@@ -7,6 +7,7 @@ using Adventour.Api.Responses;
 using Adventour.Api.Responses.Itinerary;
 using Adventour.Api.Models.Database;
 using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Adventour.Api.Controllers
 {
@@ -27,6 +28,7 @@ namespace Adventour.Api.Controllers
             this.countryRepository = countryRespository;
         }
 
+        [Authorize]
         [HttpGet()]
         public IActionResult GetItineraryById([FromQuery] int itineraryId, [FromQuery] string userId)
         {
@@ -56,6 +58,7 @@ namespace Adventour.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("itinerary")]
         public async Task<IActionResult> Itenerary([FromQuery] string countryCode)
         {
@@ -77,6 +80,7 @@ namespace Adventour.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("itinerary")]
         public async Task<IActionResult> CreateItinerary([FromBody] ItineraryRequest body)
         {

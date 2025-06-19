@@ -101,7 +101,7 @@ namespace Adventour.Api.Controllers
 
 
         [HttpPatch("user/{userId}")]
-        //[Authorize]
+        [Authorize]
         public IActionResult UpdateUser(string userId, [FromBody] UserUpdateRequest data)
         {
             var userIdGuid = new Guid(userId);
@@ -124,6 +124,7 @@ namespace Adventour.Api.Controllers
                 : Ok(new BaseApiResponse<Person>(user, "User found."));
         }
 
+        //TODO: DELETE
         [HttpPost("mock-token")]
         public async Task<IActionResult> GenerateToken()
         {
