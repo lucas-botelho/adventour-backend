@@ -32,12 +32,11 @@ namespace Adventour.Api.Repositories
 
         public Guid CreateUser(UserRegistrationRequest registration)
         {
-            var encryptedEmail = encryptionService.Encrypt(registration.Email);
 
             var user = new Person
             {
                 Name = registration.Name,
-                Email = encryptedEmail,
+                Email = registration.Email,
                 OauthId = registration.OAuthId,
                 PhotoUrl = registration.PhotoUrl
             };
@@ -67,7 +66,7 @@ namespace Adventour.Api.Repositories
 
         public bool UserExists(string email)
         {
-            return db.Person.Any(p => p.Email == encryptionService.Encrypt(email));
+            return db.Person.Any(p => p.Email == email);
         }
 
         public bool UserExists(Guid userId)
@@ -117,8 +116,6 @@ namespace Adventour.Api.Repositories
                 logger.LogError($"{logHeader} user with OauthId {decodedToken.Uid} not found in database.");
                 return null;
             }
-
-            person.Email = encryptionService.Decrypt(person.Email);
 
             return person;
         }

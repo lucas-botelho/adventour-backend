@@ -98,5 +98,24 @@ namespace Adventour.Api.Controllers
 
             return Ok(new BaseApiResponse<Itinerary>(itinerary, "Itinerary created successfully"));
         }
+
+        [Authorize]
+        [HttpDelete("itinerary/{itineraryId}")]
+        public async Task<IActionResult> DeleteItinerary(int itineraryId)
+        {
+            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+            if (string.IsNullOrEmpty(user?.OauthId))
+                return BadRequest(new BaseApiResponse<string>("Invalid user."));
+            if (itineraryId <= 0)
+            {
+                return BadRequest(new BaseApiResponse<string>("Invalid Itinerary ID."));
+            }
+            var isDeleted = itineraryRepository.DeleteItinerary(itineraryId, user);
+            if (!isDeleted)
+            {
+                return NotFound(new BaseApiResponse<string>("Itinerary not found."));
+            }
+            return Ok(new BaseApiResponse<string>("Itinerary deleted successfully.", isDeleted));
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace Adventour.Api.Repositories.Interfaces
         Itinerary AddItinerary(ItineraryRequest request, Person user);
         FullItineraryDetails GetItineraryById(int itineraryId, string userId);
         IEnumerable<FullItineraryDetails> GetUserItineraries(Person user, Country country);
+        bool DeleteItinerary(int itineraryId, Person user);
     }
 }
