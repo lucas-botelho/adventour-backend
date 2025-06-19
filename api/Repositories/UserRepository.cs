@@ -1,29 +1,28 @@
-﻿using Adventour.Api.Builders.Interfaces;
-using Adventour.Api.Constants.Database;
-using Adventour.Api.Requests.Authentication;
-using Adventour.Api.Repositories.Interfaces;
-using Microsoft.AspNetCore.Identity;
-using Adventour.Api.Responses.Authentication;
-using FirebaseAdmin.Auth;
-using Newtonsoft.Json.Linq;
-using Microsoft.IdentityModel.Tokens;
-using Adventour.Api.Data;
+﻿using Adventour.Api.Data;
 using Adventour.Api.Models.Database;
-using Azure.Core;
+using Adventour.Api.Repositories.Interfaces;
+using Adventour.Api.Requests.Authentication;
+using Adventour.Api.Services.Encryption;
+using FirebaseAdmin.Auth;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Adventour.Api.Repositories
 {
     public class UserRepository : IUserRepository
     {
         private readonly ILogger<UserRepository> logger;
-        private const string logHeader = "## UserRepository ##: ";
         private readonly AdventourContext db;
+        private readonly IEncryptionService encryptionService;
+        private const string logHeader = "## UserRepository ##: ";
 
-
-        public UserRepository(ILogger<UserRepository> logger, AdventourContext db)
+        public UserRepository(
+            ILogger<UserRepository> logger,
+            AdventourContext db,
+            IEncryptionService encryptionService)
         {
             this.logger = logger;
             this.db = db;
+            this.encryptionService = encryptionService;
         }
 
         public string AuthenticateUser(UserRegistrationRequest registration)
@@ -33,10 +32,12 @@ namespace Adventour.Api.Repositories
 
         public Guid CreateUser(UserRegistrationRequest registration)
         {
+            var encryptedEmail = encryptionService.Encrypt(registration.Email);
+
             var user = new Person
             {
                 Name = registration.Name,
-                Email = registration.Email,
+                Email = encryptedEmail,
                 OauthId = registration.OAuthId,
                 PhotoUrl = registration.PhotoUrl
             };
@@ -56,6 +57,7 @@ namespace Adventour.Api.Repositories
                 logger.LogError($"{logHeader} tried updating public data for non existing userId {userId}");
                 return false;
             }
+
             person.Username = data.UserName;
             person.PhotoUrl = data.PublicUrl;
             db.SaveChanges();
@@ -65,7 +67,7 @@ namespace Adventour.Api.Repositories
 
         public bool UserExists(string email)
         {
-            return db.Person.Any(p => p.Email == email);
+            return db.Person.Any(p => p.Email == encryptionService.Encrypt(email));
         }
 
         public bool UserExists(Guid userId)
@@ -108,7 +110,17 @@ namespace Adventour.Api.Repositories
             if (decodedToken is null)
                 return null;
 
-            return db.Person.FirstOrDefault(p => p.OauthId == decodedToken.Uid);
+            var person = db.Person.FirstOrDefault(p => p.OauthId == decodedToken.Uid);
+
+            if (person is null)
+            {
+                logger.LogError($"{logHeader} user with OauthId {decodedToken.Uid} not found in database.");
+                return null;
+            }
+
+            person.Email = encryptionService.Decrypt(person.Email);
+
+            return person;
         }
     }
 }
