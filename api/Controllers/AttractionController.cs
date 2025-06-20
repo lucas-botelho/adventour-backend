@@ -102,10 +102,19 @@ namespace Adventour.Api.Controllers
                 return NotFound(new BaseApiResponse<string>("Attraction not found"));
             }
 
-            HashSet<AttractionInfoType> types = new HashSet<AttractionInfoType>();
+            Dictionary<int, AttractionInfoType> typesById = new();
 
             foreach (var info in infos)
-                types.Add(info.AttractionInfoType);
+            {
+                var type = info.AttractionInfoType;
+                if (!typesById.ContainsKey(type.Id))
+                {
+                    typesById[type.Id] = type;
+                }
+            }
+
+            HashSet<AttractionInfoType> types = typesById.Values.ToHashSet();
+
 
             return Ok(new BaseApiResponse<AttractionInfoResponse>(new AttractionInfoResponse { AttractionInfos = infos, InfoTypes = types }, "Attraction found"));
         }
