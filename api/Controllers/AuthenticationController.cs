@@ -59,6 +59,15 @@ namespace Adventour.Api.Controllers
                 return StatusCode(409, new BaseApiResponse<string>("User with that email already exists"));
             }
 
+            if (!ModelState.IsValid)
+            {
+                var errorMessage = ModelState.Values.SelectMany(v => v.Errors)
+                                                    .Select(e => e.ErrorMessage)
+                                                    .FirstOrDefault() ?? "Invalid input";
+
+                return BadRequest(new BaseApiResponse<string>(errorMessage));
+            }
+
             var userId = userRepository.CreateUser(user).ToString();
 
             if (!string.IsNullOrEmpty(userId))
