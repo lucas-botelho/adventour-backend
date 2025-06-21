@@ -143,41 +143,5 @@ namespace Adventour.Api.Controllers
                 ? NotFound(new BaseApiResponse<string>("User not found."))
                 : Ok(new BaseApiResponse<Person>(user, "User found."));
         }
-
-        //TODO: DELETE
-        [HttpPost("mock-token")]
-        public async Task<IActionResult> GenerateToken()
-        {
-            string uid = "SEtuxdaKHsXjKRHR31T2cXVxp1h1";
-            string customToken = await FirebaseAuth.DefaultInstance.CreateCustomTokenAsync(uid);
-
-            // Exchange custom token for ID token using Firebase REST API
-            var httpClient = _httpClientFactory.CreateClient();
-
-            var payload = new
-            {
-                token = customToken,
-                returnSecureToken = true
-            };
-
-            var request = new HttpRequestMessage(HttpMethod.Post,
-                $"https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key={Environment.GetEnvironmentVariable("FIREBASE_WEB_API_KEY")}")
-            {
-                Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json")
-            };
-
-            var response = await httpClient.SendAsync(request);
-            var responseBody = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return StatusCode((int)response.StatusCode, new { error = responseBody });
-            }
-
-            using var jsonDoc = JsonDocument.Parse(responseBody);
-            string idToken = jsonDoc.RootElement.GetProperty("idToken").GetString();
-
-            return Ok(new { idToken });
-        }
     }
 }
