@@ -28,6 +28,7 @@ namespace Adventour.Api.Controllers
             this.geoLocationService = geoLocationService;
         }
 
+        [Authorize]
         [HttpGet("list/attractions")]
         public async Task<IActionResult> GetCountryActivities(string countryCode, [FromQuery] string oAuthId)
         {
@@ -47,6 +48,7 @@ namespace Adventour.Api.Controllers
             : Ok(new BaseApiResponse<AttractionDetailsListResponse>(new AttractionDetailsListResponse(attractions), "Attractions found."));
         }
 
+        [Authorize]
         [HttpPost("favorite")]
         public IActionResult AddToFavorites([FromBody] AddToFavoriteRequest request)
         {
@@ -59,6 +61,7 @@ namespace Adventour.Api.Controllers
             return Ok(new BaseApiResponse<string>("Attraction added to favorites", success));
         }
 
+        [Authorize]
         [HttpPost("favorite/remove")]
         public IActionResult RemoveFavorite([FromBody] AddToFavoriteRequest request)
         {
@@ -70,6 +73,7 @@ namespace Adventour.Api.Controllers
             var success = attractionRepository.RemoveFavorite(request.AttractionId, request.UserId);
             return Ok(new BaseApiResponse<string>("Attraction added to favorites", success));
         }
+
 
         [HttpGet("attraction/{id}")]
         public IActionResult GetAttraction(string id)
@@ -98,16 +102,25 @@ namespace Adventour.Api.Controllers
                 return NotFound(new BaseApiResponse<string>("Attraction not found"));
             }
 
-            HashSet<AttractionInfoType> types = new HashSet<AttractionInfoType>();
+            Dictionary<int, AttractionInfoType> typesById = new();
 
             foreach (var info in infos)
-                types.Add(info.AttractionInfoType);
+            {
+                var type = info.AttractionInfoType;
+                if (!typesById.ContainsKey(type.Id))
+                {
+                    typesById[type.Id] = type;
+                }
+            }
+
+            HashSet<AttractionInfoType> types = typesById.Values.ToHashSet();
+
 
             return Ok(new BaseApiResponse<AttractionInfoResponse>(new AttractionInfoResponse { AttractionInfos = infos, InfoTypes = types }, "Attraction found"));
         }
 
+        [Authorize]
         [HttpPost("review/{attractionId}")]
-        //[Authorize]
         public IActionResult AddReview(string attractionId, [FromBody] AddReviewRequest request)
         {
             if (string.IsNullOrWhiteSpace(attractionId))
@@ -152,6 +165,7 @@ namespace Adventour.Api.Controllers
             : Ok(new BaseApiResponse<FavoritedAttractionListResponse>(new FavoritedAttractionListResponse(favorites), "Attractions found"));
         }
 
+        [Authorize]
         [HttpGet("attraction/sorted/location")]
         public async Task<IActionResult> AttractionsByLocation([FromQuery] string latitute, [FromQuery] string longitude, [FromQuery] string countryCode, [FromQuery] bool descendant = true)
         {
@@ -190,6 +204,8 @@ namespace Adventour.Api.Controllers
             : Ok(new BaseApiResponse<AttractionDetailsListResponse>(new AttractionDetailsListResponse(attractions), "Attractions found."));
         }
 
+
+        [Authorize]
         [HttpGet("attraction/sorted/rating")]
         public async Task<IActionResult> AttractionsByRating([FromQuery] string countryCode, [FromQuery] bool descentant = true)
         {
@@ -216,6 +232,8 @@ namespace Adventour.Api.Controllers
             return Ok(new BaseApiResponse<AttractionDetailsListResponse>(new AttractionDetailsListResponse(attractions), "Attractions found."));
         }
 
+
+        [Authorize]
         [HttpGet("attraction/sorted/favorited")]
         public async Task<IActionResult> AttractionByFavorited([FromQuery] string countryCode, [FromQuery] bool descentant = true)
         {

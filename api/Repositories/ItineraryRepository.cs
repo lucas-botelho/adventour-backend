@@ -174,13 +174,8 @@ namespace Adventour.Api.Repositories
                                     .ThenInclude(d => d.Timeslots)
                                         .ThenInclude(ts => ts.Attraction)
                                             .ThenInclude(a => a.AttractionImages)
-                                .Where(i => i.UserId == user.Id &&
-                                            i.Days.Any(d =>
-                                                d.Timeslots.Any(ts =>
-                                                    ts.Attraction != null && ts.Attraction.CountryId == country.Id)))
+                                .Where(i => i.UserId == user.Id)
                                 .ToList();
-
-
 
             var result = new List<FullItineraryDetails>();
 
@@ -193,5 +188,33 @@ namespace Adventour.Api.Repositories
 
             return result;
         }
+
+        public bool DeleteItinerary(int itineraryId, Person user)
+        {
+            try
+            {
+                var itinerary = db.Itinerary
+                    .Include(i => i.Days)
+                        .ThenInclude(d => d.Timeslots)
+                    .FirstOrDefault(i => i.Id == itineraryId && i.UserId == user.Id);
+
+                if (itinerary == null)
+                {
+                    logger.LogWarning($"{logHeader} Tried to delete non-existent or unauthorized itinerary with ID: {itineraryId}");
+                    return false;
+                }
+
+                db.Itinerary.Remove(itinerary);
+                db.SaveChanges();
+                logger.LogInformation($"{logHeader} Itinerary {itineraryId} deleted successfully.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} Error deleting itinerary {itineraryId}: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

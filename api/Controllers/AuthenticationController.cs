@@ -56,7 +56,7 @@ namespace Adventour.Api.Controllers
         {
             if (userRepository.UserExists(user.Email))
             {
-                return StatusCode(409, new BaseApiResponse<string>("User with that email already exists"));
+                return StatusCode(409, new BaseApiResponse<string>("The email you are trying to use is not available."));
             }
 
             if (!ModelState.IsValid)
@@ -86,6 +86,26 @@ namespace Adventour.Api.Controllers
             return StatusCode(500, new BaseApiResponse<string>("Failed to register the user."));
         }
 
+        [HttpPost("resend/confirmation")]
+        [Authorize]
+        public async Task<IActionResult> ResendConfirmationEmail([FromBody] EmailRequest request)
+        {
+            if (userRepository.UserExists(request.Email))
+            {
+                var user = await userRepository.GetUser(Request.Headers["Authorization"].ToString());
+                string securityPin = new Random().Next(1000, 9999).ToString();
+                var isEmailSent = await this.emailService.SendEmailAsync(user.Email, "Confirmation email", securityPin);
+                var token = this.tokenProvider.GeneratePinToken(user.Id.ToString(), securityPin);
+
+                return Ok(new BaseApiResponse<TokenResponse>(
+                    new TokenResponse() { Token = token, UserId = user.Id.ToString() },
+                    "Email resent successfully")
+                );
+            }
+
+            return StatusCode(401, new BaseApiResponse<string>("You are not authorized to do this."));
+        }
+
         [HttpPost("email/confirm")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequest request)
         {
@@ -110,7 +130,7 @@ namespace Adventour.Api.Controllers
 
 
         [HttpPatch("user/{userId}")]
-        //[Authorize]
+        [Authorize]
         public IActionResult UpdateUser(string userId, [FromBody] UserUpdateRequest data)
         {
             var userIdGuid = new Guid(userId);
@@ -128,11 +148,12 @@ namespace Adventour.Api.Controllers
             var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
 
 
-            return user is null 
+            return user is null
                 ? NotFound(new BaseApiResponse<string>("User not found."))
                 : Ok(new BaseApiResponse<Person>(user, "User found."));
         }
 
+        //TODO: DELETE
         [HttpPost("mock-token")]
         public async Task<IActionResult> GenerateToken()
         {

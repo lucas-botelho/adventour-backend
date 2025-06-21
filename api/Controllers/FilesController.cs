@@ -3,6 +3,7 @@ using Adventour.Api.Services.FileUpload.Interfaces;
 using Adventour.Api.Responses;
 using Adventour.Api.Responses.Files;
 using Adventour.Api.Requests.Files;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Adventour.Api.Controllers
 {
@@ -20,7 +21,7 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpPost("upload")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Upload([FromForm] FileUploadRequest request)
         {
             var isValidImage = request.File?.Length > 0;
@@ -46,7 +47,7 @@ namespace Adventour.Api.Controllers
         }
 
         [HttpPost("upload/multiple")]
-        //[Authorize]
+        [Authorize]
         public async Task<IActionResult> Upload([FromForm] MultipleFilesUploadRequest request)
         {
             if (request.Files == null || request.Files.Count == 0)
