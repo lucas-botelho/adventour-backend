@@ -38,7 +38,8 @@ namespace Adventour.Api.Repositories
                 Name = registration.Name,
                 Email = registration.Email,
                 OauthId = registration.OAuthId,
-                PhotoUrl = registration.PhotoUrl
+                PhotoUrl = registration.PhotoUrl,
+                RegistrationStep = 1,
             };
 
             db.Add(user);
@@ -59,6 +60,8 @@ namespace Adventour.Api.Repositories
 
             person.Username = data.UserName;
             person.PhotoUrl = data.PublicUrl;
+            person.RegistrationStep = 3;
+
             db.SaveChanges();
 
             return true;
@@ -95,6 +98,7 @@ namespace Adventour.Api.Repositories
             }
 
             person.Verified = true;
+            person.RegistrationStep = 2;
             db.SaveChanges();
         }
 
