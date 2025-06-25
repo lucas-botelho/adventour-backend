@@ -76,6 +76,8 @@ namespace Adventour.Api.Controllers
                 var isEmailSent = await this.emailService.SendEmailAsync(user.Email, "Confirmation email", securityPin);
                 var token = this.tokenProvider.GeneratePinToken(userId, securityPin);
 
+                logger.LogInformation($"{logHeader} Confirmation email to {user.Email} with token {securityPin}");
+
                 return Ok(new BaseApiResponse<TokenResponse>(
                     new TokenResponse() { Token = token, UserId = userId },
                     "User created successfully")
@@ -96,6 +98,8 @@ namespace Adventour.Api.Controllers
                 string securityPin = new Random().Next(1000, 9999).ToString();
                 var isEmailSent = await this.emailService.SendEmailAsync(user.Email, "Confirmation email", securityPin);
                 var token = this.tokenProvider.GeneratePinToken(user.Id.ToString(), securityPin);
+
+                logger.LogInformation($"{logHeader} Resending confirmation email to {user.Email} with token {securityPin}");
 
                 return Ok(new BaseApiResponse<TokenResponse>(
                     new TokenResponse() { Token = token, UserId = user.Id.ToString() },
