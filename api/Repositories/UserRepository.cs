@@ -45,6 +45,8 @@ namespace Adventour.Api.Repositories
             db.Add(user);
             db.SaveChanges();
 
+            logger.LogError("Registration Step: " + db.Person.FirstOrDefault(p => p.OauthId == registration.OAuthId).RegistrationStep);
+
             return user.Id;
         }
 
@@ -63,6 +65,8 @@ namespace Adventour.Api.Repositories
             person.RegistrationStep = 3;
 
             db.SaveChanges();
+
+            logger.LogError("Registration Step: " + db.Person.FirstOrDefault(p => p.Id == userId).RegistrationStep);
 
             return true;
         }
@@ -100,6 +104,8 @@ namespace Adventour.Api.Repositories
             person.Verified = true;
             person.RegistrationStep = 2;
             db.SaveChanges();
+
+            logger.LogError("Registration Step: " + db.Person.FirstOrDefault(p => p.Id.ToString() == userId).RegistrationStep);
         }
 
         public async Task<Person?> GetUser(string authHeader)
