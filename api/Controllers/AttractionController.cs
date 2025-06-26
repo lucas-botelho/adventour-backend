@@ -1,13 +1,12 @@
-﻿using Adventour.Api.Responses.Country;
-using Adventour.Api.Responses;
+﻿using Adventour.Api.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Adventour.Api.Repositories.Interfaces;
 using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Models.Database;
 using Adventour.Api.Responses.Attractions;
 using Microsoft.AspNetCore.Authorization;
-using FirebaseAdmin.Auth;
 using Adventour.Api.Services.DistanceCalculation.Interfaces;
+using Adventour.Api.Repositories;
 
 namespace Adventour.Api.Controllers
 {
@@ -313,6 +312,22 @@ namespace Adventour.Api.Controllers
             }
 
             return Ok(new BaseApiResponse<bool>("Attraction deleted successfully", success));
+        }
+
+        [HttpGet("admin/attractions")]
+        public async Task<IActionResult> GetAllAttractionsForAdmin()
+        {
+            var providedKey = Request.Headers["X-ADMIN-KEY"].ToString();
+            var expectedKey = Environment.GetEnvironmentVariable("ADMIN_API_KEY");
+
+            if (string.IsNullOrEmpty(providedKey) || providedKey != expectedKey)
+            {
+                return Unauthorized("Invalid admin key.");
+            }
+
+            var attractions = await attractionRepository.GetAllAttractionsForAdminAsync();
+
+            return Ok(new BaseApiResponse<List<BackOfficeAttractionDetails>>(attractions, "Attractions retrieved successfully"));
         }
 
     }

@@ -422,5 +422,35 @@ namespace Adventour.Api.Repositories
             }
         }
 
+        public async Task<List<BackOfficeAttractionDetails>> GetAllAttractionsForAdminAsync()
+        {
+            var result = await db.Attraction
+                .Where(a => a.AttractionImages.Any(i => i.IsMain))
+                .Select(a => new BackOfficeAttractionDetails
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    ShortDescription = a.ShortDescription,
+                    LongDescription = a.LongDescription,
+                    Country = a.Country.Name,
+                    Address = a.AddressOne + ", " + a.AddressTwo,
+                    Rating = a.AverageRating,
+                    AttractionImages = a.AttractionImages
+                        .Where(i => i.IsMain)
+                        .Select(i => new AttractionImages
+                        {
+                            Id = i.Id,
+                            AttractionId = i.AttractionId,
+                            PictureRef = i.PictureRef,
+                            IsMain = i.IsMain
+                        })
+                        .ToList()
+                })
+                .ToListAsync();
+
+            return result;
+        }
+
+
     }
 }

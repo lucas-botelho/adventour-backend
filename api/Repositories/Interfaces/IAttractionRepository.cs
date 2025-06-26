@@ -19,6 +19,7 @@ namespace Adventour.Api.Repositories.Interfaces
         bool AddAttraction(AddAttractionRequest data);
         List<InfoTypeResponse> GetInfoTypes();
         bool DeleteAttraction(int attractionId);
+        Task<List<BackOfficeAttractionDetails>> GetAllAttractionsForAdminAsync();
 
     }
 }
