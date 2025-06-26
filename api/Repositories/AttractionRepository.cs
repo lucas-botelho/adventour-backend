@@ -6,6 +6,7 @@ using Adventour.Api.Requests.Attraction;
 using Adventour.Api.Responses.Attractions;
 using Azure.Core;
 using Microsoft.EntityFrameworkCore;
+using SendGrid.Helpers.Mail;
 using System.Diagnostics;
 
 namespace Adventour.Api.Repositories
@@ -400,5 +401,21 @@ namespace Adventour.Api.Repositories
             }
         }
 
+        public bool DeleteAttraction(int attractionId)
+        {
+
+            var attraction = db.Attraction.FirstOrDefault(a => a.Id == attractionId);
+            if (attraction == null)
+            {
+                logger.LogWarning($"Attraction with ID {attractionId} not found");
+                return false;
+            }
+
+            db.Remove(attraction);
+            db.SaveChanges();
+
+            logger.LogInformation($"Successfully deleted attraction with ID {attractionId}");
+            return true;
+        }
     }
 }

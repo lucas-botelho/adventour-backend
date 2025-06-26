@@ -294,6 +294,27 @@ namespace Adventour.Api.Controllers
 
             return Ok(new BaseApiResponse<List<InfoTypeResponse>>(infoTypes, "Info Types retrieved successfully"));
         }
+
+        [HttpDelete("attraction/{id}")]
+        public IActionResult DeleteAttraction(int id)
+        {
+            if (id <= 0)
+            {
+                _logger.LogWarning("DeleteAttraction called with invalid ID: {AttractionId}", id);
+                return BadRequest(new BaseApiResponse<string>("Invalid Attraction Id"));
+            }
+
+            var success = attractionRepository.DeleteAttraction(id);
+
+            if (!success)
+            {
+                _logger.LogError("Failed to delete attraction with ID: {AttractionId}", id);
+                return StatusCode(500, new BaseApiResponse<string>("Failed to delete attraction."));
+            }
+
+            return Ok(new BaseApiResponse<bool>("Attraction deleted successfully", success));
+        }
+
     }
 }
 
