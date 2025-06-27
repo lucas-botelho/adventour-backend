@@ -294,7 +294,7 @@ namespace Adventour.Api.Controllers
             return Ok(new BaseApiResponse<List<InfoTypeResponse>>(infoTypes, "Info Types retrieved successfully"));
         }
 
-        [HttpDelete("attraction/{id}")]
+        [HttpDelete("/{id}")]
         public IActionResult DeleteAttraction(int id)
         {
             if (id <= 0)
