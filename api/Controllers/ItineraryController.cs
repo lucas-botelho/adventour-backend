@@ -117,5 +117,34 @@ namespace Adventour.Api.Controllers
             }
             return Ok(new BaseApiResponse<string>("Itinerary deleted successfully.", isDeleted));
         }
+
+        [Authorize]
+        [HttpPut("itinerary/{id}")]
+        public async Task<IActionResult> UpdateItinerary(int id, [FromBody] ItineraryRequest body)
+        {
+            var user = await this.userRepository.GetUser(Request.Headers["Authorization"].ToString());
+
+            if (string.IsNullOrEmpty(user?.OauthId))
+                return BadRequest(new BaseApiResponse<string>("Invalid user."));
+
+            if (id <= 0 || body == null)
+                return BadRequest(new BaseApiResponse<string>("Invalid itinerary data."));
+
+            try
+            {
+                var updatedItinerary = itineraryRepository.UpdateItinerary(id, body, user);
+
+                return updatedItinerary ? Ok(new BaseApiResponse<string>("Itinerary updated successfully", true)) : NotFound(new BaseApiResponse<string>("Itinerary not found or could not be updated."));
+            }
+            catch (AppException ex)
+            {
+                return StatusCode(ex.StatusCode, new BaseApiResponse<string>(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseApiResponse<string>("Unexpected error when updating Itinerary."));
+            }
+        }
+
     }
 }

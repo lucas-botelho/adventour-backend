@@ -216,5 +216,87 @@ namespace Adventour.Api.Repositories
             }
         }
 
+        public bool UpdateItinerary(int itineraryId, ItineraryRequest request, Person user)
+        {
+            try
+            {
+                var itinerary = db.Itinerary
+                    .Include(i => i.Days)
+                        .ThenInclude(d => d.Timeslots)
+                    .FirstOrDefault(i => i.Id == itineraryId && i.UserId == user.Id);
+
+                if (itinerary == null || request == null)
+                    return false;
+
+                itinerary.Title = string.IsNullOrEmpty(request.Name) ? itinerary.Title : request.Name;
+
+                // Atualizar dias existentes, adicionar novos e remover os que foram apagados
+                var updatedDays = new List<Day>();
+
+                foreach (var dayReq in request.Days ?? new())
+                {
+                    var existingDay = itinerary.Days.FirstOrDefault(d => d.Id == dayReq.Id);
+
+                    if (existingDay != null)
+                    {
+                        // Atualiza dia
+                        existingDay.DayNumber = dayReq.DayNumber;
+
+                        var updatedTimeSlots = new List<Timeslot>();
+
+                        foreach (var tsReq in dayReq.Timeslots ?? new())
+                        {
+                            var existingTs = existingDay.Timeslots.FirstOrDefault(t => t.Id == tsReq.Id);
+
+                            if (existingTs != null)
+                            {
+                                existingTs.StartTime = DateTime.Parse(tsReq.StartTime);
+                                existingTs.EndTime = DateTime.Parse(tsReq.EndTime);
+                                existingTs.AttractionId = tsReq.AttractionId;
+                                updatedTimeSlots.Add(existingTs);
+                            }
+                            else
+                            {
+                                updatedTimeSlots.Add(new Timeslot
+                                {
+                                    StartTime = DateTime.Parse(tsReq.StartTime),
+                                    EndTime = DateTime.Parse(tsReq.EndTime),
+                                    AttractionId = tsReq.AttractionId
+                                });
+                            }
+                        }
+
+                        existingDay.Timeslots = updatedTimeSlots;
+                        updatedDays.Add(existingDay);
+                    }
+                    else
+                    {
+                        updatedDays.Add(new Day
+                        {
+                            DayNumber = dayReq.DayNumber,
+                            Timeslots = dayReq.Timeslots?.Select(ts => new Timeslot
+                            {
+                                StartTime = DateTime.Parse(ts.StartTime),
+                                EndTime = DateTime.Parse(ts.EndTime),
+                                AttractionId = ts.AttractionId
+                            }).ToList() ?? new()
+                        });
+                    }
+                }
+
+                itinerary.Days = updatedDays;
+
+                db.SaveChanges();
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"{logHeader} {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }
